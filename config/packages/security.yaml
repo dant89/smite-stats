@@ -1,0 +1,22 @@
+security:
+    ***REMOVED*** https://symfony.com/doc/current/security.html***REMOVED***where-do-users-come-from-user-providers
+    providers:
+        in_memory: { memory: null }
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: true
+
+            ***REMOVED*** activate different ways to authenticate
+            ***REMOVED*** https://symfony.com/doc/current/security.html***REMOVED***firewalls-authentication
+
+            ***REMOVED*** https://symfony.com/doc/current/security/impersonating_user.html
+            ***REMOVED*** switch_user: true
+
+    ***REMOVED*** Easy way to control access for large sections of your site
+    ***REMOVED*** Note: Only the *first* access control that matches will be used
+    access_control:
+        ***REMOVED*** - { path: ^/admin, roles: ROLE_ADMIN }
+        ***REMOVED*** - { path: ^/profile, roles: ROLE_USER }

@@ -1,0 +1,22 @@
+.idea/
+bin/*
+!bin/console
+
+***REMOVED******REMOVED******REMOVED***> symfony/framework-bundle ***REMOVED******REMOVED******REMOVED***
+/.env.local
+/.env.local.php
+/.env.*.local
+/public/bundles/
+/var/
+/vendor/
+***REMOVED******REMOVED******REMOVED***< symfony/framework-bundle ***REMOVED******REMOVED******REMOVED***
+
+***REMOVED******REMOVED******REMOVED***> symfony/phpunit-bridge ***REMOVED******REMOVED******REMOVED***
+.phpunit
+.phpunit.result.cache
+/phpunit.xml
+***REMOVED******REMOVED******REMOVED***< symfony/phpunit-bridge ***REMOVED******REMOVED******REMOVED***
+
+***REMOVED******REMOVED******REMOVED***> symfony/web-server-bundle ***REMOVED******REMOVED******REMOVED***
+/.web-server-pid
+***REMOVED******REMOVED******REMOVED***< symfony/web-server-bundle ***REMOVED******REMOVED******REMOVED***

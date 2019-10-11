@@ -1,0 +1,8 @@
+framework:
+    validation:
+        email_validation_mode: html5
+
+        ***REMOVED*** Enables validator auto-mapping support.
+        ***REMOVED*** For instance, basic validation constraints will be inferred from Doctrine's metadata.
+        ***REMOVED***auto_mapping:
+        ***REMOVED***    App\Entity\: []

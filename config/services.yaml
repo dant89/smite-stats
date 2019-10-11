@@ -1,0 +1,27 @@
+***REMOVED*** This file is the entry point to configure your own services.
+***REMOVED*** Files in the packages/ subdirectory configure your dependencies.
+
+***REMOVED*** Put parameters here that don't need to change on each machine where the app is deployed
+***REMOVED*** https://symfony.com/doc/current/best_practices/configuration.html***REMOVED***application-related-configuration
+parameters:
+
+services:
+    ***REMOVED*** default configuration for services in *this* file
+    _defaults:
+        autowire: true      ***REMOVED*** Automatically injects dependencies in your services.
+        autoconfigure: true ***REMOVED*** Automatically registers your services as commands, event subscribers, etc.
+
+    ***REMOVED*** makes classes in src/ available to be used as services
+    ***REMOVED*** this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+
+    ***REMOVED*** controllers are imported separately to make sure services can be injected
+    ***REMOVED*** as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
+    ***REMOVED*** add more service definitions when explicit configuration is needed
+    ***REMOVED*** please note that last definitions always *replace* previous ones
