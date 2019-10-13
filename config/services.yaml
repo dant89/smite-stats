@@ -25,3 +25,8 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Service\SmiteApiClient\Client:
+        arguments:
+            - '%env(SMITE_DEV_ID)%'
+            - '%env(SMITE_AUTH_KEY)%'
