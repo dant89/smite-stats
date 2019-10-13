@@ -3,14 +3,3 @@ services:
         public: false
         arguments: ['%kernel.logs_dir%/%kernel.environment%.log']
 
-***REMOVED***// FIXME: How to add this configuration automatically without messing up with the monolog configuration?
-***REMOVED***monolog:
-***REMOVED***    handlers:
-***REMOVED***        buffered:
-***REMOVED***            type:     buffer
-***REMOVED***            handler:  easylog
-***REMOVED***            channels: ['!event']
-***REMOVED***            level:    debug
-***REMOVED***        easylog:
-***REMOVED***            type: service
-***REMOVED***            id:   EasyCorp\EasyLog\EasyLogHandler

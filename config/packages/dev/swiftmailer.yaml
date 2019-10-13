@@ -1,4 +1,0 @@
-***REMOVED*** See https://symfony.com/doc/current/email/dev_environment.html
-swiftmailer:
-    ***REMOVED*** send all emails to a specific address
-    ***REMOVED***delivery_addresses: ['me@example.com']
