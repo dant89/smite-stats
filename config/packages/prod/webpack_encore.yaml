@@ -1,0 +1,4 @@
+***REMOVED***webpack_encore:
+    ***REMOVED*** Cache the entrypoints.json (rebuild Symfony's cache when entrypoints.json changes)
+    ***REMOVED*** Available in version 1.2
+    ***REMOVED***cache: true

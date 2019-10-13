@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Smite API Test{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <img src="/images/SMITE_Big5_KeyArt.jpg" style="max-width: 100%" />
+</div>
+
+<div class="bg-light">
+    <div class="container">
+
+        <h1>{{ clan.Name }} ({{ clan.Tag }})</h1>
+        <h2>Founded by {{ clan.Founder }}</h2>
+
+        <div class="row">
+            {% for player in clan_players %}
+                <div class="col-6">
+
+                    <div class="card mb-4 box-shadow">
+                        <div class="card-body">
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <img src="{{ player.Player_info.Avatar_URL }}" width="50px" />
+
+                                    <h3>{{ player.Name }}</h3>
+                                    <h5>Level: {{ player.AccountLevel }}</h5>
+                                </div>
+                                <div class="col-6">
+                                    <ul>
+                                        <li>Hours Played: {{ player.Player_info.HoursPlayed }}</li>
+                                        <li>Total Achievements: {{ player.Player_info.Total_Achievements }}</li>
+                                        <li>Wins: {{ player.Player_info.Wins }}</li>
+                                        <li>Losses: {{ player.Player_info.Losses }}</li>
+                                        <li>Quits: {{ player.Player_info.Leaves }}</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
