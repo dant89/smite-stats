@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Service\SmiteApiClient\Client;
+use Dant89\SmiteApiClient\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 

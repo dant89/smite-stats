@@ -4,8 +4,49 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8013fe1b543ad4389c5ccde0a7821908",
+    "content-hash": "9abfa3b6df053d95eaa5c08d8cc804f7",
     "packages": [
+        {
+            "name": "dant89/smite-api-php-client",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dant89/smite-api-php-client.git",
+                "reference": "6dd705e3a01d6f3a7c6f10db757424737fe0b7d2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dant89/smite-api-php-client/zipball/6dd705e3a01d6f3a7c6f10db757424737fe0b7d2",
+                "reference": "6dd705e3a01d6f3a7c6f10db757424737fe0b7d2",
+                "shasum": ""
+            },
+            "require": {
+                "symfony/http-client": "^4.3"
+            },
+            "require-dev": {
+                "phpmd/phpmd": "^2.7",
+                "phpunit/phpunit": "^8.4",
+                "squizlabs/php_codesniffer": "^3.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Dant89\\SmiteApiClient\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dan Thorpe",
+                    "email": "danthorpe@live.co.uk"
+                }
+            ],
+            "description": "A lightweight PHP client for Smite API",
+            "time": "2019-10-14T09:59:04+00:00"
+        },
         {
             "name": "doctrine/annotations",
             "version": "v1.8.0",
@@ -6360,7 +6401,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "dant89/smite-api-php-client": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
