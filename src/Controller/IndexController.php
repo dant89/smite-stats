@@ -34,7 +34,21 @@ class IndexController extends AbstractController
         foreach ($teamPlayers as &$teamPlayer) {
             $teamPlayer['Player_info'] = $this->smite->getPlayerDetailsByGamertag($teamPlayer['Name']);
             $playerGods = $this->smite->getPlayerGodDetails($teamPlayer['Player_info']['Id']);
+
+            $playerStats = [
+                'Kills' => 0,
+                'Assists' => 0,
+                'Deaths' => 0,
+            ];
+
+            foreach($playerGods as $playerGod) {
+                $playerStats['Kills'] += $playerGod['Kills'];
+                $playerStats['Assists'] += $playerGod['Assists'];
+                $playerStats['Deaths'] += $playerGod['Deaths'];
+            }
+
             $teamPlayer['God_info'] = array_slice($playerGods, 0, 5, true);
+            $teamPlayer['Stats_info'] = $playerStats;
         }
 
         return $this->render('index/index.html.twig', [
