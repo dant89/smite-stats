@@ -32,9 +32,18 @@
                                     <ul class="list-unstyled">
                                         <li>Hours Played: {{ player.Player_info.HoursPlayed }}</li>
                                         <li>Total Achievements: {{ player.Player_info.Total_Achievements }}</li>
+                                    </ul>
+                                    <ul class="list-unstyled">
                                         <li>Wins: {{ player.Player_info.Wins }}</li>
                                         <li>Losses: {{ player.Player_info.Losses }}</li>
                                         <li>Quits: {{ player.Player_info.Leaves }}</li>
+                                    </ul>
+                                    <ul class="list-unstyled">
+                                        <li>Kills: {{ player.Stats_info.Kills }}</li>
+                                        <li>Assists: {{ player.Stats_info.Assists }}</li>
+                                        <li>Deaths: {{ player.Stats_info.Deaths }}</li>
+                                        <li>K/D: {{ (player.Stats_info.Kills / player.Stats_info.Deaths)|round(2) }}</li>
+                                        <li>K/D/A: {{ ((player.Stats_info.Kills + player.Stats_info.Assists) / player.Stats_info.Deaths)|round(2) }}</li>
                                     </ul>
                                 </div>
                                 <div class="col-12">
@@ -47,15 +56,17 @@
                                             </div>
                                             <div class="col-8">
                                                 <ul class="list-unstyled">
-                                                    <li><h4>{{ god.god }}</h4></li>
-                                                    <li>Rank: {{ god.Rank }}</li>
-                                                    <li>Worshippers: {{ god.Worshippers }}</li>
+                                                    <li><h5>{{ god.god }} <span class="font-weight-normal">(Rank: {{ god.Rank }})</span></h5></li>
                                                     <li>Win Percent: {{ ((god.Wins / (god.Wins + god.Losses)) * 100)|round(2) }}%</li>
                                                     <li>Wins: {{ god.Wins }}</li>
                                                     <li>Losses: {{ god.Losses }}</li>
+                                                </ul>
+                                                <ul class="list-unstyled">
                                                     <li>Kills: {{ god.Kills }}</li>
                                                     <li>Assists: {{ god.Assists }}</li>
                                                     <li>Deaths: {{ god.Deaths }}</li>
+                                                    <li>K/D: {{ (god.Kills / god.Deaths)|round(2) }}</li>
+                                                    <li>K/D/A: {{ ((god.Kills + god.Assists) / god.Deaths)|round(2) }}</li>
                                                 </ul>
                                             </div>
                                         </div>
