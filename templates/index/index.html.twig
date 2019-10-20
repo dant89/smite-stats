@@ -29,13 +29,37 @@
                                     <h5>Level: {{ player.AccountLevel }}</h5>
                                 </div>
                                 <div class="col-6">
-                                    <ul>
+                                    <ul class="list-unstyled">
                                         <li>Hours Played: {{ player.Player_info.HoursPlayed }}</li>
                                         <li>Total Achievements: {{ player.Player_info.Total_Achievements }}</li>
                                         <li>Wins: {{ player.Player_info.Wins }}</li>
                                         <li>Losses: {{ player.Player_info.Losses }}</li>
                                         <li>Quits: {{ player.Player_info.Leaves }}</li>
                                     </ul>
+                                </div>
+                                <div class="col-12">
+                                    <h3>Top Gods</h3>
+                                        {% for god in player.God_info %}
+                                        <div class="row">
+
+                                            <div class="col-4">
+                                                <img src="{{ gods[god.god].godCard_URL }}" style="max-width:100%;" />
+                                            </div>
+                                            <div class="col-8">
+                                                <ul class="list-unstyled">
+                                                    <li><h4>{{ god.god }}</h4></li>
+                                                    <li>Rank: {{ god.Rank }}</li>
+                                                    <li>Worshippers: {{ god.Worshippers }}</li>
+                                                    <li>Win Percent: {{ ((god.Wins / (god.Wins + god.Losses)) * 100)|round(2) }}%</li>
+                                                    <li>Wins: {{ god.Wins }}</li>
+                                                    <li>Losses: {{ god.Losses }}</li>
+                                                    <li>Kills: {{ god.Kills }}</li>
+                                                    <li>Assists: {{ god.Assists }}</li>
+                                                    <li>Deaths: {{ god.Deaths }}</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
                                 </div>
                             </div>
 
