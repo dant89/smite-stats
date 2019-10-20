@@ -2,67 +2,45 @@
 
 namespace App\Controller;
 
-use Dant89\SmiteApiClient\Client;
+use App\Service\Smite;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
 class IndexController extends AbstractController
 {
     /**
-     * @var Client
+     * @var Smite
      */
-    protected $smiteClient;
+    protected $smite;
 
     /**
      * IndexController constructor.
-     * @param Client $client
+     * @param Smite $smite
      */
-    public function __construct(Client $client)
+    public function __construct(Smite $smite)
     {
-        $this->smiteClient = $client;
+        $this->smite = $smite;
     }
 
     /**
-     * TODO cache API responses to help lower rate usage
-     *
      * @Route("/", name="homepage")
      */
     public function index()
     {
-        $portalId = [
-            'xbox' => 10
-        ];
+        $gods = $this->smite->getGodsFormatted();
+        $team = $this->smite->getTeamDetails();
+        $teamPlayers = $this->smite->getTeamPlayers();
 
-        $clanId = 700241809;
-
-        $timestamp = date('omdHis');
-
-        $authClient = $this->smiteClient->getHttpClient('auth');
-        $response = $authClient->authenticate($timestamp);
-
-        $clan = null;
-        $clanPlayers = [];
-
-        if ($response->getStatus() === 200) {
-
-            $sessionId = $response->getContent()['session_id'];
-            $playerClient = $this->smiteClient->getHttpClient('player');
-            $teamClient = $this->smiteClient->getHttpClient('team');
-
-            $clan = $teamClient->teamDetails($clanId, $sessionId, $timestamp)->getContent();
-            $clanPlayers = $teamClient->teamPlayers($clanId, $sessionId, $timestamp)->getContent();
-
-            foreach ($clanPlayers as &$clanPlayer) {
-                $player = $playerClient->playerIdsByGamertag($clanPlayer['Name'], $portalId['xbox'], $sessionId, $timestamp)->getContent();
-                $playerId = $player[0]['player_id'];
-                $clanPlayer['Player_info'] = $playerClient->player($playerId, $sessionId, $timestamp)->getContent()[0];
-            }
+        foreach ($teamPlayers as &$teamPlayer) {
+            $teamPlayer['Player_info'] = $this->smite->getPlayerDetailsByGamertag($teamPlayer['Name']);
+            $playerGods = $this->smite->getPlayerGodDetails($teamPlayer['Player_info']['Id']);
+            $teamPlayer['God_info'] = array_slice($playerGods, 0, 5, true);
         }
 
         return $this->render('index/index.html.twig', [
-            'clan' => $clan[0],
-            'clan_players' => $clanPlayers,
+            'clan' => $team,
+            'clan_players' => $teamPlayers,
+            'gods' => $gods,
         ]);
     }
-
 }
