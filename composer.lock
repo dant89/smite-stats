@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md***REMOVED***installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9abfa3b6df053d95eaa5c08d8cc804f7",
+    "content-hash": "7e2415b66324ba42216da738ddee5acd",
     "packages": [
         {
             "name": "dant89/smite-api-php-client",
-            "version": "dev-master",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dant89/smite-api-php-client.git",
-                "reference": "6dd705e3a01d6f3a7c6f10db757424737fe0b7d2"
+                "reference": "56d3df38ddaef36f7e47ffffad17486e46a9aed0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dant89/smite-api-php-client/zipball/6dd705e3a01d6f3a7c6f10db757424737fe0b7d2",
-                "reference": "6dd705e3a01d6f3a7c6f10db757424737fe0b7d2",
+                "url": "https://api.github.com/repos/dant89/smite-api-php-client/zipball/56d3df38ddaef36f7e47ffffad17486e46a9aed0",
+                "reference": "56d3df38ddaef36f7e47ffffad17486e46a9aed0",
                 "shasum": ""
             },
             "require": {
@@ -45,7 +45,7 @@
                 }
             ],
             "description": "A lightweight PHP client for Smite API",
-            "time": "2019-10-14T09:59:04+00:00"
+            "time": "2019-10-14T18:20:49+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -6401,9 +6401,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "dant89/smite-api-php-client": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
