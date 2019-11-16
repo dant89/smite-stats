@@ -5,12 +5,25 @@
         <title>{% block title %}Smite{% endblock %}</title>
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
-        {% endblock %}    </head>
+        {% endblock %}
+    </head>
     <body>
+        {% include 'header.html.twig' %}
 
         {% block body %}{% endblock %}
 
+        {% include 'footer.html.twig' %}
+
         {% block javascripts %}
+            <script async src="https://www.googletagmanager.com/gtag/js?id=UA-625990-50"></script>
+            <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+
+                gtag('config', 'UA-625990-50');
+            </script>
+
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </body>
