@@ -64,6 +64,7 @@ class Smite
         if ($response->getStatus() === 200) {
             $sessionId = $response->getContent()['session_id'];
             $session->set($sessionId);
+            $session->expiresAfter(600); // 10 minutes
             $this->cache->save($session);
             return $sessionId;
         }
@@ -99,6 +100,7 @@ class Smite
         if ($playerResponse->getStatus() === 200) {
             $data = $playerResponse->getContent()[0];
             $cache->set($data);
+            $cache->expiresAfter(3600 / 2); // 30 minutes
             $this->cache->save($cache);
             return $data;
         }
@@ -122,6 +124,7 @@ class Smite
         if ($response->getStatus() === 200) {
             $data = $response->getContent();
             $cache->set($data);
+            $cache->expiresAfter(3600 * 24); // 1 day
             $this->cache->save($cache);
             return $data;
         }
@@ -162,31 +165,57 @@ class Smite
         if ($response->getStatus() === 200) {
             $data = $response->getContent();
             $cache->set($data);
+            $cache->expiresAfter(3600 / 2); // 30 minutes
             $this->cache->save($cache);
             return $data;
         }
     }
 
     /**
+     * @param string $id
      * @return array
      * @throws InvalidArgumentException
      */
-    public function getTeamDetails(): array
+    public function getTeamDetails(string $id): array
     {
-        $teamId = 700241809;
-
-        $cache = $this->cache->getItem("smite_team_{$teamId}");
+        $cache = $this->cache->getItem("smite_team_{$id}");
         if ($cache->isHit()) {
             return $cache->get();
         }
 
         /** @var TeamClient $teamClient */
         $teamClient = $this->smiteClient->getHttpClient('team');
-        $response = $teamClient->getTeamDetails($teamId, $this->sessionId, $this->timestamp);
+        $response = $teamClient->getTeamDetails($id, $this->sessionId, $this->timestamp);
 
         if ($response->getStatus() === 200) {
             $data = $response->getContent()[0];
             $cache->set($data);
+            $cache->expiresAfter(3600 * 24); // 1 day
+            $this->cache->save($cache);
+            return $data;
+        }
+    }
+
+    /**
+     * @param string $term
+     * @return array
+     * @throws InvalidArgumentException
+     */
+    public function searchTeams(string $term): array
+    {
+        $cache = $this->cache->getItem("smite_team_search_{$term}");
+        if ($cache->isHit()) {
+            return $cache->get();
+        }
+
+        /** @var TeamClient $teamClient */
+        $teamClient = $this->smiteClient->getHttpClient('team');
+        $response = $teamClient->searchTeams($term, $this->sessionId, $this->timestamp);
+
+        if ($response->getStatus() === 200) {
+            $data = $response->getContent()[0];
+            $cache->set($data);
+            $cache->expiresAfter(3600 * 24); // 1 day
             $this->cache->save($cache);
             return $data;
         }
@@ -212,6 +241,7 @@ class Smite
         if ($response->getStatus() === 200) {
             $data = $response->getContent();
             $cache->set($data);
+            $cache->expiresAfter(3600 * 24); // 1 day
             $this->cache->save($cache);
             return $data;
         }
