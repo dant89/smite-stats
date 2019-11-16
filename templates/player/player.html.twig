@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Smite API Test{% endblock %}
+
+{% block body %}
+
+    <div class="bg-light">
+        <div class="container">
+
+            <h1><a href="{{ path('homepage') }}">Smite Stats</a></h1>
+
+            <h2><a href="{{ path('player_view', {gamertag: player.hz_gamer_tag}) }}">{{ player.hz_gamer_tag }}</a></h2>
+
+            <div class="row">
+                <div class="col-12">
+
+                    <div class="card mb-4 box-shadow">
+                        <div class="card-body">
+
+                            <div class="row">
+                                <div class="col-1">
+                                    <img class="rounded" src="{{ player.Avatar_URL }}" width="50px" />
+                                </div>
+                                <div class="col-3">
+                                    <h3>{{ player.Name }}</h3>
+                                    <h5>Level: {{ player.Level }}</h5>
+                                </div>
+                                <div class="col-2">
+                                    <ul class="list-unstyled">
+                                        <li>Hours Played: {{ player.HoursPlayed }}</li>
+                                        <li>Achievements: {{ player.Total_Achievements }}</li>
+                                    </ul>
+                                </div>
+                                <div class="col-2">
+                                    <ul class="list-unstyled">
+                                        <li>Wins: {{ player.Wins }}</li>
+                                        <li>Losses: {{ player.Losses }}</li>
+                                        <li>Quits: {{ player.Leaves }}</li>
+                                    </ul>
+                                </div>
+                                <div class="col-2">
+                                    <ul class="list-unstyled">
+                                        <li>Kills: {{ player.Stats_info.Kills }}</li>
+                                        <li>Assists: {{ player.Stats_info.Assists }}</li>
+                                        <li>Deaths: {{ player.Stats_info.Deaths }}</li>
+                                    </ul>
+                                </div>
+                                <div class="col-2">
+                                    <ul class="list-unstyled">
+                                        <li>K/D: {{ (player.Stats_info.Kills / player.Stats_info.Deaths)|round(2) }}</li>
+                                        <li>K/D/A: {{ ((player.Stats_info.Kills + player.Stats_info.Assists) / player.Stats_info.Deaths)|round(2) }}</li>
+                                    </ul>
+                                </div>
+                                <div class="col-12">
+                                    <h3>Top Gods</h3>
+                                    <div class="row">
+
+                                        {% for god in player.God_info %}
+                                            <div class="col">
+                                                <div class="rounded" style="height:200px; width:180px; overflow: hidden; background: url({{ gods[god.god].godCard_URL }}) top center no-repeat">
+
+                                                </div>
+
+                                                <ul class="list-unstyled">
+                                                    <li><h5>{{ god.god }}</h5></li>
+                                                    <li>Rank: {{ god.Rank }}</li>
+                                                    <li>Win Percent: {{ ((god.Wins / (god.Wins + god.Losses)) * 100)|round(2) }}%</li>
+                                                    <li>Wins: {{ god.Wins }}</li>
+                                                    <li>Losses: {{ god.Losses }}</li>
+                                                </ul>
+                                                <ul class="list-unstyled">
+                                                    <li>Kills: {{ god.Kills }}</li>
+                                                    <li>Assists: {{ god.Assists }}</li>
+                                                    <li>Deaths: {{ god.Deaths }}</li>
+                                                    <li>K/D: {{ (god.Kills / god.Deaths)|round(2) }}</li>
+                                                    <li>K/D/A: {{ ((god.Kills + god.Assists) / god.Deaths)|round(2) }}</li>
+                                                </ul>
+                                            </div>
+                                        {% endfor %}
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
