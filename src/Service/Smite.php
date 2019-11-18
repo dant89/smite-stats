@@ -4,6 +4,7 @@ namespace App\Service;
 
 use Dant89\SmiteApiClient\Client;
 use Dant89\SmiteApiClient\God\GodClient;
+use Dant89\SmiteApiClient\Match\MatchClient;
 use Dant89\SmiteApiClient\Player\PlayerClient;
 use Dant89\SmiteApiClient\Player\PlayerInfoClient;
 use Dant89\SmiteApiClient\Team\TeamClient;
@@ -147,6 +148,58 @@ class Smite
     }
 
     /**
+     * @param array $matchIds
+     * @return array
+     * @throws InvalidArgumentException
+     */
+    public function getMatchDetailsBatch(array $matchIds): array
+    {
+        $uniqueKey = md5(implode('_', $matchIds));
+
+        $cache = $this->cache->getItem("smite_team_match_details_{$uniqueKey}");
+        if ($cache->isHit()) {
+            return $cache->get();
+        }
+
+        /** @var MatchClient $teamClient */
+        $matchClient = $this->smiteClient->getHttpClient('match');
+        $response = $matchClient->getMatchDetailsBatch($matchIds, $this->sessionId, $this->timestamp);
+
+        if ($response->getStatus() === 200) {
+            $data = $response->getContent();
+            $cache->set($data);
+            $cache->expiresAfter(3600 / 2); // 30 minutes
+            $this->cache->save($cache);
+            return $data;
+        }
+    }
+
+    /**
+     * @param string $playerId
+     * @return array
+     * @throws InvalidArgumentException
+     */
+    public function getPlayerAchievements(string $playerId): array
+    {
+        $cache = $this->cache->getItem("smite_player_achievements_{$playerId}");
+        if ($cache->isHit()) {
+            return $cache->get();
+        }
+
+        /** @var PlayerInfoClient $playerInfoClient */
+        $playerInfoClient = $this->smiteClient->getHttpClient('player_info');
+        $response = $playerInfoClient->getPlayerAchievements($playerId, $this->sessionId, $this->timestamp);
+
+        if ($response->getStatus() === 200) {
+            $data = $response->getContent();
+            $cache->set($data);
+            $cache->expiresAfter(3600 / 2); // 30 minutes
+            $this->cache->save($cache);
+            return $data;
+        }
+    }
+
+    /**
      * @param string $playerId
      * @return array
      * @throws InvalidArgumentException
@@ -161,6 +214,31 @@ class Smite
         /** @var PlayerInfoClient $playerInfoClient */
         $playerInfoClient = $this->smiteClient->getHttpClient('player_info');
         $response = $playerInfoClient->getGodRanks($playerId, $this->sessionId, $this->timestamp);
+
+        if ($response->getStatus() === 200) {
+            $data = $response->getContent();
+            $cache->set($data);
+            $cache->expiresAfter(3600 / 2); // 30 minutes
+            $this->cache->save($cache);
+            return $data;
+        }
+    }
+
+    /**
+     * @param string $playerId
+     * @return array
+     * @throws InvalidArgumentException
+     */
+    public function getPlayerMatches(string $playerId): array
+    {
+        $cache = $this->cache->getItem("smite_player_matches_{$playerId}");
+        if ($cache->isHit()) {
+            return $cache->get();
+        }
+
+        /** @var PlayerInfoClient $playerInfoClient */
+        $playerInfoClient = $this->smiteClient->getHttpClient('player_info');
+        $response = $playerInfoClient->getMatchHistory($playerId, $this->sessionId, $this->timestamp);
 
         if ($response->getStatus() === 200) {
             $data = $response->getContent();
