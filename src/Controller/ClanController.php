@@ -57,7 +57,7 @@ class ClanController extends AbstractController
                 $playerStats['Deaths'] += $playerGod['Deaths'];
             }
 
-            $teamPlayer['God_info'] = array_slice($playerGods, 0, 5, true);
+            $teamPlayer['God_info'] = array_slice($playerGods, 0, 4, true);
             $teamPlayer['Stats_info'] = $playerStats;
         }
 

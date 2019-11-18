@@ -4,19 +4,19 @@
 
 {% block body %}
 
-<div class="bg-light">
-    <div class="container p-2">
+<div class="bg-light pt-3 pb-3">
+    <div class="container">
 
         <div class="row">
 
-            <div class="col-8">
+            <div class="col-lg-8">
                 <h1><a href="{{ path('homepage') }}" rel="nofollow">Smite Stats</a></h1>
 
                 <h2>Featured Gods</h2>
 
                 <div class="row">
                 {% for god in gods %}
-                    <div class="col-4">
+                    <div class="col-6 col-sm-4">
                         <div class="rounded smite-god" style="background-image: url({{ god.godCard_URL }})">
                             <a href="{{ path('god_view', {name: god.Name|slugify}) }}">{{ god.Name }}</a>
                         </div>
@@ -25,17 +25,24 @@
                 </div>
             </div>
 
-            <div class="col-4">
-                <h2>Featured Clan</h2>
-                <a href="{{ path('clan_view', {name: 'Kingzhillkillz'}) }}">KingZhillkillz</a>
+            <div class="col-lg-4">
+                <div class="row">
 
-                <h2>Featured Players</h2>
-                <a href="{{ path('player_view', {gamertag: 'beav2290'}) }}">Beav2290</a><br/>
-                <a href="{{ path('player_view', {gamertag: 'buckerz2012'}) }}">BucKerz2012</a><br/>
-                <a href="{{ path('player_view', {gamertag: 'jc2294'}) }}">JC2294</a><br/>
-                <a href="{{ path('player_view', {gamertag: 'jimski87'}) }}">Jimski87</a><br/>
-                <a href="{{ path('player_view', {gamertag: 'silver-iv7'}) }}">Silver IV7</a>
+                    <div class="col-12 mb-4">
+                        <h2>Featured Clan</h2>
+                        <a href="{{ path('clan_view', {name: 'Kingzhillkillz'}) }}">KingZhillkillz</a>
+                    </div>
 
+                    <div class="col-12">
+                        <h2>Featured Players</h2>
+                        <a href="{{ path('player_view', {gamertag: 'beav2290'}) }}">Beav2290</a><br/>
+                        <a href="{{ path('player_view', {gamertag: 'buckerz2012'}) }}">BucKerz2012</a><br/>
+                        <a href="{{ path('player_view', {gamertag: 'jc2294'}) }}">JC2294</a><br/>
+                        <a href="{{ path('player_view', {gamertag: 'jimski87'}) }}">Jimski87</a><br/>
+                        <a href="{{ path('player_view', {gamertag: 'silver-iv7'}) }}">Silver IV7</a>
+                    </div>
+
+                </div>
             </div>
 
         </div>
