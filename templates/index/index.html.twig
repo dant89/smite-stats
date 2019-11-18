@@ -11,6 +11,18 @@
 
             <div class="col-8">
                 <h1><a href="{{ path('homepage') }}">Smite Stats</a></h1>
+
+                <h2>Featured Gods</h2>
+
+                <div class="row">
+                {% for god in gods %}
+                    <div class="col-4">
+                        <div class="rounded smite-god" style="background-image: url({{ god.godCard_URL }})">
+                            <a href="{{ path('god_view', {name: god.Name|slugify}) }}">{{ god.Name }}</a>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
             </div>
 
             <div class="col-4">
@@ -26,20 +38,6 @@
 
             </div>
 
-            <div class="col-12">
-                <h2>Featured Gods</h2>
-
-                <div class="row">
-                {% for god in gods %}
-                    <div class="col-3">
-                        <div class="rounded smite-god" style="background-image: url({{ god.godCard_URL }})">
-                            <a href="{{ path('god_view', {name: god.Name|slugify}) }}">{{ god.Name }}</a>
-                        </div>
-                    </div>
-                {% endfor %}
-                </div>
-
-            </div>
         </div>
 
     </div>
