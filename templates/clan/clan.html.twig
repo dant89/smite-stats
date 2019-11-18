@@ -7,8 +7,8 @@
     <div class="bg-light">
         <div class="container">
 
-            <h1><a href="{{ path('homepage') }}">Smite Stats</a></h1>
-            <h2>{{ clan.Name }}</h2>
+            <h1><a href="{{ path('clan_view', {name: clan.Name}) }}">{{ clan.Name }} Smite Clan</a></h1>
+
             <h5>Created by {{ clan.Founder }}</h5>
 
             <div class="row">

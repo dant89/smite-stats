@@ -22,12 +22,26 @@ class GodController extends AbstractController
     }
 
     /**
-     * @Route("/god/{name}", name="god_view")
+     * @Route("/gods", name="gods")
+     * @return Response
+     * @throws InvalidArgumentException
+     */
+    public function index(): Response
+    {
+        $gods = $this->smite->getGodsFormatted();
+
+        return $this->render('god/index.html.twig', [
+            'gods' => $gods
+        ]);
+    }
+
+    /**
+     * @Route("/gods/{name}", name="god_view")
      * @param string $name
      * @return Response
      * @throws InvalidArgumentException
      */
-    public function index(string $name): Response
+    public function view(string $name): Response
     {
         $name = ucwords(str_replace('-', ' ', $name));
 
