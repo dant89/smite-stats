@@ -79,7 +79,7 @@ class PlayerController extends AbstractController
             $playerStats['Deaths'] += $playerGod['Deaths'];
         }
 
-        $player['God_info'] = array_slice($playerGods, 0, 5, true);
+        $player['God_info'] = array_slice($playerGods, 0, 4, true);
         $player['Stats_info'] = $playerStats;
 
         return $this->render('player/player.html.twig', [
