@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\Smite;
+use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,9 +23,16 @@ class IndexController extends AbstractController
     /**
      * @Route("/", name="homepage")
      * @return Response
+     * @throws InvalidArgumentException
      */
     public function index(): Response
     {
-        return $this->render('index/index.html.twig');
+        $gods = $this->smite->getGodsFormatted();
+
+        $gods = array_slice($gods, 0, 10, true);
+
+        return $this->render('index/index.html.twig', [
+            'gods' => $gods
+        ]);
     }
 }

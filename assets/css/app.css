@@ -1,1 +1,31 @@
 @import "~bootstrap";
+
+.smite-god {
+    background-position:  top center;
+    background-repeat: no-repeat;
+    border: 1px solid gold;
+    height:200px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    position: relative;
+    width:180px;
+}
+
+.smite-god a {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: gold;
+    display: block;
+    font-weight: bold;
+    left: 0;
+    padding: 5px;
+    position: absolute;
+    right: 0;
+    bottom: 10px;
+    text-align: center;
+}
+
+.god-ability {
+    border: 1px solid grey;
+    margin-bottom: 10px;
+    padding: 5px;
+}
