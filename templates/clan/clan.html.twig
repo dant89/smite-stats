@@ -23,7 +23,7 @@
                                         <img class="rounded" src="{{ player.Player_info.Avatar_URL }}" width="50px" />
                                     </div>
                                     <div class="col-3">
-                                        <h3><a href="{{ path('player_view', {gamertag: player.Name}) }}">{{ player.Name }}</a></h3>
+                                        <h3><a href="{{ path('player_view', {gamertag: player.Name|slugify}) }}">{{ player.Name }}</a></h3>
                                         <h5>Level: {{ player.AccountLevel }}</h5>
                                     </div>
                                     <div class="col-2">
