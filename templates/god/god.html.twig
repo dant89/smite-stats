@@ -9,16 +9,36 @@
 
             <div class="row">
 
-                <div class="col-8">
-                    <h1><a href="{{ path('homepage') }}">Smite Stats</a></h1>
+                <div class="col-2">
+                    <div class="rounded smite-god" style="background-image: url({{ god.godCard_URL }})">
+                        <a href="{{ path('god_view', {name: god.Name|slugify}) }}"><h1>{{ god.Name }}</h1></a>
+                    </div>
+                </div>
+
+                <div class="col-6">
+                    <h4>{{ god.Title }}</h4>
+                    <h4>{{ god.Pantheon }}</h4>
+                    <h4>{{ god.Roles }}</h4>
+                    <h4>{{ god.Type }}</h4>
+                    <h4>{{ god.Pros }}</h4>
+                    <h4>{{ god.Cons }}</h4>
+                </div>
+
+                <div class="col-4">
+                    <h3>Statistics</h3>
+                    <ul>
+                        <li>Attack Speed: {{ god.AttackSpeed }}</li>
+                        <li>Health: {{ god.Health }}</li>
+                        <li>Mana: {{ god.Mana }}</li>
+                        <li>Magic Protection: {{ god.MagicProtection }}</li>
+                        <li>Magical Power: {{ god.MagicalPower }}</li>
+                        <li>Speed: {{ god.Speed }}</li>
+                    </ul>
                 </div>
 
                 <div class="col-12">
-                    <h2>{{ god.Name }}</h2>
 
-                    <div class="rounded smite-god" style="background-image: url({{ god.godCard_URL }})">
-                        <a href="{{ path('god_view', {name: god.Name|slugify}) }}">{{ god.Name }}</a>
-                    </div>
+                    <p>{{ god.Lore }}</p>
 
                     <div class="god-abilities">
                         <div class="row">
