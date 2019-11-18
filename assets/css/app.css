@@ -1,5 +1,54 @@
 @import "~bootstrap";
 
+body {
+    background-color: #000;
+    color: #fff;
+}
+
+a {
+    color: gold;
+}
+
+h1 {
+    font-size: 26px;
+}
+
+main {
+    color: #000;
+}
+
+main a {
+    color: #9e6700;
+}
+
+.header-box {
+    position: relative;
+    text-align: center;
+    width: 100%;
+}
+
+.header-box img {
+    margin-top: -20px;
+    position: relative;
+    width: 100%;
+}
+
+.header-box nav {
+    background: rgba(255, 255, 255, 0.8);
+    bottom: 5px;
+    display: block;
+    left: 0;
+    padding: 10px;
+    position: absolute;
+    right: 0;
+}
+
+.header-box nav a {
+    color: #9e6700;
+    font-size: 22px;
+    text-transform: uppercase;
+}
+
 .smite-god {
     background-position:  top center;
     background-repeat: no-repeat;

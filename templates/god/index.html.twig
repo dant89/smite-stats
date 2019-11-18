@@ -4,8 +4,8 @@
 
 {% block body %}
 
-    <div class="bg-light">
-        <div class="container p-2">
+    <div class="bg-light pt-3 pb-3">
+        <div class="container">
 
             <div class="row">
 
@@ -14,7 +14,7 @@
 
                     <div class="row">
                         {% for god in gods %}
-                            <div class="col-3">
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-auto">
                                 <div class="rounded smite-god" style="background-image: url({{ god.godCard_URL }})">
                                     <a href="{{ path('god_view', {name: god.Name|slugify}) }}">{{ god.Name }}</a>
                                 </div>
