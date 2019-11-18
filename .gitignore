@@ -1,6 +1,7 @@
 .idea/
 bin/*
 !bin/console
+public/images/SMITE_Logo_2016_BlackTagline_300dpi.png
 
 ###> symfony/framework-bundle ###
 /.env.local
