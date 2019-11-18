@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Smite Gods - Unofficial SMITE{% endblock %}
+
+{% block body %}
+
+    <div class="bg-light">
+        <div class="container p-2">
+
+            <div class="row">
+
+                <div class="col-12">
+                    <h1><a href="{{ path('gods') }}">Smite Gods</a></h1>
+
+                    <div class="row">
+                        {% for god in gods %}
+                            <div class="col-3">
+                                <div class="rounded smite-god" style="background-image: url({{ god.godCard_URL }})">
+                                    <a href="{{ path('god_view', {name: god.Name|slugify}) }}">{{ god.Name }}</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

@@ -24,6 +24,10 @@
     text-align: center;
 }
 
+.smite-god a h1 {
+    font-size: 14px;
+}
+
 .god-ability {
     border: 1px solid grey;
     margin-bottom: 10px;
