@@ -29,11 +29,40 @@ class PlayerController extends AbstractController
      */
     public function player(string $gamertag): Response
     {
-        $gods = $this->smite->getGodsFormatted();
+        $gamertag = ucwords(str_replace('-', ' ', $gamertag));
         $player = $this->smite->getPlayerDetailsByGamertag($gamertag);
-
         if (empty($player)) {
             throw new NotFoundHttpException();
+        }
+
+        $achievements = $this->smite->getPlayerAchievements($player['Id']);
+        $gods = $this->smite->getGodsFormatted();
+        $matches = $this->smite->getPlayerMatches($player['Id']);
+
+        $matchIds = [];
+        foreach ($matches as $match) {
+            $matchIds[] = $match['Match'];
+        }
+
+        $matchIds = array_slice($matchIds, 0, 10, true);
+        $matchDetails = $this->smite->getMatchDetailsBatch($matchIds);
+
+        $formattedMatches = [];
+        $teams = [];
+        foreach ($matchDetails as $matchDetail) {
+
+            $teams[$matchDetail['Match']][$matchDetail['TaskForce']][$matchDetail['playerId']] = $matchDetail;
+
+            $formattedMatches[$matchDetail['Match']] = [
+                'Entry_Datetime' => $matchDetail['Entry_Datetime'],
+                'Map_Game' => $matchDetail['Map_Game'],
+                'Match' => $matchDetail['Match'],
+                'Minutes' => $matchDetail['Minutes'],
+                'Region' => $matchDetail['Region'],
+                'Winning_TaskForce' => $matchDetail['Winning_TaskForce'],
+                'Win' => (array_key_exists($player['Id'], $teams[$matchDetail['Match']][$matchDetail['Winning_TaskForce']])),
+                'Teams' => $teams[$matchDetail['Match']]
+            ];
         }
 
         $playerGods = $this->smite->getPlayerGodDetails($player['Id']);
@@ -54,8 +83,10 @@ class PlayerController extends AbstractController
         $player['Stats_info'] = $playerStats;
 
         return $this->render('player/player.html.twig', [
+            'achievements' => $achievements,
             'player' => $player,
             'gods' => $gods,
+            'matches' => $formattedMatches
         ]);
     }
 }
