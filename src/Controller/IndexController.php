@@ -29,7 +29,7 @@ class IndexController extends AbstractController
     {
         $gods = $this->smite->getGodsFormatted();
 
-        $gods = array_slice($gods, 0, 10, true);
+        $gods = array_slice($gods, 1, 12, true);
 
         return $this->render('index/index.html.twig', [
             'gods' => $gods

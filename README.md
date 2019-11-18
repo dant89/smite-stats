@@ -18,6 +18,9 @@ Currently the project also includes a PHP Smite API client, at some point when I
 5. `cp .env .env.local`
 6. Update `SMITE_DEV_ID` and `SMITE_AUTH_KEY` to reference your developer key.
 
+***REMOVED******REMOVED*** Live Website
+You can check this project out by visiting: [Smite Stats](https://smitestats.com/)
+
 ***REMOVED******REMOVED*** Smite API Access
 
 To be able to use the Smite API you must complete [this form](https://fs12.formsite.com/HiRez/form48/secure_index.html) to request permission for access keys.
