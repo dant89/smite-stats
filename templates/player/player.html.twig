@@ -56,13 +56,12 @@
                                     <div class="row">
 
                                         {% for god in player.God_info %}
-                                            <div class="col">
-                                                <div class="rounded" style="height:200px; width:180px; overflow: hidden; background: url({{ gods[god.god].godCard_URL }}) top center no-repeat">
-
+                                            <div class="col col-xs-6">
+                                                <div class="rounded smite-god" style="background-image: url({{ gods[god.god].godCard_URL }})">
+                                                    <a href="{{ path('god_view', {name: god.god|slugify}) }}">{{ god.god }}</a>
                                                 </div>
 
                                                 <ul class="list-unstyled">
-                                                    <li><h5>{{ god.god }}</h5></li>
                                                     <li>Rank: {{ god.Rank }}</li>
                                                     <li>Win Percent: {{ ((god.Wins / (god.Wins + god.Losses)) * 100)|round(2) }}%</li>
                                                     <li>Wins: {{ god.Wins }}</li>
