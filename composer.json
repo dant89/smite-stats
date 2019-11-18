@@ -12,6 +12,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-xml": "^7.2",
+        "cocur/slugify": "^3.2",
         "dant89/smite-api-php-client": "^1.0.0",
         "sensio/framework-extra-bundle": "^5.1",
         "symfony/asset": "4.3.*",

@@ -1,4 +1,7 @@
 {
+    "cocur/slugify": {
+        "version": "v3.2"
+    },
     "dant89/smite-api-php-client": {
         "version": "dev-master"
     },
