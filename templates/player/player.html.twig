@@ -2,12 +2,21 @@
 
 {% block title %}Player {{ player.hz_gamer_tag }} - Unofficial SMITE{% endblock %}
 
+{% block header_meta %}
+    <link rel="canonical" href="https://smitestats.com/player/{{ player_name_slug }}-{{ player.Id }}" />
+{% endblock %}
+
 {% block body %}
 
     <div class="bg-light pt-3 pb-3">
         <div class="container">
 
-            <h1><a href="{{ path('player_view', {gamertag: player.hz_gamer_tag|slugify}) }}">{{ player.hz_gamer_tag }} Smite Player</a></h1>
+            {% if player.Name %}
+            <h1><a href="{{ path('player_view', {
+                    gamertag: player.Name|clan_remove|slugify,
+                    id: player.Id
+                }) }}" title="Smite Player {{ player.Name }}">{{ player.Name }} Smite Player</a></h1>
+            {% endif %}
 
             <div class="row">
                 <div class="col-12">
@@ -22,7 +31,9 @@
                                 <div class="col col-sm-12 col-md-3">
                                     <h3>{{ player.Name }}</h3>
                                     <h5>Level: {{ player.Level }}</h5>
-                                    <h5>Clan: <a href="{{ path('clan_view', {name: player.Team_Name|slugify}) }}">{{ player.Team_Name }}</a></h5>
+                                    <h5>Clan: <a href="{{ path('clan_view', {
+                                            name: player.Team_Name|slugify
+                                        }) }}" title="Smite Clan {{ player.Team_Name }}">{{ player.Team_Name }}</a></h5>
                                 </div>
                                 <div class="col col-sm-6 col-md-2">
                                     <ul class="list-unstyled">
@@ -63,7 +74,7 @@
 
                                                 <div class="col col-sm-6 col-md-4 col-lg-12">
                                                     <div class="rounded smite-god" style="background-image: url({{ gods[god.god].godCard_URL }})">
-                                                        <a href="{{ path('god_view', {name: god.god|slugify}) }}">{{ god.god }}</a>
+                                                        <a href="{{ path('god_view', {name: god.god|slugify}) }}" title="Smite God {{ god.god }}">{{ god.god }}</a>
                                                     </div>
                                                 </div>
 
@@ -180,8 +191,13 @@
 
                                                             {% for player in players %}
                                                             <div class="mb-1 p-1">
-                                                                {% if player.hz_gamer_tag %}
-                                                                <h5><a href="{{ path('player_view', {gamertag: player.hz_gamer_tag|slugify}) }}">{{ player.playerName }}</a></h5>
+                                                                {% if player.playerName %}
+                                                                <h5><a href="{{ path('player_view', {
+                                                                        gamertag: player.playerName|clan_remove|slugify,
+                                                                        id: player.playerId
+                                                                    }) }}" title="Smite Player {{ player.playerName }}">{{ player.playerName }}</a></h5>
+                                                                {% else %}
+                                                                    <strong>Unknown</strong>
                                                                 {% endif %}
                                                                 <ul>
                                                                     <li>Level: {{ player.Account_Level }}</li>

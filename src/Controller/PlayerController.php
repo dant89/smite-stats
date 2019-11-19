@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Service\Smite;
+use Cocur\Slugify\SlugifyInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -12,28 +14,43 @@ use Psr\Cache\InvalidArgumentException;
 class PlayerController extends AbstractController
 {
     /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * @var SlugifyInterface
+     */
+    protected $slugify;
+
+    /**
      * @var Smite
      */
     protected $smite;
 
-    public function __construct(Smite $smite)
+    public function __construct(LoggerInterface $logger ,SlugifyInterface $slugify, Smite $smite)
     {
+        $this->logger = $logger;
+        $this->slugify = $slugify;
         $this->smite = $smite;
     }
 
     /**
-     * @Route("/player/{gamertag}", name="player_view")
+     * @Route("/player/{gamertag}-{id}", name="player_view", requirements={"gamertag": "[-\w]+"})
      * @param string $gamertag
+     * @param int id
      * @return Response
      * @throws InvalidArgumentException
      */
-    public function player(string $gamertag): Response
+    public function player(string $gamertag, int $id): Response
     {
-        $gamertag = ucwords(str_replace('-', ' ', $gamertag));
-        $player = $this->smite->getPlayerDetailsByGamertag($gamertag);
+        $player = $this->smite->getPlayerDetailsByPortalId($id);
         if (empty($player)) {
             throw new NotFoundHttpException();
         }
+
+        $playerNameSlug = preg_replace('/\[.*?\]/is', '', $player['Name']);
+        $playerNameSlug = $this->slugify->slugify($playerNameSlug);
 
         $achievements = $this->smite->getPlayerAchievements($player['Id']);
         $gods = $this->smite->getGodsFormatted();
@@ -85,6 +102,7 @@ class PlayerController extends AbstractController
         return $this->render('player/player.html.twig', [
             'achievements' => $achievements,
             'player' => $player,
+            'player_name_slug' => $playerNameSlug,
             'gods' => $gods,
             'matches' => $formattedMatches
         ]);
