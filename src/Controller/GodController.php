@@ -22,7 +22,7 @@ class GodController extends AbstractController
     }
 
     /**
-     * @Route("/gods", name="gods")
+     * @Route("/gods/", name="gods")
      * @return Response
      * @throws InvalidArgumentException
      */
