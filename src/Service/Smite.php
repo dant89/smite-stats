@@ -101,18 +101,21 @@ class Smite
         $godClient = $this->smiteClient->getHttpClient('god');
         $response = $godClient->getGods($this->sessionId, $this->timestamp);
 
+        $data = null;
+
         if ($response->getStatus() === 200) {
             $data = $response->getContent();
             $cache->set($data);
             $cache->expiresAfter(3600 * 24); // 1 day
             $this->cache->save($cache);
-            return $data;
         } else {
             $this->logger->error('API call failed.', [
                 'item' => 'smite_gods',
                 'response' => $response
             ]);
         }
+
+        return $data;
     }
 
     /**
@@ -150,18 +153,21 @@ class Smite
         $leagueClient = $this->smiteClient->getHttpClient('league');
         $response = $leagueClient->getLeagueLeaderboard($queue, $tier, $round, $this->sessionId, $this->timestamp);
 
+        $data = null;
+
         if ($response->getStatus() === 200) {
             $data = $response->getContent();
             $cache->set($data);
             $cache->expiresAfter(3600 / 2); // 30 minutes
             $this->cache->save($cache);
-            return $data;
         } else {
             $this->logger->error('API call failed.', [
                 'item' => "smite_leaderboards_{$queue}_{$tier}_{$round}",
                 'response' => $response
             ]);
         }
+
+        return $data;
     }
 
     /**
@@ -182,18 +188,21 @@ class Smite
         $matchClient = $this->smiteClient->getHttpClient('match');
         $response = $matchClient->getMatchDetailsBatch($matchIds, $this->sessionId, $this->timestamp);
 
+        $data = null;
+
         if ($response->getStatus() === 200) {
             $data = $response->getContent();
             $cache->set($data);
             $cache->expiresAfter(3600 / 2); // 30 minutes
             $this->cache->save($cache);
-            return $data;
         } else {
             $this->logger->error('API call failed.', [
                 'item' => "smite_team_match_details_{$uniqueKey}",
                 'response' => $response
             ]);
         }
+
+        return $data;
     }
 
     /**
@@ -213,18 +222,21 @@ class Smite
         $playerInfoClient = $this->smiteClient->getHttpClient('player_info');
         $response = $playerInfoClient->getPlayerAchievements($playerId, $this->sessionId, $this->timestamp);
 
+        $data = null;
+
         if ($response->getStatus() === 200) {
             $data = $response->getContent();
             $cache->set($data);
             $cache->expiresAfter(3600 / 2); // 30 minutes
             $this->cache->save($cache);
-            return $data;
         } else {
             $this->logger->error('API call failed.', [
                 'item' => "smite_player_achievements_{$playerId}",
                 'response' => $response
             ]);
         }
+
+        return $data;
     }
 
     /**
@@ -243,21 +255,25 @@ class Smite
         $playerClient = $this->smiteClient->getHttpClient('player');
         $response = $playerClient->getPlayer($portalId, $this->sessionId, $this->timestamp);
 
+        $data = null;
+
         if ($response->getStatus() === 200) {
             $data = $response->getContent();
             if (empty($data)) {
                 return null;
             }
-            $cache->set($data[0]);
+            $data = $data[0];
+            $cache->set($data);
             $cache->expiresAfter(3600 / 2); // 30 minutes
             $this->cache->save($cache);
-            return $data[0];
         } else {
             $this->logger->error('API call failed.', [
                 'item' => "smite_player_{$portalId}",
                 'response' => $response
             ]);
         }
+
+        return $data;
     }
     /**
      * @param string $name
@@ -276,21 +292,25 @@ class Smite
         $playerInfoClient = $this->smiteClient->getHttpClient('player_info');
         $response = $playerInfoClient->searchPlayers($name, $this->sessionId, $this->timestamp);
 
+        $data = null;
+
         if ($response->getStatus() === 200) {
             $data = $response->getContent();
             if (empty($data)) {
                 return null;
             }
-            $cache->set($data[0]);
+            $data = $data[0];
+            $cache->set($data);
             $cache->expiresAfter(3600 / 2); // 30 minutes
             $this->cache->save($cache);
-            return $data[0];
         } else {
             $this->logger->error('API call failed.', [
                 'item' => "smite_player_{$name}",
                 'response' => $response
             ]);
         }
+
+        return $data;
     }
 
     /**
@@ -310,18 +330,21 @@ class Smite
         $playerInfoClient = $this->smiteClient->getHttpClient('player_info');
         $response = $playerInfoClient->getGodRanks($playerId, $this->sessionId, $this->timestamp);
 
+        $data = null;
+
         if ($response->getStatus() === 200) {
             $data = $response->getContent();
             $cache->set($data);
             $cache->expiresAfter(3600 / 2); // 30 minutes
             $this->cache->save($cache);
-            return $data;
         } else {
             $this->logger->error('API call failed.', [
                 'item' => "smite_player_gods_{$playerId}",
                 'response' => $response
             ]);
         }
+
+        return $data;
     }
 
     /**
@@ -341,18 +364,21 @@ class Smite
         $playerInfoClient = $this->smiteClient->getHttpClient('player_info');
         $response = $playerInfoClient->getMatchHistory($playerId, $this->sessionId, $this->timestamp);
 
+        $data = null;
+
         if ($response->getStatus() === 200) {
             $data = $response->getContent();
             $cache->set($data);
             $cache->expiresAfter(3600 / 2); // 30 minutes
             $this->cache->save($cache);
-            return $data;
         } else {
             $this->logger->error('API call failed.', [
                 'item' => "smite_player_matches_{$playerId}",
                 'response' => $response
             ]);
         }
+
+        return $data;
     }
 
     /**
@@ -371,21 +397,25 @@ class Smite
         $teamClient = $this->smiteClient->getHttpClient('team');
         $response = $teamClient->getTeamDetails($id, $this->sessionId, $this->timestamp);
 
+        $data = null;
+
         if ($response->getStatus() === 200) {
             $data = $response->getContent();
             if (empty($data)) {
                 return null;
             }
-            $cache->set($data[0]);
+            $data = $data[0];
+            $cache->set($data);
             $cache->expiresAfter(3600 * 24); // 1 day
             $this->cache->save($cache);
-            return $data[0];
         } else {
             $this->logger->error('API call failed.', [
                 'item' => "smite_team_{$id}",
                 'response' => $response
             ]);
         }
+
+        return $data;
     }
 
     /**
@@ -404,21 +434,25 @@ class Smite
         $teamClient = $this->smiteClient->getHttpClient('team');
         $response = $teamClient->searchTeams($term, $this->sessionId, $this->timestamp);
 
+        $data = null;
+
         if ($response->getStatus() === 200) {
             $data = $response->getContent();
             if (empty($data)) {
                 return null;
             }
-            $cache->set($data[0]);
+            $data = $data[0];
+            $cache->set($data);
             $cache->expiresAfter(3600 * 24); // 1 day
             $this->cache->save($cache);
-            return $data[0];
         } else {
             $this->logger->error('API call failed.', [
                 'item' => "smite_team_search_{$term}",
                 'response' => $response
             ]);
         }
+
+        return $data;
     }
 
     /**
@@ -437,17 +471,20 @@ class Smite
         $teamClient = $this->smiteClient->getHttpClient('team');
         $response = $teamClient->getTeamPlayers($teamId, $this->sessionId, $this->timestamp);
 
+        $data = null;
+
         if ($response->getStatus() === 200) {
             $data = $response->getContent();
             $cache->set($data);
             $cache->expiresAfter(3600 * 24); // 1 day
             $this->cache->save($cache);
-            return $data;
         } else {
             $this->logger->error('API call failed.', [
                 'item' => "smite_team_players_{$teamId}",
                 'response' => $response
             ]);
         }
+
+        return $data;
     }
 }
