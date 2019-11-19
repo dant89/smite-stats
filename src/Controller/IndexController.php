@@ -28,11 +28,25 @@ class IndexController extends AbstractController
     public function index(): Response
     {
         $gods = $this->smite->getGodsFormatted();
-
         $gods = array_slice($gods, 1, 12, true);
 
+        $duelRankedLeaderboard = $this->smite->getLeagueLeaderboard(440, 27, 6);
+        $joustRankedLeaderboard = $this->smite->getLeagueLeaderboard(450, 27, 6);
+        $conquestRankedLeaderboard = $this->smite->getLeagueLeaderboard(451, 27, 6);
+
+        $duelRankedLeaderboard = array_slice($duelRankedLeaderboard,  0, 5, true);
+        $joustRankedLeaderboard = array_slice($joustRankedLeaderboard,  0, 5, true);
+        $conquestRankedLeaderboard = array_slice($conquestRankedLeaderboard,  0, 5, true);
+
+        $leaderboardTypes = [
+            'Conquest' => $conquestRankedLeaderboard,
+            'Duel' => $duelRankedLeaderboard,
+            'Joust' => $joustRankedLeaderboard
+        ];
+
         return $this->render('index/index.html.twig', [
-            'gods' => $gods
+            'gods' => $gods,
+            'leaderboards' => $leaderboardTypes
         ]);
     }
 }

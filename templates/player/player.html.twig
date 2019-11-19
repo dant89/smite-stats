@@ -2,12 +2,21 @@
 
 {% block title %}Player {{ player.hz_gamer_tag }} - Unofficial SMITE{% endblock %}
 
+{% block header_meta %}
+    <link rel="canonical" href="https://smitestats.com/player/{{ player_name_slug }}-{{ player.Id }}" />
+{% endblock %}
+
 {% block body %}
 
-    <div class="bg-light">
+    <div class="bg-light pt-3 pb-3">
         <div class="container">
 
-            <h1><a href="{{ path('player_view', {gamertag: player.hz_gamer_tag|slugify}) }}">{{ player.hz_gamer_tag }} Smite Player</a></h1>
+            {% if player.Name %}
+            <h1><a href="{{ path('player_view', {
+                    gamertag: player.Name|clan_remove|slugify,
+                    id: player.Id
+                }) }}" title="Smite Player {{ player.Name }}">{{ player.Name }} Smite Player</a></h1>
+            {% endif %}
 
             <div class="row">
                 <div class="col-12">
@@ -16,35 +25,37 @@
                         <div class="card-body">
 
                             <div class="row">
-                                <div class="col-1">
+                                <div class="col col-sm-12 col-md-1">
                                     <img class="rounded" src="{{ player.Avatar_URL }}" width="50px" />
                                 </div>
-                                <div class="col-3">
+                                <div class="col col-sm-12 col-md-3">
                                     <h3>{{ player.Name }}</h3>
                                     <h5>Level: {{ player.Level }}</h5>
-                                    <h5>Clan: <a href="{{ path('clan_view', {name: player.Team_Name|slugify}) }}">{{ player.Team_Name }}</a></h5>
+                                    <h5>Clan: <a href="{{ path('clan_view', {
+                                            name: player.Team_Name|slugify
+                                        }) }}" title="Smite Clan {{ player.Team_Name }}">{{ player.Team_Name }}</a></h5>
                                 </div>
-                                <div class="col-2">
+                                <div class="col col-sm-6 col-md-2">
                                     <ul class="list-unstyled">
                                         <li>Hours Played: {{ player.HoursPlayed }}</li>
                                         <li>Achievements: {{ player.Total_Achievements }}</li>
                                     </ul>
                                 </div>
-                                <div class="col-2">
+                                <div class="col col-sm-6 col-md-2">
                                     <ul class="list-unstyled">
                                         <li>Wins: {{ player.Wins }}</li>
                                         <li>Losses: {{ player.Losses }}</li>
                                         <li>Quits: {{ player.Leaves }}</li>
                                     </ul>
                                 </div>
-                                <div class="col-2">
+                                <div class="col col-sm-6 col-md-2">
                                     <ul class="list-unstyled">
                                         <li>Kills: {{ player.Stats_info.Kills }}</li>
                                         <li>Assists: {{ player.Stats_info.Assists }}</li>
                                         <li>Deaths: {{ player.Stats_info.Deaths }}</li>
                                     </ul>
                                 </div>
-                                <div class="col-2">
+                                <div class="col col-sm-6 col-md-2">
                                     <ul class="list-unstyled">
                                         <li>K/D: {{ (player.Stats_info.Kills / player.Stats_info.Deaths)|round(2) }}</li>
                                         <li>K/D/A: {{ ((player.Stats_info.Kills + player.Stats_info.Assists) / player.Stats_info.Deaths)|round(2) }}</li>
@@ -58,25 +69,36 @@
                                     <div class="row">
 
                                         {% for god in player.God_info %}
-                                            <div class="col col-xs-6">
-                                                <div class="rounded smite-god" style="background-image: url({{ gods[god.god].godCard_URL }})">
-                                                    <a href="{{ path('god_view', {name: god.god|slugify}) }}">{{ god.god }}</a>
+                                        <div class="col-md-12 col-lg-3">
+                                            <div class="row">
+
+                                                <div class="col col-sm-6 col-md-4 col-lg-12">
+                                                    <div class="rounded smite-god" style="background-image: url({{ gods[god.god].godCard_URL }})">
+                                                        <a href="{{ path('god_view', {name: god.god|slugify}) }}" title="Smite God {{ god.god }}">{{ god.god }}</a>
+                                                    </div>
                                                 </div>
 
-                                                <ul class="list-unstyled">
-                                                    <li>Rank: {{ god.Rank }}</li>
-                                                    <li>Win Percent: {{ ((god.Wins / (god.Wins + god.Losses)) * 100)|round(2) }}%</li>
-                                                    <li>Wins: {{ god.Wins }}</li>
-                                                    <li>Losses: {{ god.Losses }}</li>
-                                                </ul>
-                                                <ul class="list-unstyled">
-                                                    <li>Kills: {{ god.Kills }}</li>
-                                                    <li>Assists: {{ god.Assists }}</li>
-                                                    <li>Deaths: {{ god.Deaths }}</li>
-                                                    <li>K/D: {{ (god.Kills / god.Deaths)|round(2) }}</li>
-                                                    <li>K/D/A: {{ ((god.Kills + god.Assists) / god.Deaths)|round(2) }}</li>
-                                                </ul>
+                                                <div class="col col-sm-6 col-md-4 col-lg-12">
+                                                    <ul class="list-unstyled">
+                                                        <li>Rank: {{ god.Rank }}</li>
+                                                        <li>Win Percent: {{ ((god.Wins / (god.Wins + god.Losses)) * 100)|round(2) }}%</li>
+                                                        <li>Wins: {{ god.Wins }}</li>
+                                                        <li>Losses: {{ god.Losses }}</li>
+                                                    </ul>
+                                                </div>
+
+                                                <div class="col col-sm-6 col-md-4 col-lg-12">
+                                                    <ul class="list-unstyled">
+                                                        <li>Kills: {{ god.Kills }}</li>
+                                                        <li>Assists: {{ god.Assists }}</li>
+                                                        <li>Deaths: {{ god.Deaths }}</li>
+                                                        <li>K/D: {{ (god.Kills / god.Deaths)|round(2) }}</li>
+                                                        <li>K/D/A: {{ ((god.Kills + god.Assists) / god.Deaths)|round(2) }}</li>
+                                                    </ul>
+                                                </div>
+
                                             </div>
+                                        </div>
                                         {% endfor %}
 
                                     </div>
@@ -95,7 +117,7 @@
                                     <h3>Player Statistics</h3>
 
                                     <div class="row">
-                                        <div class="col">
+                                        <div class="col-sm-6">
                                             <ul>
                                                 <li>Double Kills: {{ achievements.DoubleKills }}</li>
                                                 <li>Triple Kills: {{ achievements.TripleKills }}</li>
@@ -104,33 +126,39 @@
                                             </ul>
                                         </div>
 
+                                        <div class="col-sm-6">
+                                            <ul>
+                                                <li>Shutdown Spree: {{ achievements.ShutdownSpree }}</li>
+                                                <li>Killing Spree: {{ achievements.KillingSpree }}</li>
+                                                <li>Divine Spree: {{ achievements.DivineSpree }}</li>
+                                                <li>Immortal Spree: {{ achievements.ImmortalSpree }}</li>
+                                                <li>Unstoppable Spree: {{ achievements.UnstoppableSpree }}</li>
+                                                <li>Rampage Spree: {{ achievements.RampageSpree }}</li>
+                                                <li>God Like Spree: {{ achievements.GodLikeSpree }}</li>
+                                            </ul>
+                                        </div>
 
-                                        <ul>
-                                            <li>Shutdown Spree: {{ achievements.ShutdownSpree }}</li>
-                                            <li>Killing Spree: {{ achievements.KillingSpree }}</li>
-                                            <li>Divine Spree: {{ achievements.DivineSpree }}</li>
-                                            <li>Immortal Spree: {{ achievements.ImmortalSpree }}</li>
-                                            <li>Unstoppable Spree: {{ achievements.UnstoppableSpree }}</li>
-                                            <li>Rampage Spree: {{ achievements.RampageSpree }}</li>
-                                            <li>God Like Spree: {{ achievements.GodLikeSpree }}</li>
-                                        </ul>
+                                        <div class="col-sm-6">
+                                            <ul>
+                                                <li>Assisted Kills: {{ achievements.AssistedKills }}</li>
+                                                <li>Deaths: {{ achievements.Deaths }}</li>
+                                                <li>First Bloods: {{ achievements.FirstBloods }}</li>
+                                            </ul>
+                                        </div>
 
-                                        <ul>
-                                            <li>Assisted Kills: {{ achievements.AssistedKills }}</li>
-                                            <li>Deaths: {{ achievements.Deaths }}</li>
-                                            <li>First Bloods: {{ achievements.FirstBloods }}</li>
-                                        </ul>
+                                        <div class="col-sm-6">
+                                            <ul>
+                                                <li>Camps Cleared: {{ achievements.CampsCleared }}</li>
+                                                <li>Fire Giant Kills: {{ achievements.FireGiantKills }}</li>
+                                                <li>Gold Fury Kills: {{ achievements.GoldFuryKills }}</li>
+                                                <li>Minion Kills: {{ achievements.MinionKills }}</li>
+                                                <li>Phoenix Kills: {{ achievements.PhoenixKills }}</li>
+                                                <li>Siege Juggernaut Kills: {{ achievements.SiegeJuggernautKills }}</li>
+                                                <li>Wild Juggernaut Kills: {{ achievements.WildJuggernautKills }}</li>
+                                                <li>Tower Kills: {{ achievements.TowerKills }}</li>
+                                            </ul>
+                                        </div>
 
-                                        <ul>
-                                            <li>Camps Cleared: {{ achievements.CampsCleared }}</li>
-                                            <li>Fire Giant Kills: {{ achievements.FireGiantKills }}</li>
-                                            <li>Gold Fury Kills: {{ achievements.GoldFuryKills }}</li>
-                                            <li>Minion Kills: {{ achievements.MinionKills }}</li>
-                                            <li>Phoenix Kills: {{ achievements.PhoenixKills }}</li>
-                                            <li>Siege Juggernaut Kills: {{ achievements.SiegeJuggernautKills }}</li>
-                                            <li>Wild Juggernaut Kills: {{ achievements.WildJuggernautKills }}</li>
-                                            <li>Tower Kills: {{ achievements.TowerKills }}</li>
-                                        </ul>
                                     </div>
 
                                 </div>
@@ -163,8 +191,13 @@
 
                                                             {% for player in players %}
                                                             <div class="mb-1 p-1">
-                                                                {% if player.hz_gamer_tag %}
-                                                                <h5><a href="{{ path('player_view', {gamertag: player.hz_gamer_tag|slugify}) }}">{{ player.playerName }}</a></h5>
+                                                                {% if player.playerName %}
+                                                                <h5><a href="{{ path('player_view', {
+                                                                        gamertag: player.playerName|clan_remove|slugify,
+                                                                        id: player.playerId
+                                                                    }) }}" title="Smite Player {{ player.playerName }}">{{ player.playerName }}</a></h5>
+                                                                {% else %}
+                                                                    <strong>Unknown</strong>
                                                                 {% endif %}
                                                                 <ul>
                                                                     <li>Level: {{ player.Account_Level }}</li>

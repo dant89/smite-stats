@@ -30,7 +30,6 @@ class ClanController extends AbstractController
     public function index(string $name): Response
     {
         $searchResult = $this->smite->searchTeams($name);
-
         if (is_null($searchResult['TeamId'])) {
             throw new NotFoundHttpException();
         }
@@ -39,10 +38,12 @@ class ClanController extends AbstractController
 
         $gods = $this->smite->getGodsFormatted();
         $team = $this->smite->getTeamDetails($id);
-        $teamPlayers = $this->smite->getTeamPlayers();
+        $teamPlayers = $this->smite->getTeamPlayers($id);
 
         foreach ($teamPlayers as &$teamPlayer) {
-            $teamPlayer['Player_info'] = $this->smite->getPlayerDetailsByGamertag($teamPlayer['Name']);
+            $playerId = $this->smite->getPlayerIdByName($teamPlayer['Name']);
+            $teamPlayer['Player_info'] = $this->smite->getPlayerDetailsByPortalId($playerId['player_id']);
+
             $playerGods = $this->smite->getPlayerGodDetails($teamPlayer['Player_info']['Id']);
 
             $playerStats = [
@@ -57,7 +58,7 @@ class ClanController extends AbstractController
                 $playerStats['Deaths'] += $playerGod['Deaths'];
             }
 
-            $teamPlayer['God_info'] = array_slice($playerGods, 0, 5, true);
+            $teamPlayer['God_info'] = array_slice($playerGods, 0, 4, true);
             $teamPlayer['Stats_info'] = $playerStats;
         }
 
