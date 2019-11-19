@@ -87,10 +87,10 @@ class Smite
     }
 
     /**
-     * @return array
+     * @return array|null
      * @throws InvalidArgumentException
      */
-    public function getGods(): array
+    public function getGods(): ?array
     {
         $cache = $this->cache->getItem("smite_gods");
         if ($cache->isHit()) {
@@ -107,6 +107,11 @@ class Smite
             $cache->expiresAfter(3600 * 24); // 1 day
             $this->cache->save($cache);
             return $data;
+        } else {
+            $this->logger->error('API call failed.', [
+                'item' => 'smite_gods',
+                'response' => $response
+            ]);
         }
     }
 
@@ -131,10 +136,10 @@ class Smite
      * @param string $queue
      * @param string $tier
      * @param string $round
-     * @return array
+     * @return array|null
      * @throws InvalidArgumentException
      */
-    public function getLeagueLeaderboard(string $queue, string $tier, string $round): array
+    public function getLeagueLeaderboard(string $queue, string $tier, string $round): ?array
     {
         $cache = $this->cache->getItem("smite_leaderboards_{$queue}_{$tier}_{$round}");
         if ($cache->isHit()) {
@@ -151,6 +156,11 @@ class Smite
             $cache->expiresAfter(3600 / 2); // 30 minutes
             $this->cache->save($cache);
             return $data;
+        } else {
+            $this->logger->error('API call failed.', [
+                'item' => "smite_leaderboards_{$queue}_{$tier}_{$round}",
+                'response' => $response
+            ]);
         }
     }
 
@@ -159,7 +169,7 @@ class Smite
      * @return array
      * @throws InvalidArgumentException
      */
-    public function getMatchDetailsBatch(array $matchIds): array
+    public function getMatchDetailsBatch(array $matchIds): ?array
     {
         $uniqueKey = md5(implode('_', $matchIds));
 
@@ -178,16 +188,21 @@ class Smite
             $cache->expiresAfter(3600 / 2); // 30 minutes
             $this->cache->save($cache);
             return $data;
+        } else {
+            $this->logger->error('API call failed.', [
+                'item' => "smite_team_match_details_{$uniqueKey}",
+                'response' => $response
+            ]);
         }
     }
 
     /**
      * @param string $playerId
-     * @return array
+     * @return array|null
      * @throws InvalidArgumentException
      * @throws \Exception
      */
-    public function getPlayerAchievements(string $playerId): array
+    public function getPlayerAchievements(string $playerId): ?array
     {
         $cache = $this->cache->getItem("smite_player_achievements_{$playerId}");
         if ($cache->isHit()) {
@@ -204,15 +219,20 @@ class Smite
             $cache->expiresAfter(3600 / 2); // 30 minutes
             $this->cache->save($cache);
             return $data;
+        } else {
+            $this->logger->error('API call failed.', [
+                'item' => "smite_player_achievements_{$playerId}",
+                'response' => $response
+            ]);
         }
     }
 
     /**
      * @param string $portalId
-     * @return array
+     * @return array|null
      * @throws InvalidArgumentException
      */
-    public function getPlayerDetailsByPortalId(string $portalId): array
+    public function getPlayerDetailsByPortalId(string $portalId): ?array
     {
         $cache = $this->cache->getItem("smite_player_{$portalId}");
         if ($cache->isHit()) {
@@ -232,16 +252,20 @@ class Smite
             $cache->expiresAfter(3600 / 2); // 30 minutes
             $this->cache->save($cache);
             return $data[0];
-
+        } else {
+            $this->logger->error('API call failed.', [
+                'item' => "smite_player_{$portalId}",
+                'response' => $response
+            ]);
         }
     }
     /**
      * @param string $name
-     * @return array
+     * @return array|null
      * @throws InvalidArgumentException
      * @throws \Exception
      */
-    public function getPlayerIdByName(string $name): array
+    public function getPlayerIdByName(string $name): ?array
     {
         $cache = $this->cache->getItem("smite_player_{$name}");
         if ($cache->isHit()) {
@@ -261,17 +285,21 @@ class Smite
             $cache->expiresAfter(3600 / 2); // 30 minutes
             $this->cache->save($cache);
             return $data[0];
-
+        } else {
+            $this->logger->error('API call failed.', [
+                'item' => "smite_player_{$name}",
+                'response' => $response
+            ]);
         }
     }
 
     /**
      * @param string $playerId
-     * @return array
+     * @return array|null
      * @throws InvalidArgumentException
      * @throws \Exception
      */
-    public function getPlayerGodDetails(string $playerId): array
+    public function getPlayerGodDetails(string $playerId): ?array
     {
         $cache = $this->cache->getItem("smite_player_gods_{$playerId}");
         if ($cache->isHit()) {
@@ -288,16 +316,21 @@ class Smite
             $cache->expiresAfter(3600 / 2); // 30 minutes
             $this->cache->save($cache);
             return $data;
+        } else {
+            $this->logger->error('API call failed.', [
+                'item' => "smite_player_gods_{$playerId}",
+                'response' => $response
+            ]);
         }
     }
 
     /**
      * @param string $playerId
-     * @return array
+     * @return array|null
      * @throws InvalidArgumentException
      * @throws \Exception
      */
-    public function getPlayerMatches(string $playerId): array
+    public function getPlayerMatches(string $playerId): ?array
     {
         $cache = $this->cache->getItem("smite_player_matches_{$playerId}");
         if ($cache->isHit()) {
@@ -314,15 +347,20 @@ class Smite
             $cache->expiresAfter(3600 / 2); // 30 minutes
             $this->cache->save($cache);
             return $data;
+        } else {
+            $this->logger->error('API call failed.', [
+                'item' => "smite_player_matches_{$playerId}",
+                'response' => $response
+            ]);
         }
     }
 
     /**
      * @param string $id
-     * @return array
+     * @return array|null
      * @throws InvalidArgumentException
      */
-    public function getTeamDetails(string $id): array
+    public function getTeamDetails(string $id): ?array
     {
         $cache = $this->cache->getItem("smite_team_{$id}");
         if ($cache->isHit()) {
@@ -342,15 +380,20 @@ class Smite
             $cache->expiresAfter(3600 * 24); // 1 day
             $this->cache->save($cache);
             return $data[0];
+        } else {
+            $this->logger->error('API call failed.', [
+                'item' => "smite_team_{$id}",
+                'response' => $response
+            ]);
         }
     }
 
     /**
      * @param string $term
-     * @return array
+     * @return array|null
      * @throws InvalidArgumentException
      */
-    public function searchTeams(string $term): array
+    public function searchTeams(string $term): ?array
     {
         $cache = $this->cache->getItem("smite_team_search_{$term}");
         if ($cache->isHit()) {
@@ -370,15 +413,20 @@ class Smite
             $cache->expiresAfter(3600 * 24); // 1 day
             $this->cache->save($cache);
             return $data[0];
+        } else {
+            $this->logger->error('API call failed.', [
+                'item' => "smite_team_search_{$term}",
+                'response' => $response
+            ]);
         }
     }
 
     /**
      * @param string $teamId
-     * @return array
+     * @return array|null
      * @throws InvalidArgumentException
      */
-    public function getTeamPlayers(string $teamId): array
+    public function getTeamPlayers(string $teamId): ?array
     {
         $cache = $this->cache->getItem("smite_team_players_{$teamId}");
         if ($cache->isHit()) {
@@ -395,6 +443,11 @@ class Smite
             $cache->expiresAfter(3600 * 24); // 1 day
             $this->cache->save($cache);
             return $data;
+        } else {
+            $this->logger->error('API call failed.', [
+                'item' => "smite_team_players_{$teamId}",
+                'response' => $response
+            ]);
         }
     }
 }
