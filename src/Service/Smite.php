@@ -10,6 +10,7 @@ use Dant89\SmiteApiClient\Player\PlayerClient;
 use Dant89\SmiteApiClient\Player\PlayerInfoClient;
 use Dant89\SmiteApiClient\Team\TeamClient;
 use Psr\Cache\InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 class Smite
@@ -18,6 +19,11 @@ class Smite
      * @var AdapterInterface
      */
     protected $cache;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     /**
      * @var Client
@@ -38,12 +44,14 @@ class Smite
      * Smite constructor.
      * @param Client $client
      * @param AdapterInterface $cache
+     * @param LoggerInterface $logger
      * @throws InvalidArgumentException
      */
-    public function __construct(Client $client, AdapterInterface $cache)
+    public function __construct(Client $client, AdapterInterface $cache, LoggerInterface $logger)
     {
         $this->smiteClient = $client;
         $this->cache = $cache;
+        $this->logger = $logger;
         $this->timestamp = date('omdHis');
         $this->sessionId = $this->authenticate();
     }
@@ -70,6 +78,10 @@ class Smite
             $this->cache->save($session);
             return $sessionId;
         }
+
+        $this->logger->critical('Failed to authenticate.', [
+            'response' => $response
+        ]);
 
         throw new \RuntimeException('Could not authenticate.');
     }
