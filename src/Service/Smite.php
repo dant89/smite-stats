@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\ApiCall;
 use Dant89\SmiteApiClient\Client;
 use Dant89\SmiteApiClient\God\GodClient;
 use Dant89\SmiteApiClient\League\LeagueClient;
@@ -9,6 +10,8 @@ use Dant89\SmiteApiClient\Match\MatchClient;
 use Dant89\SmiteApiClient\Player\PlayerClient;
 use Dant89\SmiteApiClient\Player\PlayerInfoClient;
 use Dant89\SmiteApiClient\Team\TeamClient;
+use Dant89\SmiteApiClient\Tool\ToolClient;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
@@ -19,6 +22,11 @@ class Smite
      * @var AdapterInterface
      */
     protected $cache;
+
+    /**
+     * @var EntityManagerInterface
+     */
+    protected $entityManager;
 
     /**
      * @var LoggerInterface
@@ -44,13 +52,15 @@ class Smite
      * Smite constructor.
      * @param Client $client
      * @param AdapterInterface $cache
+     * @param EntityManagerInterface $entityManager
      * @param LoggerInterface $logger
      * @throws InvalidArgumentException
      */
-    public function __construct(Client $client, AdapterInterface $cache, LoggerInterface $logger)
+    public function __construct(Client $client, AdapterInterface $cache, EntityManagerInterface $entityManager, LoggerInterface $logger)
     {
         $this->smiteClient = $client;
         $this->cache = $cache;
+        $this->entityManager = $entityManager;
         $this->logger = $logger;
         $this->timestamp = date('omdHis');
         $this->sessionId = $this->authenticate();
@@ -63,19 +73,22 @@ class Smite
      */
     protected function authenticate(): string
     {
-        $session = $this->cache->getItem('smite_session_id');
-        if ($session->isHit()) {
-            return $session->get();
+        $cache = $this->cache->getItem('smite_session_id');
+        if ($cache->isHit()) {
+            $this->logApiCall($cache->getKey(), true);
+            return $cache->get();
         }
 
         $authClient = $this->smiteClient->getHttpClient('auth');
         $response = $authClient->createSession($this->timestamp);
 
+        $this->logApiCall($cache->getKey(), false, $response->getStatus());
+
         if ($response->getStatus() === 200) {
             $sessionId = $response->getContent()['session_id'];
-            $session->set($sessionId);
-            $session->expiresAfter(600); // 10 minutes
-            $this->cache->save($session);
+            $cache->set($sessionId);
+            $cache->expiresAfter(600); // 12 minutes
+            $this->cache->save($cache);
             return $sessionId;
         }
 
@@ -87,6 +100,24 @@ class Smite
     }
 
     /**
+     * @throws InvalidArgumentException
+     */
+    public function ping()
+    {
+        $cache = $this->cache->getItem("smite_gods");
+        if ($cache->isHit()) {
+            $this->logApiCall($cache->getKey(), true);
+            return $cache->get();
+        }
+
+        /** @var ToolClient $toolClient */
+        $toolClient = $this->smiteClient->getHttpClient('tool');
+        $response = $toolClient->ping();
+
+        return $response;
+    }
+
+    /**
      * @return array|null
      * @throws InvalidArgumentException
      */
@@ -94,6 +125,7 @@ class Smite
     {
         $cache = $this->cache->getItem("smite_gods");
         if ($cache->isHit()) {
+            $this->logApiCall($cache->getKey(), true);
             return $cache->get();
         }
 
@@ -115,6 +147,7 @@ class Smite
             ]);
         }
 
+        $this->logApiCall($cache->getKey(), false, $response->getStatus());
         return $data;
     }
 
@@ -146,6 +179,7 @@ class Smite
     {
         $cache = $this->cache->getItem("smite_leaderboards_{$queue}_{$tier}_{$round}");
         if ($cache->isHit()) {
+            $this->logApiCall($cache->getKey(), true);
             return $cache->get();
         }
 
@@ -167,6 +201,7 @@ class Smite
             ]);
         }
 
+        $this->logApiCall($cache->getKey(), false, $response->getStatus());
         return $data;
     }
 
@@ -181,6 +216,7 @@ class Smite
 
         $cache = $this->cache->getItem("smite_team_match_details_{$uniqueKey}");
         if ($cache->isHit()) {
+            $this->logApiCall($cache->getKey(), true);
             return $cache->get();
         }
 
@@ -202,6 +238,7 @@ class Smite
             ]);
         }
 
+        $this->logApiCall($cache->getKey(), false, $response->getStatus());
         return $data;
     }
 
@@ -215,6 +252,7 @@ class Smite
     {
         $cache = $this->cache->getItem("smite_player_achievements_{$playerId}");
         if ($cache->isHit()) {
+            $this->logApiCall($cache->getKey(), true);
             return $cache->get();
         }
 
@@ -236,6 +274,7 @@ class Smite
             ]);
         }
 
+        $this->logApiCall($cache->getKey(), false, $response->getStatus());
         return $data;
     }
 
@@ -248,6 +287,7 @@ class Smite
     {
         $cache = $this->cache->getItem("smite_player_{$portalId}");
         if ($cache->isHit()) {
+            $this->logApiCall($cache->getKey(), true);
             return $cache->get();
         }
 
@@ -273,6 +313,7 @@ class Smite
             ]);
         }
 
+        $this->logApiCall($cache->getKey(), false, $response->getStatus());
         return $data;
     }
     /**
@@ -285,6 +326,7 @@ class Smite
     {
         $cache = $this->cache->getItem("smite_player_{$name}");
         if ($cache->isHit()) {
+            $this->logApiCall($cache->getKey(), true);
             return $cache->get();
         }
 
@@ -310,6 +352,7 @@ class Smite
             ]);
         }
 
+        $this->logApiCall($cache->getKey(), false, $response->getStatus());
         return $data;
     }
 
@@ -323,6 +366,7 @@ class Smite
     {
         $cache = $this->cache->getItem("smite_player_gods_{$playerId}");
         if ($cache->isHit()) {
+            $this->logApiCall($cache->getKey(), true);
             return $cache->get();
         }
 
@@ -344,6 +388,7 @@ class Smite
             ]);
         }
 
+        $this->logApiCall($cache->getKey(), false, $response->getStatus());
         return $data;
     }
 
@@ -357,6 +402,7 @@ class Smite
     {
         $cache = $this->cache->getItem("smite_player_matches_{$playerId}");
         if ($cache->isHit()) {
+            $this->logApiCall($cache->getKey(), true);
             return $cache->get();
         }
 
@@ -378,6 +424,7 @@ class Smite
             ]);
         }
 
+        $this->logApiCall($cache->getKey(), false, $response->getStatus());
         return $data;
     }
 
@@ -390,6 +437,7 @@ class Smite
     {
         $cache = $this->cache->getItem("smite_team_{$id}");
         if ($cache->isHit()) {
+            $this->logApiCall($cache->getKey(), true);
             return $cache->get();
         }
 
@@ -415,6 +463,7 @@ class Smite
             ]);
         }
 
+        $this->logApiCall($cache->getKey(), false, $response->getStatus());
         return $data;
     }
 
@@ -427,6 +476,7 @@ class Smite
     {
         $cache = $this->cache->getItem("smite_team_search_{$term}");
         if ($cache->isHit()) {
+            $this->logApiCall($cache->getKey(), true);
             return $cache->get();
         }
 
@@ -452,6 +502,7 @@ class Smite
             ]);
         }
 
+        $this->logApiCall($cache->getKey(), false, $response->getStatus());
         return $data;
     }
 
@@ -464,6 +515,7 @@ class Smite
     {
         $cache = $this->cache->getItem("smite_team_players_{$teamId}");
         if ($cache->isHit()) {
+            $this->logApiCall($cache->getKey(), true);
             return $cache->get();
         }
 
@@ -485,6 +537,52 @@ class Smite
             ]);
         }
 
+        $this->logApiCall($cache->getKey(), false, $response->getStatus());
         return $data;
+    }
+    /**
+     * @return array|null
+     * @throws InvalidArgumentException
+     */
+    public function getTopMatches(): ?array
+    {
+        $cache = $this->cache->getItem("smite_top_matches");
+        if ($cache->isHit()) {
+            $this->logApiCall($cache->getKey(), true);
+            return $cache->get();
+        }
+
+        /** @var MatchClient $matchClient */
+        $matchClient = $this->smiteClient->getHttpClient('match');
+        $response = $matchClient->getTopMatches($this->sessionId, $this->timestamp);
+
+        $data = null;
+
+        if ($response->getStatus() === 200) {
+            $data = $response->getContent();
+            $cache->set($data);
+            $cache->expiresAfter(3600 / 2); // 30 minutes
+            $this->cache->save($cache);
+        } else {
+            $this->logger->error('API call failed.', [
+                'item' => "smite_top_matches",
+                'response' => $response
+            ]);
+        }
+
+        $this->logApiCall($cache->getKey(), false, $response->getStatus());
+        return $data;
+    }
+
+    protected function logApiCall(string $name, bool $cached, int $responseStatus = null): void
+    {
+        $apiCall = new ApiCall();
+        $apiCall->setName($name);
+        $apiCall->setResponseStatus($responseStatus);
+        $apiCall->setCached($cached ? 1 : 0);
+        $apiCall->setDateCreated(new \DateTime());
+
+        $this->entityManager->persist($apiCall);
+        $this->entityManager->flush();
     }
 }
