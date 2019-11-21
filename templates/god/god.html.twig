@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}God {{ god.Name }} - Unofficial SMITE{% endblock %}
+{% block title %}God {{ god.name }} - Unofficial SMITE{% endblock %}
 
 {% block header_meta %}
     <link rel="canonical" href="https://smitestats.com/gods/{{ god.Name|slugify }}" />
@@ -14,96 +14,53 @@
             <div class="row">
 
                 <div class="col-md-4 col-lg-3">
-                    <div class="rounded smite-god" style="background-image: url({{ god.godCard_URL }})">
-                        <a href="{{ path('god_view', {name: god.Name|slugify}) }}" title="Smite God {{ god.Name }}"><h1>{{ god.Name }}</h1></a>
+                    <div class="rounded smite-god" style="background-image: url({{ god.cardUrl }})">
+                        <a href="{{ path('god_view', {name: god.name|slugify}) }}" title="Smite God {{ god.name }}"><h1>{{ god.name }}</h1></a>
                     </div>
                 </div>
 
                 <div class="col-md-4 col-lg-5">
-                    <h4>{{ god.Title }}</h4>
-                    <h4>{{ god.Pantheon }}</h4>
-                    <h4>{{ god.Roles }}</h4>
-                    <h4>{{ god.Type }}</h4>
-                    <h4>{{ god.Pros }}</h4>
-                    <h4>{{ god.Cons }}</h4>
+                    <h4>{{ god.title }}</h4>
+                    <h4>{{ god.pantheon }}</h4>
+                    <h4>{{ god.roles }}</h4>
+                    <h4>{{ god.type }}</h4>
+                    <h4>{{ god.pros }}</h4>
+                    <h4>{{ god.cons }}</h4>
                 </div>
 
                 <div class="col-md-4 col-md-4">
                     <h3>Statistics</h3>
                     <ul>
-                        <li>Attack Speed: {{ god.AttackSpeed }}</li>
-                        <li>Health: {{ god.Health }}</li>
-                        <li>Mana: {{ god.Mana }}</li>
-                        <li>Magic Protection: {{ god.MagicProtection }}</li>
-                        <li>Magical Power: {{ god.MagicalPower }}</li>
-                        <li>Speed: {{ god.Speed }}</li>
+                        <li>Attack Speed: {{ god.attackSpeed }}</li>
+                        <li>Health: {{ god.health }}</li>
+                        <li>Mana: {{ god.mana }}</li>
+                        <li>Magic Protection: {{ god.magicProtection }}</li>
+                        <li>Magical Power: {{ god.magicalPower }}</li>
+                        <li>Speed: {{ god.speed }}</li>
                     </ul>
                 </div>
 
                 <div class="col-12">
 
-                    <p>{{ god.Lore }}</p>
+                    <p>{{ god.lore }}</p>
 
                     <div class="god-abilities">
                         <div class="row">
+                            {% for ability in god.abilities %}
                             <div class="col-12 col-md-4">
                                 <div class="god-ability rounded">
-                                    <img class="float-left mr-2" src="{{ god.Ability_1.URL }}" /><br />
-                                    <h3>{{ god.Ability_1.Summary }}</h3><br />
-                                    <p>{{ god.Ability_1.Description.itemDescription.description }}</p>
+                                    <img class="float-left mr-2" src="{{ ability.url }}" /><br />
+                                    <h3>{{ ability.summary }}</h3><br />
+                                    <p>{{ ability.description }}</p>
                                     <ul>
-                                        <li>Cost: {{ god.Ability_1.Description.itemDescription.cost }}</li>
-                                        <li>Cooldown: {{ god.Ability_1.Description.itemDescription.cooldown }}</li>
+                                        <li>Cost: {{ ability.cost }}</li>
+                                        <li>Cooldown: {{ ability.cooldown }}</li>
                                     </ul>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-4">
-                                <div class="god-ability rounded">
-                                    <img class="float-left mr-2" src="{{ god.Ability_2.URL }}" /><br />
-                                    <h3>{{ god.Ability_2.Summary }}</h3><br />
-                                    <p>{{ god.Ability_2.Description.itemDescription.description }}</p>
-                                    <ul>
-                                        <li>Cost: {{ god.Ability_2.Description.itemDescription.cost }}</li>
-                                        <li>Cooldown: {{ god.Ability_2.Description.itemDescription.cooldown }}</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-4">
-                                <div class="god-ability rounded">
-                                    <img class="float-left mr-2" src="{{ god.Ability_3.URL }}" /><br />
-                                    <h3>{{ god.Ability_3.Summary }}</h3><br />
-                                    <p>{{ god.Ability_3.Description.itemDescription.description }}</p>
-                                    <ul>
-                                        <li>Cost: {{ god.Ability_3.Description.itemDescription.cost }}</li>
-                                        <li>Cooldown: {{ god.Ability_3.Description.itemDescription.cooldown }}</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-4">
-                                <div class="god-ability rounded">
-                                    <img class="float-left mr-2" src="{{ god.Ability_4.URL }}" /><br />
-                                    <h3>{{ god.Ability_4.Summary }}</h3><br />
-                                    <p>{{ god.Ability_4.Description.itemDescription.description }}</p>
-                                    <ul>
-                                        <li>Cost: {{ god.Ability_4.Description.itemDescription.cost }}</li>
-                                        <li>Cooldown: {{ god.Ability_4.Description.itemDescription.cooldown }}</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-4">
-                                <div class="god-ability rounded">
-                                    <img class="float-left mr-2" src="{{ god.Ability_5.URL }}" /><br />
-                                    <h3>{{ god.Ability_5.Summary }}</h3><br />
-                                    <p>{{ god.Ability_5.Description.itemDescription.description }}</p>
-                                    <ul>
-                                        <li>Cost: {{ god.Ability_5.Description.itemDescription.cost }}</li>
-                                        <li>Cooldown: {{ god.Ability_5.Description.itemDescription.cooldown }}</li>
-                                    </ul>
-                                </div>
-                            </div>
+                            {% endfor %}
                         </div>
                     </div>
-
 
                 </div>
 
