@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * GodAbility
  *
- * @ORM\Table(name="god_ability")
+ * @ORM\Table(name="god_ability", uniqueConstraints={@ORM\UniqueConstraint(name="unique_ability_id", columns={"ability_id"})})
  * @ORM\Entity
  */
 class GodAbility
