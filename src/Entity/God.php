@@ -247,7 +247,7 @@ class God
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_created", type="datetime", nullable=false})
+     * @ORM\Column(name="date_created", type="datetime", nullable=false)
      */
     private $dateCreated;
 
