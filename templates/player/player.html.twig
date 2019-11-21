@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Player {{ player.hz_gamer_tag }} - Unofficial SMITE{% endblock %}
+{% block title %}Player {{ player.name }} - Unofficial SMITE{% endblock %}
 
 {% block header_meta %}
-    <link rel="canonical" href="https://smitestats.com/player/{{ player_name_slug }}-{{ player.Id }}" />
+    <link rel="canonical" href="https://smitestats.com/player/{{ player_name_slug }}-{{ player.smitePlayerId }}" />
 {% endblock %}
 
 {% block body %}
@@ -11,11 +11,11 @@
     <div class="bg-light pt-3 pb-3">
         <div class="container">
 
-            {% if player.Name %}
+            {% if player.name %}
             <h1><a href="{{ path('player_view', {
-                    gamertag: player.Name|clan_remove|slugify,
-                    id: player.Id
-                }) }}" title="Smite Player {{ player.Name }}">{{ player.Name }} Smite Player</a></h1>
+                    gamertag: player.name|clan_remove|slugify,
+                    id: player.smitePlayerId
+                }) }}" title="Smite Player {{ player.name }}">{{ player.name }} Smite Player</a></h1>
             {% endif %}
 
             <div class="row">
@@ -26,39 +26,46 @@
 
                             <div class="row">
                                 <div class="col col-sm-12 col-md-1">
-                                    <img class="rounded" src="{{ player.Avatar_URL }}" width="50px" />
+                                    <img class="rounded" src="{{ player.avatarUrl }}" width="50px" />
                                 </div>
                                 <div class="col col-sm-12 col-md-3">
                                     <h3>{{ player.Name }}</h3>
-                                    <h5>Level: {{ player.Level }}</h5>
+                                    <h5>Level: {{ player.level }}</h5>
+                                    {% if player.teamName %}
                                     <h5>Clan: <a href="{{ path('clan_view', {
-                                            name: player.Team_Name|slugify
-                                        }) }}" title="Smite Clan {{ player.Team_Name }}">{{ player.Team_Name }}</a></h5>
+                                            name: player.teamName|slugify
+                                        }) }}" title="Smite Clan {{ player.teamName }}">{{ player.teamName }}</a></h5>
+                                    {% endif %}
                                 </div>
                                 <div class="col col-sm-6 col-md-2">
                                     <ul class="list-unstyled">
-                                        <li>Hours Played: {{ player.HoursPlayed }}</li>
-                                        <li>Achievements: {{ player.Total_Achievements }}</li>
+                                        <li>Hours Played: {{ player.hoursPlayed }}</li>
+                                        <li>Achievements: {{ player.totalAchievements }}</li>
                                     </ul>
                                 </div>
                                 <div class="col col-sm-6 col-md-2">
                                     <ul class="list-unstyled">
-                                        <li>Wins: {{ player.Wins }}</li>
-                                        <li>Losses: {{ player.Losses }}</li>
-                                        <li>Quits: {{ player.Leaves }}</li>
+                                        <li>Wins: {{ player.wins }}</li>
+                                        <li>Losses: {{ player.losses }}</li>
+                                        <li>Quits: {{ player.leaves }}</li>
                                     </ul>
                                 </div>
                                 <div class="col col-sm-6 col-md-2">
                                     <ul class="list-unstyled">
-                                        <li>Kills: {{ player.Stats_info.Kills }}</li>
-                                        <li>Assists: {{ player.Stats_info.Assists }}</li>
-                                        <li>Deaths: {{ player.Stats_info.Deaths }}</li>
+                                        <li>Kills: {{ player_stats.Kills }}</li>
+                                        <li>Assists: {{ player_stats.Assists }}</li>
+                                        <li>Deaths: {{ player_stats.Deaths }}</li>
                                     </ul>
                                 </div>
                                 <div class="col col-sm-6 col-md-2">
                                     <ul class="list-unstyled">
-                                        <li>K/D: {{ (player.Stats_info.Kills / player.Stats_info.Deaths)|round(2) }}</li>
-                                        <li>K/D/A: {{ ((player.Stats_info.Kills + player.Stats_info.Assists) / player.Stats_info.Deaths)|round(2) }}</li>
+                                    {% if player_stats.Deaths %}
+                                        <li>K/D: {{ (player_stats.Kills / player_stats.Deaths)|round(2) }}</li>
+                                        <li>K/D/A: {{ ((player_stats.Kills + player_stats.Assists) / player_stats.Deaths)|round(2) }}</li>
+                                    {% else %}
+                                        <li>K/D: {{ player_stats.Kills|round(2) }}</li>
+                                        <li>K/D/A: {{ (player_stats.Kills + player_stats.Assists)|round(2) }}</li>
+                                    {% endif %}
                                     </ul>
                                 </div>
                             </div>
@@ -68,37 +75,52 @@
                                     <h3>Top Gods</h3>
                                     <div class="row">
 
-                                        {% for god in player.God_info %}
-                                        <div class="col-md-12 col-lg-3">
-                                            <div class="row">
+                                        {% for god in player_god_info %}
+                                            {% if god.god %}
+                                            <div class="col-md-12 col-lg-3">
+                                                <div class="row">
 
-                                                <div class="col col-sm-6 col-md-4 col-lg-12">
-                                                    <div class="rounded smite-god" style="background-image: url({{ gods[god.god].godCard_URL }})">
-                                                        <a href="{{ path('god_view', {name: god.god|slugify}) }}" title="Smite God {{ god.god }}">{{ god.god }}</a>
+                                                    {% if gods[god.god] %}
+                                                    <div class="col col-sm-6 col-md-4 col-lg-12">
+                                                        <div class="rounded smite-god" style="background-image: url({{ gods[god.god].cardUrl }})">
+                                                            <a href="{{ path('god_view', {name: god.god|slugify}) }}" title="Smite God {{ god.god }}">{{ god.god }}</a>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                    {% endif %}
 
-                                                <div class="col col-sm-6 col-md-4 col-lg-12">
-                                                    <ul class="list-unstyled">
-                                                        <li>Rank: {{ god.Rank }}</li>
-                                                        <li>Win Percent: {{ ((god.Wins / (god.Wins + god.Losses)) * 100)|round(2) }}%</li>
-                                                        <li>Wins: {{ god.Wins }}</li>
-                                                        <li>Losses: {{ god.Losses }}</li>
-                                                    </ul>
-                                                </div>
+                                                    <div class="col col-sm-6 col-md-4 col-lg-12">
+                                                        <ul class="list-unstyled">
+                                                            <li>Rank: {{ god.Rank }}</li>
+                                                            {% if god.Losses and god.Wins %}
+                                                                <li>Win Percent: {{ ((god.Wins / (god.Wins + god.Losses)) * 100)|round(2) }}%</li>
+                                                            {% elseif god.Wins %}
+                                                                <li>Win Percent: {{ 100|round(2) }}%</li>
+                                                            {% else %}
+                                                                <li>Win Percent: {{ 0|round(2) }}%</li>
+                                                            {% endif %}
+                                                            <li>Wins: {{ god.Wins }}</li>
+                                                            <li>Losses: {{ god.Losses }}</li>
+                                                        </ul>
+                                                    </div>
 
-                                                <div class="col col-sm-6 col-md-4 col-lg-12">
-                                                    <ul class="list-unstyled">
-                                                        <li>Kills: {{ god.Kills }}</li>
-                                                        <li>Assists: {{ god.Assists }}</li>
-                                                        <li>Deaths: {{ god.Deaths }}</li>
-                                                        <li>K/D: {{ (god.Kills / god.Deaths)|round(2) }}</li>
-                                                        <li>K/D/A: {{ ((god.Kills + god.Assists) / god.Deaths)|round(2) }}</li>
-                                                    </ul>
-                                                </div>
+                                                    <div class="col col-sm-6 col-md-4 col-lg-12">
+                                                        <ul class="list-unstyled">
+                                                            <li>Kills: {{ god.Kills }}</li>
+                                                            <li>Assists: {{ god.Assists }}</li>
+                                                            <li>Deaths: {{ god.Deaths }}</li>
+                                                            {% if god.Deaths %}
+                                                                <li>K/D: {{ (god.Kills / god.Deaths)|round(2) }}</li>
+                                                                <li>K/D/A: {{ ((god.Kills + god.Assists) / god.Deaths)|round(2) }}</li>
+                                                            {% else %}
+                                                                <li>K/D: {{ god.Kills|round(2) }}</li>
+                                                                <li>K/D/A: {{ (god.Kills + god.Assists)|round(2) }}</li>
+                                                            {% endif %}
+                                                        </ul>
+                                                    </div>
 
+                                                </div>
                                             </div>
-                                        </div>
+                                            {% endif %}
                                         {% endfor %}
 
                                     </div>
@@ -191,11 +213,11 @@
 
                                                             {% for player in players %}
                                                             <div class="mb-1 p-1">
-                                                                {% if player.playerName %}
+                                                                {% if player.name|clan_remove|slugify %}
                                                                 <h5><a href="{{ path('player_view', {
-                                                                        gamertag: player.playerName|clan_remove|slugify,
+                                                                        gamertag: player.name|clan_remove|slugify,
                                                                         id: player.playerId
-                                                                    }) }}" title="Smite Player {{ player.playerName }}">{{ player.playerName }}</a></h5>
+                                                                    }) }}" title="Smite Player {{ player.name }}">{{ player.name }}</a></h5>
                                                                 {% else %}
                                                                     <strong>Unknown</strong>
                                                                 {% endif %}
