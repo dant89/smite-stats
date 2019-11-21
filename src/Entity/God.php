@@ -245,18 +245,18 @@ class God
     private $iconUrl;
 
     /**
-     * @var \DateTime|null
+     * @var \DateTime
      *
-     * @ORM\Column(name="date_created", type="datetime", nullable=false, options={"default"="0000-00-00 00:00:00"})
+     * @ORM\Column(name="date_created", type="datetime", nullable=false})
      */
-    private $dateCreated = '0000-00-00 00:00:00';
+    private $dateCreated;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_updated", type="datetime", nullable=false, options={"default"="0000-00-00 00:00:00"})
+     * @ORM\Column(name="date_updated", type="datetime", nullable=false)
      */
-    private $dateUpdated = '0000-00-00 00:00:00';
+    private $dateUpdated;
 
     public function __construct() {
         $this->abilities = new ArrayCollection();
@@ -839,18 +839,18 @@ class God
     }
 
     /**
-     * @return \DateTime|null
+     * @return \DateTime
      */
-    public function getDateCreated(): ?\DateTime
+    public function getDateCreated(): \DateTime
     {
         return $this->dateCreated;
     }
 
     /**
-     * @param \DateTime|null $dateCreated
+     * @param \DateTime $dateCreated
      * @return God
      */
-    public function setDateCreated(?\DateTime $dateCreated): God
+    public function setDateCreated(\DateTime $dateCreated): God
     {
         $this->dateCreated = $dateCreated;
         return $this;
