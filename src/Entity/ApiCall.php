@@ -45,9 +45,9 @@ class ApiCall
     /**
      * @var \DateTime|null
      *
-     * @ORM\Column(name="date_created", type="datetime", nullable=false, options={"default"="0000-00-00 00:00:00"})
+     * @ORM\Column(name="date_created", type="datetime", nullable=false)
      */
-    private $dateCreated = '0000-00-00 00:00:00';
+    private $dateCreated;
 
     /**
      * @return int
