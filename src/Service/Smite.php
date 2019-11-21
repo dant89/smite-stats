@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\ApiCall;
+use App\Entity\God;
 use Dant89\SmiteApiClient\Client;
 use Dant89\SmiteApiClient\God\GodClient;
 use Dant89\SmiteApiClient\League\LeagueClient;
@@ -153,20 +154,21 @@ class Smite
 
     /**
      * @return array
-     * @throws InvalidArgumentException
      */
-    public function getGodsFormatted(): array
+    public function getGodsByNameKey(): array
     {
-        $gods = $this->getGods();
+        $repository = $this->entityManager->getRepository(God::class);
+        $gods = $repository->findAll();
+
         $formattedGods = [];
 
+        /** @var God $god */
         foreach ($gods as $god) {
-            $formattedGods[$god['Name']] = $god;
+            $formattedGods[$god->getName()] = $god;
         }
 
         return $formattedGods;
     }
-
 
     /**
      * @param string $queue
@@ -316,6 +318,7 @@ class Smite
         $this->logApiCall($cache->getKey(), false, $response->getStatus());
         return $data;
     }
+
     /**
      * @param string $name
      * @return array|null
