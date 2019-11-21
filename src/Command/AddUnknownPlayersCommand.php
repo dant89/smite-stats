@@ -79,6 +79,7 @@ class AddUnknownPlayersCommand extends Command
                             !in_array($matchDetail['ActivePlayerId'], $playerIds) &&
                             !in_array($matchDetail['ActivePlayerId'], $existingPlayerIds)
                         ) {
+                            $playerIds[] = $matchDetail['ActivePlayerId'];
                             $newPlayer = new Player();
                             $newPlayer->setSmitePlayerId($matchDetail['ActivePlayerId']);
                             $newPlayer->setDateCreated(new \DateTime());
