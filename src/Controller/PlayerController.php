@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Player;
 use App\Service\Smite;
-use Cocur\Slugify\SlugifyInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,20 +25,14 @@ class PlayerController extends AbstractController
     protected $logger;
 
     /**
-     * @var SlugifyInterface
-     */
-    protected $slugify;
-
-    /**
      * @var Smite
      */
     protected $smite;
 
-    public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger ,SlugifyInterface $slugify, Smite $smite)
+    public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger, Smite $smite)
     {
         $this->entityManager = $entityManager;
         $this->logger = $logger;
-        $this->slugify = $slugify;
         $this->smite = $smite;
     }
 
@@ -98,7 +91,7 @@ class PlayerController extends AbstractController
         }
 
         $playerNameSlug = preg_replace('/\[.*?\]/is', '', $player->getName());
-        $playerNameSlug = $this->slugify->slugify($playerNameSlug);
+        $playerNameSlug = preg_replace('/([^a-z0-9-]+)/is', '', $playerNameSlug);
         if (empty($playerNameSlug)) {
             // TODO fix issues with Japanese characters being converted to an empty string バイオレット
             throw new NotFoundHttpException('An error occurred fetching a player name.');
