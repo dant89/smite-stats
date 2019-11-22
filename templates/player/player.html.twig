@@ -13,7 +13,7 @@
 
             {% if player.name %}
             <h1><a href="{{ path('player_view', {
-                    gamertag: player.name|clan_remove|slugify,
+                    gamertag: player.name|clan_remove|slug,
                     id: player.smitePlayerId
                 }) }}" title="Smite Player {{ player.name }}">{{ player.name }} Smite Player</a></h1>
             {% endif %}
@@ -33,7 +33,7 @@
                                     <h5>Level: {{ player.level }}</h5>
                                     {% if player.teamName %}
                                     <h5>Clan: <a href="{{ path('clan_view', {
-                                            name: player.teamName|slugify
+                                            name: player.teamName|slug
                                         }) }}" title="Smite Clan {{ player.teamName }}">{{ player.teamName }}</a></h5>
                                     {% endif %}
                                 </div>
@@ -83,7 +83,7 @@
                                                     {% if gods[god.god] %}
                                                     <div class="col col-sm-6 col-md-4 col-lg-12">
                                                         <div class="rounded smite-god" style="background-image: url({{ gods[god.god].cardUrl }})">
-                                                            <a href="{{ path('god_view', {name: god.god|slugify}) }}" title="Smite God {{ god.god }}">{{ god.god }}</a>
+                                                            <a href="{{ path('god_view', {name: god.god|slug}) }}" title="Smite God {{ god.god }}">{{ god.god }}</a>
                                                         </div>
                                                     </div>
                                                     {% endif %}
@@ -213,9 +213,9 @@
 
                                                             {% for player in players %}
                                                             <div class="mb-1 p-1">
-                                                                {% if player.name|clan_remove|slugify %}
+                                                                {% if player.name|clan_remove|slug %}
                                                                 <h5><a href="{{ path('player_view', {
-                                                                        gamertag: player.name|clan_remove|slugify,
+                                                                        gamertag: player.name|clan_remove|slug,
                                                                         id: player.playerId
                                                                     }) }}" title="Smite Player {{ player.name }}">{{ player.name }}</a></h5>
                                                                 {% else %}
@@ -232,7 +232,6 @@
                                                                     <li>Gold Earned: {{ player.Gold_Earned }}</li>
                                                                     <li>Gold Per Minute: {{ player.Gold_Per_Minute }}</li>
                                                                     <li>Healing: {{ player.Healing }}</li>
-
                                                                 </ul>
                                                             </div>
                                                             {% endfor %}

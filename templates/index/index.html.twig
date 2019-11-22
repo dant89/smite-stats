@@ -25,7 +25,7 @@
                         {% for god in gods %}
                             <div class="col-6 col-sm-4">
                                 <div class="rounded smite-god" style="background-image: url({{ god.cardUrl }})">
-                                    <a href="{{ path('god_view', {name: god.name|slugify}) }}" title="Smite God {{ god.name }}">{{ god.name }}</a>
+                                    <a href="{{ path('god_view', {name: god.name|slug}) }}" title="Smite God {{ god.name }}">{{ god.name }}</a>
                                 </div>
                             </div>
                         {% endfor %}
@@ -48,9 +48,9 @@
                                 {% for player in players %}
                                 <div class="col-12">
 
-                                    {% if player.Name %}
+                                    {% if player.Name|clan_remove|slug %}
                                         <a href="{{ path('player_view', {
-                                            gamertag: player.Name|clan_remove|slugify,
+                                            gamertag: player.Name|clan_remove|slug,
                                             id: player.player_id
                                         }) }}" title="Smite Player {{ player.Name }}">{{ player.Name }}</a>
                                     {% else %}
@@ -79,7 +79,7 @@
 
                     <div class="col-12 mb-4">
                         <h2>Featured Clan</h2>
-                        <a href="{{ path('clan_view', {name: 'Kingzhillkillz'|slugify}) }}">KingZhillkillz</a>
+                        <a href="{{ path('clan_view', {name: 'Kingzhillkillz'|slug}) }}">KingZhillkillz</a>
                     </div>
 
                     <div class="col-12">
