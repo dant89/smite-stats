@@ -17,11 +17,6 @@ public/images/SMITE_Logo_2016_BlackTagline_300dpi.png
 .phpunit.result.cache
 /phpunit.xml
 ***REMOVED******REMOVED******REMOVED***< symfony/phpunit-bridge ***REMOVED******REMOVED******REMOVED***
-
-***REMOVED******REMOVED******REMOVED***> symfony/web-server-bundle ***REMOVED******REMOVED******REMOVED***
-/.web-server-pid
-***REMOVED******REMOVED******REMOVED***< symfony/web-server-bundle ***REMOVED******REMOVED******REMOVED***
-
 ***REMOVED******REMOVED******REMOVED***> symfony/webpack-encore-bundle ***REMOVED******REMOVED******REMOVED***
 /node_modules/
 /public/build/

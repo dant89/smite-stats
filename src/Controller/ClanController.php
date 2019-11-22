@@ -36,30 +36,32 @@ class ClanController extends AbstractController
 
         $id = $searchResult['TeamId'];
 
-        $gods = $this->smite->getGodsFormatted();
+        $gods = $this->smite->getGodsByNameKey();
         $team = $this->smite->getTeamDetails($id);
         $teamPlayers = $this->smite->getTeamPlayers($id);
 
         foreach ($teamPlayers as &$teamPlayer) {
-            $playerId = $this->smite->getPlayerIdByName($teamPlayer['Name']);
-            $teamPlayer['Player_info'] = $this->smite->getPlayerDetailsByPortalId($playerId['player_id']);
+            if (!empty($teamPlayer['Name'])) {
+                $playerId = $this->smite->getPlayerIdByName($teamPlayer['Name']);
+                $teamPlayer['Player_info'] = $this->smite->getPlayerDetailsByPortalId($playerId['player_id']);
 
-            $playerGods = $this->smite->getPlayerGodDetails($teamPlayer['Player_info']['Id']);
+                $playerGods = $this->smite->getPlayerGodDetails($teamPlayer['Player_info']['Id']);
 
-            $playerStats = [
-                'Kills' => 0,
-                'Assists' => 0,
-                'Deaths' => 0,
-            ];
+                $playerStats = [
+                    'Kills' => 0,
+                    'Assists' => 0,
+                    'Deaths' => 0,
+                ];
 
-            foreach($playerGods as $playerGod) {
-                $playerStats['Kills'] += $playerGod['Kills'];
-                $playerStats['Assists'] += $playerGod['Assists'];
-                $playerStats['Deaths'] += $playerGod['Deaths'];
+                foreach ($playerGods as $playerGod) {
+                    $playerStats['Kills'] += $playerGod['Kills'];
+                    $playerStats['Assists'] += $playerGod['Assists'];
+                    $playerStats['Deaths'] += $playerGod['Deaths'];
+                }
+
+                $teamPlayer['God_info'] = array_slice($playerGods, 0, 4, true);
+                $teamPlayer['Stats_info'] = $playerStats;
             }
-
-            $teamPlayer['God_info'] = array_slice($playerGods, 0, 4, true);
-            $teamPlayer['Stats_info'] = $playerStats;
         }
 
         return $this->render('clan/clan.html.twig', [
