@@ -64,20 +64,21 @@ class Smite
         $this->entityManager = $entityManager;
         $this->logger = $logger;
         $this->timestamp = date('omdHis');
-        $this->sessionId = $this->authenticate();
+        $this->authenticate();
     }
 
     /**
-     * @return string
+     * @return bool
      * @throws InvalidArgumentException
      * @throws \RuntimeException
      */
-    protected function authenticate(): string
+    protected function authenticate(): bool
     {
         $cache = $this->cache->getItem('smite_session_id');
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
-            return $cache->get();
+            $this->sessionId = $cache->get();
+            return true;
         }
 
         $authClient = $this->smiteClient->getHttpClient('auth');
@@ -90,7 +91,8 @@ class Smite
             $cache->set($sessionId);
             $cache->expiresAfter(600); // 12 minutes
             $this->cache->save($cache);
-            return $sessionId;
+            $this->sessionId = $sessionId;
+            return true;
         }
 
         $this->logger->critical('Failed to authenticate.', [
