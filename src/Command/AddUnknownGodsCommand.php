@@ -118,6 +118,8 @@ class AddUnknownGodsCommand extends Command
         $output->writeln("{$newGodAbilityCount} god abilities added!");
         $output->writeln("{$updatedGodCount} gods updated!");
         $output->writeln("{$updatedGodAbilityCount} god abilities updated!");
+
+        return 0;
     }
 
     protected function setGodTraits(God &$god, array $data): void
