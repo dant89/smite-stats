@@ -90,5 +90,7 @@ class UpdatePlayersCommand extends Command
         }
 
         $output->writeln("{$updatedPlayers} players updated!");
+
+        return 0;
     }
 }
