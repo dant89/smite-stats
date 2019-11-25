@@ -99,7 +99,8 @@ class Smite
             'response' => $response
         ]);
 
-        throw new \RuntimeException('Could not authenticate.');
+        $this->sessionId = null;
+        return false;
     }
 
     /**
@@ -126,6 +127,10 @@ class Smite
      */
     public function getGods(): ?array
     {
+        if (is_null($this->sessionId)) {
+            return null;
+        }
+
         $cache = $this->cache->getItem("smite_gods");
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
@@ -181,6 +186,10 @@ class Smite
      */
     public function getLeagueLeaderboard(string $queue, string $tier, string $round): ?array
     {
+        if (is_null($this->sessionId)) {
+            return null;
+        }
+
         $cache = $this->cache->getItem("smite_leaderboards_{$queue}_{$tier}_{$round}");
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
@@ -216,6 +225,10 @@ class Smite
      */
     public function getMatchDetailsBatch(array $matchIds): ?array
     {
+        if (is_null($this->sessionId)) {
+            return null;
+        }
+
         $uniqueKey = md5(implode('_', $matchIds));
 
         $cache = $this->cache->getItem("smite_team_match_details_{$uniqueKey}");
@@ -254,6 +267,10 @@ class Smite
      */
     public function getPlayerAchievements(string $playerId): ?array
     {
+        if (is_null($this->sessionId)) {
+            return null;
+        }
+
         $cache = $this->cache->getItem("smite_player_achievements_{$playerId}");
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
@@ -289,6 +306,10 @@ class Smite
      */
     public function getPlayerDetailsByPortalId(string $portalId): ?array
     {
+        if (is_null($this->sessionId)) {
+            return null;
+        }
+
         $cache = $this->cache->getItem("smite_player_{$portalId}");
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
@@ -329,6 +350,10 @@ class Smite
      */
     public function getPlayerIdByName(string $name): ?array
     {
+        if (is_null($this->sessionId)) {
+            return null;
+        }
+
         $cache = $this->cache->getItem("smite_player_{$name}");
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
@@ -369,6 +394,10 @@ class Smite
      */
     public function getPlayerGodDetails(string $playerId): ?array
     {
+        if (is_null($this->sessionId)) {
+            return null;
+        }
+
         $cache = $this->cache->getItem("smite_player_gods_{$playerId}");
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
@@ -405,6 +434,10 @@ class Smite
      */
     public function getPlayerMatches(string $playerId): ?array
     {
+        if (is_null($this->sessionId)) {
+            return null;
+        }
+
         $cache = $this->cache->getItem("smite_player_matches_{$playerId}");
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
@@ -440,6 +473,10 @@ class Smite
      */
     public function getTeamDetails(string $id): ?array
     {
+        if (is_null($this->sessionId)) {
+            return null;
+        }
+
         $cache = $this->cache->getItem("smite_team_{$id}");
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
@@ -479,6 +516,10 @@ class Smite
      */
     public function searchTeams(string $term): ?array
     {
+        if (is_null($this->sessionId)) {
+            return null;
+        }
+
         $cache = $this->cache->getItem("smite_team_search_{$term}");
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
@@ -518,6 +559,10 @@ class Smite
      */
     public function getTeamPlayers(string $teamId): ?array
     {
+        if (is_null($this->sessionId)) {
+            return null;
+        }
+
         $cache = $this->cache->getItem("smite_team_players_{$teamId}");
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
@@ -551,6 +596,10 @@ class Smite
      */
     public function getTopMatches(): ?array
     {
+        if (is_null($this->sessionId)) {
+            return null;
+        }
+
         $cache = $this->cache->getItem("smite_top_matches");
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
