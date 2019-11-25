@@ -98,5 +98,7 @@ class AddUnknownPlayersCommand extends Command
         $this->entityManager->flush();
         $output->writeln("{$matchCount} matches scanned...");
         $output->writeln("{$newPlayerCount} new players added!");
+
+        return 0;
     }
 }
