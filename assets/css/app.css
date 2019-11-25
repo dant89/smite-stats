@@ -27,7 +27,31 @@ main a {
     width: 100%;
 }
 
-.header-box img {
+.header-box .slogan {
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 20px;
+    text-align: left;
+}
+
+.header-box .slogan-inner {
+    background-color: rgba(0, 0, 0, 0.65);
+    border-radius: 2px;
+    display: inline-block;
+    padding: 10px 40px 10px 10px;
+}
+
+.header-box .slogan a {
+    font-weight: bold;
+    font-size: 32px;
+}
+
+.header-box .slogan span {
+    font-size: 16px;
+}
+
+.header-box img.smite-bg {
     margin-top: -20px;
     position: relative;
     width: 100%;
@@ -35,7 +59,7 @@ main a {
 
 .header-box nav {
     background: rgba(255, 255, 255, 0.8);
-    bottom: 5px;
+    bottom: 20px;
     display: block;
     left: 0;
     padding: 10px;
