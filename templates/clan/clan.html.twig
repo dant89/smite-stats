@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ clan.Name }} Clan - Unofficial SMITE{% endblock %}
+{% block title %}{{ clan.name }} Clan - Unofficial SMITE{% endblock %}
 
 {% block header_meta %}
-    <link rel="canonical" href="https://smitestats.com/clan/{{ clan.Name|lower }}" />
+    <link rel="canonical" href="https://smitestats.com/clan/{{ clan.name|lower }}" />
 {% endblock %}
 
 {% block body %}
@@ -11,14 +11,15 @@
     <div class="bg-light pt-3 pb-3">
         <div class="container">
 
-            {% if clan.Name|slug %}
+            {% if clan.name|slug %}
             <h1><a href="{{ path('clan_view', {
-                    name: clan.Name|slug
-                }) }}" title="Smite Clan {{ clan.Name }}">{{ clan.Name }} Smite Clan</a></h1>
+                    name: clan.name|slug
+                }) }}" title="Smite Clan {{ clan.name }}">{{ clan.name }} Smite Clan</a></h1>
             {% endif %}
 
-            <h2>{{ clan.Tag }}</h2>
-            <h5>Created by {{ clan.Founder }}</h5>
+            <h2>{{ clan.tag }}</h2>
+            <h5>Created by {{ clan.founder }}</h5>
+            <h5>{{ clan.players }} players</h5>
 
             <div class="row">
                 {% for player in clan_players %}
