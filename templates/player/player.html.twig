@@ -70,6 +70,7 @@
                                 </div>
                             </div>
 
+                            {% if player_god_info %}
                             <div class="row">
                                 <div class="col-12">
                                     <h3>Top Gods</h3>
@@ -127,10 +128,12 @@
 
                                 </div>
                             </div>
+                            {% endif %}
 
                         </div>
                     </div>
 
+                    {% if achievements %}
                     <div class="card mb-4 box-shadow">
                         <div class="card-body">
 
@@ -141,43 +144,43 @@
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <ul>
-                                                <li>Double Kills: {{ achievements.DoubleKills }}</li>
-                                                <li>Triple Kills: {{ achievements.TripleKills }}</li>
-                                                <li>Quadra Kills: {{ achievements.QuadraKills }}</li>
-                                                <li>Penta Kills: {{ achievements.PentaKills }}</li>
+                                                <li>Double Kills: {{ achievements.DoubleKills ?? 0 }}</li>
+                                                <li>Triple Kills: {{ achievements.TripleKills ?? 0 }}</li>
+                                                <li>Quadra Kills: {{ achievements.QuadraKills ?? 0 }}</li>
+                                                <li>Penta Kills: {{ achievements.PentaKills ?? 0 }}</li>
                                             </ul>
                                         </div>
 
                                         <div class="col-sm-6">
                                             <ul>
-                                                <li>Shutdown Spree: {{ achievements.ShutdownSpree }}</li>
-                                                <li>Killing Spree: {{ achievements.KillingSpree }}</li>
-                                                <li>Divine Spree: {{ achievements.DivineSpree }}</li>
-                                                <li>Immortal Spree: {{ achievements.ImmortalSpree }}</li>
-                                                <li>Unstoppable Spree: {{ achievements.UnstoppableSpree }}</li>
-                                                <li>Rampage Spree: {{ achievements.RampageSpree }}</li>
-                                                <li>God Like Spree: {{ achievements.GodLikeSpree }}</li>
+                                                <li>Shutdown Spree: {{ achievements.ShutdownSpree ?? 0 }}</li>
+                                                <li>Killing Spree: {{ achievements.KillingSpree ?? 0 }}</li>
+                                                <li>Divine Spree: {{ achievements.DivineSpree ?? 0 }}</li>
+                                                <li>Immortal Spree: {{ achievements.ImmortalSpree ?? 0 }}</li>
+                                                <li>Unstoppable Spree: {{ achievements.UnstoppableSpree ?? 0 }}</li>
+                                                <li>Rampage Spree: {{ achievements.RampageSpree ?? 0 }}</li>
+                                                <li>God Like Spree: {{ achievements.GodLikeSpree ?? 0 }}</li>
                                             </ul>
                                         </div>
 
                                         <div class="col-sm-6">
                                             <ul>
-                                                <li>Assisted Kills: {{ achievements.AssistedKills }}</li>
-                                                <li>Deaths: {{ achievements.Deaths }}</li>
-                                                <li>First Bloods: {{ achievements.FirstBloods }}</li>
+                                                <li>Assisted Kills: {{ achievements.AssistedKills ?? 0 }}</li>
+                                                <li>Deaths: {{ achievements.Deaths ?? 0 }}</li>
+                                                <li>First Bloods: {{ achievements.FirstBloods ?? 0 }}</li>
                                             </ul>
                                         </div>
 
                                         <div class="col-sm-6">
                                             <ul>
-                                                <li>Camps Cleared: {{ achievements.CampsCleared }}</li>
-                                                <li>Fire Giant Kills: {{ achievements.FireGiantKills }}</li>
-                                                <li>Gold Fury Kills: {{ achievements.GoldFuryKills }}</li>
-                                                <li>Minion Kills: {{ achievements.MinionKills }}</li>
-                                                <li>Phoenix Kills: {{ achievements.PhoenixKills }}</li>
-                                                <li>Siege Juggernaut Kills: {{ achievements.SiegeJuggernautKills }}</li>
-                                                <li>Wild Juggernaut Kills: {{ achievements.WildJuggernautKills }}</li>
-                                                <li>Tower Kills: {{ achievements.TowerKills }}</li>
+                                                <li>Camps Cleared: {{ achievements.CampsCleared ?? 0 }}</li>
+                                                <li>Fire Giant Kills: {{ achievements.FireGiantKills ?? 0 }}</li>
+                                                <li>Gold Fury Kills: {{ achievements.GoldFuryKills ?? 0 }}</li>
+                                                <li>Minion Kills: {{ achievements.MinionKills ?? 0 }}</li>
+                                                <li>Phoenix Kills: {{ achievements.PhoenixKills ?? 0 }}</li>
+                                                <li>Siege Juggernaut Kills: {{ achievements.SiegeJuggernautKills ?? 0 }}</li>
+                                                <li>Wild Juggernaut Kills: {{ achievements.WildJuggernautKills ?? 0 }}</li>
+                                                <li>Tower Kills: {{ achievements.TowerKills ?? 0 }}</li>
                                             </ul>
                                         </div>
 
@@ -188,7 +191,9 @@
 
                         </div>
                     </div>
+                    {% endif %}
 
+                    {% if matches %}
                     <div class="card mb-4 box-shadow">
                         <div class="card-body">
 
@@ -251,6 +256,7 @@
 
                         </div>
                     </div>
+                    {% endif %}
 
                 </div>
             </div>
