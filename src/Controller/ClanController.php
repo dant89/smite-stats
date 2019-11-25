@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Clan;
 use App\Service\Smite;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -12,12 +14,18 @@ use Psr\Cache\InvalidArgumentException;
 class ClanController extends AbstractController
 {
     /**
+     * @var EntityManagerInterface
+     */
+    protected $entityManager;
+
+    /**
      * @var Smite
      */
     protected $smite;
 
-    public function __construct(Smite $smite)
+    public function __construct(EntityManagerInterface $entityManager, Smite $smite)
     {
+        $this->entityManager = $entityManager;
         $this->smite = $smite;
     }
 
@@ -29,43 +37,80 @@ class ClanController extends AbstractController
      */
     public function index(string $name): Response
     {
-        $searchResult = $this->smite->searchTeams($name);
-        if (is_null($searchResult['TeamId'])) {
-            throw new NotFoundHttpException();
+        // Check to see if we have this clan stored in the database
+        $clanRepo = $this->entityManager->getRepository(Clan::class);
+        /** @var Clan $clan */
+        $clan = $clanRepo->findOneBy(['name' => $name]);
+
+        // See if we can find this clan via the smite api
+        if (is_null($clan) || ($clan->getCrawled() === 0)) {
+            $clanResult = $this->smite->searchTeams($name);
+            $clanId = $clanResult['TeamId'] ?? null;
+            if (is_null($clanId)) {
+                throw new NotFoundHttpException();
+            }
+
+            $clan = new Clan();
+            $clan->setSmiteClanId($clanId);
+            $clan->setName($clanResult['Name']);
+            $clan->setFounder($clanResult['Founder']);
+            $clan->setTag($clanResult['Tag']);
+            $clan->setPlayers($clanResult['Players']);
+            $clan->setDateCreated(new \DateTime());
+            $clan->setDateUpdated(new \DateTime());
+            $this->entityManager->persist($clan);
+            $this->entityManager->flush();
+
+            $clanDetails = $this->smite->getTeamDetails($clanId);
+            if (!empty($clanDetails) && $clanDetails['TeamId'] !== 0) {
+                $clan->setWins($clanDetails['Wins']);
+                $clan->setLosses($clanDetails['Losses']);
+                $clan->setRating($clanDetails['Rating']);
+                $clan->setCrawled(1);
+                $this->entityManager->persist($clan);
+                $this->entityManager->flush();
+            }
         }
 
-        $id = $searchResult['TeamId'];
-
         $gods = $this->smite->getGodsByNameKey();
-        $team = $this->smite->getTeamDetails($id);
-        $teamPlayers = $this->smite->getTeamPlayers($id);
+        $teamPlayers = $this->smite->getTeamPlayers($clan->getSmiteClanId());
 
         foreach ($teamPlayers as &$teamPlayer) {
             if (!empty($teamPlayer['Name'])) {
-                $playerId = $this->smite->getPlayerIdByName($teamPlayer['Name']);
-                $teamPlayer['Player_info'] = $this->smite->getPlayerDetailsByPortalId($playerId['player_id']);
 
-                $playerGods = $this->smite->getPlayerGodDetails($teamPlayer['Player_info']['Id']);
+                $playerDataByName = $this->smite->getPlayerIdByName($teamPlayer['Name']);
+                $playerId = $playerDataByName['player_id'] ?? null;
 
-                $playerStats = [
-                    'Kills' => 0,
-                    'Assists' => 0,
-                    'Deaths' => 0,
-                ];
+                // TODO does this need get player by name AND details?
+                if (!is_null($playerId)) {
+                    $teamPlayer['Player_info'] = $this->smite->getPlayerDetailsByPortalId($playerId);
 
-                foreach ($playerGods as $playerGod) {
-                    $playerStats['Kills'] += $playerGod['Kills'];
-                    $playerStats['Assists'] += $playerGod['Assists'];
-                    $playerStats['Deaths'] += $playerGod['Deaths'];
+                    $teamPlayerId = $teamPlayer['Player_info']['Id'];
+
+                    if (!is_null($teamPlayerId)) {
+                        $playerGods = $this->smite->getPlayerGodDetails($teamPlayer['Player_info']['Id']);
+
+                        $playerStats = [
+                            'Kills' => 0,
+                            'Assists' => 0,
+                            'Deaths' => 0,
+                        ];
+
+                        foreach ($playerGods as $playerGod) {
+                            $playerStats['Kills'] += $playerGod['Kills'];
+                            $playerStats['Assists'] += $playerGod['Assists'];
+                            $playerStats['Deaths'] += $playerGod['Deaths'];
+                        }
+
+                        $teamPlayer['God_info'] = array_slice($playerGods, 0, 4, true);
+                        $teamPlayer['Stats_info'] = $playerStats;
+                    }
                 }
-
-                $teamPlayer['God_info'] = array_slice($playerGods, 0, 4, true);
-                $teamPlayer['Stats_info'] = $playerStats;
             }
         }
 
         return $this->render('clan/clan.html.twig', [
-            'clan' => $team,
+            'clan' => $clan,
             'clan_players' => $teamPlayers,
             'gods' => $gods,
         ]);
