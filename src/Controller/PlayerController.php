@@ -99,12 +99,14 @@ class PlayerController extends AbstractController
 
         $gods = $this->smite->getGodsByNameKey();
 
-        $achievements = $this->smite->getPlayerAchievements($player->getSmitePlayerId());
-        $matches = $this->smite->getPlayerMatches($player->getSmitePlayerId());
+        $achievements = $this->smite->getPlayerAchievements($player->getSmitePlayerId()) ?? [];
+        $matches = $this->smite->getPlayerMatches($player->getSmitePlayerId()) ?? [];
 
         $matchIds = [];
-        foreach ($matches as $match) {
-            $matchIds[] = $match['Match'];
+        if (!empty($matches)) {
+            foreach ($matches as $match) {
+                $matchIds[] = $match['Match'];
+            }
         }
 
         $matchIds = array_slice($matchIds, 0, 5, true);
@@ -114,32 +116,36 @@ class PlayerController extends AbstractController
         $formattedMatches = [];
         $test = [];
         $teams = [];
-        foreach ($matchDetails as $matchDetail) {
+        if (!empty($matchDetails)) {
+            foreach ($matchDetails as $matchDetail) {
 
-            $teams[$matchDetail['Match']][$matchDetail['TaskForce']][$matchDetail['ActivePlayerId']] = $matchDetail;
+                $teams[$matchDetail['Match']][$matchDetail['TaskForce']][$matchDetail['ActivePlayerId']] = $matchDetail;
 
-            $formattedMatches[$matchDetail['Match']] = [
-                'Entry_Datetime' => $matchDetail['Entry_Datetime'],
-                'Map_Game' => $matchDetail['Map_Game'],
-                'Match' => $matchDetail['Match'],
-                'Minutes' => $matchDetail['Minutes'],
-                'Region' => $matchDetail['Region'],
-                'Winning_TaskForce' => $matchDetail['Winning_TaskForce'],
-                'Teams' => $teams[$matchDetail['Match']]
-            ];
+                $formattedMatches[$matchDetail['Match']] = [
+                    'Entry_Datetime' => $matchDetail['Entry_Datetime'],
+                    'Map_Game' => $matchDetail['Map_Game'],
+                    'Match' => $matchDetail['Match'],
+                    'Minutes' => $matchDetail['Minutes'],
+                    'Region' => $matchDetail['Region'],
+                    'Winning_TaskForce' => $matchDetail['Winning_TaskForce'],
+                    'Teams' => $teams[$matchDetail['Match']]
+                ];
 
-            if ($matchDetail['Match'] === 982362009) {
-                $test[] = $matchDetail;
+                if ($matchDetail['Match'] === 982362009) {
+                    $test[] = $matchDetail;
+                }
             }
         }
 
         // FIXME seems to be a bug if team 1 wins but team 2 is ordered first
-        foreach ($matchDetails as $matchDetail) {
-            $win = (array_key_exists($player->getSmitePlayerId(), $teams[$matchDetail['Match']][$matchDetail['Winning_TaskForce']]));
-            $formattedMatches[$matchDetail['Match']]['Win'] = $win;
+        if (!empty($matchDetails)) {
+            foreach ($matchDetails as $matchDetail) {
+                $win = (array_key_exists($player->getSmitePlayerId(), $teams[$matchDetail['Match']][$matchDetail['Winning_TaskForce']]));
+                $formattedMatches[$matchDetail['Match']]['Win'] = $win;
+            }
         }
 
-        $playerGods = $this->smite->getPlayerGodDetails($player->getSmitePlayerId());
+        $playerGods = $this->smite->getPlayerGodDetails($player->getSmitePlayerId()) ?? [];
 
         $playerStats = [
             'Kills' => 0,
@@ -147,10 +153,12 @@ class PlayerController extends AbstractController
             'Deaths' => 0,
         ];
 
-        foreach($playerGods as $playerGod) {
-            $playerStats['Kills'] += $playerGod['Kills'];
-            $playerStats['Assists'] += $playerGod['Assists'];
-            $playerStats['Deaths'] += $playerGod['Deaths'];
+        if (!empty($playerGods)) {
+            foreach ($playerGods as $playerGod) {
+                $playerStats['Kills'] += $playerGod['Kills'];
+                $playerStats['Assists'] += $playerGod['Assists'];
+                $playerStats['Deaths'] += $playerGod['Deaths'];
+            }
         }
 
         $playerGodInfo = array_slice($playerGods, 0, 4, true);
