@@ -40,10 +40,10 @@ class GetClanPlayersCommand extends Command
     {
         $clanRepo = $this->entityManager->getRepository(Clan::class);
         $playerRepo = $this->entityManager->getRepository(Player::class);
-        $clans = $clanRepo->findBy(['crawled' => 1]);
+        $clans = $clanRepo->findBy(['crawled' => 1, 'dateLastPlayerCrawl' => null]);
 
         $clanCount = count($clans);
-        $output->writeln("{$clanCount} existing clans...");
+        $output->writeln("{$clanCount} clans to crawl...");
 
         $newPlayerIds = [];
 
@@ -72,6 +72,10 @@ class GetClanPlayersCommand extends Command
                     }
                 }
             }
+
+            $clan->setDateLastPlayerCrawl(new \DateTime());
+            $this->entityManager->persist($clan);
+            $this->entityManager->flush();
 
             $clanPlayersAdded = 0;
             if (!empty($newPlayerIds)) {
