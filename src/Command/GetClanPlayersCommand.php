@@ -38,8 +38,9 @@ class GetClanPlayersCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $repository = $this->entityManager->getRepository(Clan::class);
-        $clans = $repository->findBy(['crawled' => 1]);
+        $clanRepo = $this->entityManager->getRepository(Clan::class);
+        $playerRepo = $this->entityManager->getRepository(Player::class);
+        $clans = $clanRepo->findBy(['crawled' => 1]);
 
         $clanCount = count($clans);
         $output->writeln("{$clanCount} existing clans...");
@@ -51,13 +52,17 @@ class GetClanPlayersCommand extends Command
             if ($clan->getSmiteClanId()) {
                 $clanPlayers = $this->smite->getTeamPlayers($clan->getSmiteClanId());
                 foreach ($clanPlayers as $clanPlayer) {
-                    $player = $this->smite->getPlayerIdByName($clanPlayer['Name']);
-                    $playerId = $player['player_id'] ?? null;
 
-                    if (!is_null($playerId)) {
-                        $existingPlayer = $this->smite->getPlayerDetailsByPortalId($playerId);
-                        if (empty($existingPlayer)) {
-                            $newPlayerIds[] = $clanPlayer['ActivePlayerId'];
+                    $clanPlayerName = $clanPlayer['Name'] ?? null;
+                    $output->writeln($clanPlayer['Name']);
+                    if (!is_null($clanPlayerName)) {
+                        $player = $this->smite->getPlayerIdByName($clanPlayerName);
+                        $playerId = $player['player_id'] ?? null;
+                        if (!is_null($playerId)) {
+                            $existingPlayer = $playerRepo->findOneBy(['smitePlayerId' => $playerId]);
+                            if (is_null($existingPlayer)) {
+                                $newPlayerIds[] = $playerId;
+                            }
                         }
                     }
                 }
@@ -65,6 +70,7 @@ class GetClanPlayersCommand extends Command
         }
 
         $playersAddedCount = 0;
+
         if (!empty($newPlayerIds)) {
             foreach ($newPlayerIds as $newPlayerId) {
                 $newPlayer = new Player();
