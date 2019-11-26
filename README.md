@@ -3,11 +3,11 @@
 Smite Stats
 ============
 
-A playground for testing the [Smite API](http://api.smitegame.com/smiteapi.svc) to populate clan and player statistics on a web front-end.
+This project is an unofficial open source [Smite](https://www.smitegame.com/) statistics project. The project uses the [Smite API](http://api.smitegame.com/smiteapi.svc) to populate clan and player statistics on a web front-end.
 
-The project uses a [Symfony 4](https://symfony.com/doc/current/setup.html) website-skeleton for simplicity.
+The [PHP Smite API client](https://github.com/dant89/smite-api-php-client) is used for all calls to the Hi-Rez Smite API. 
 
-Currently the project also includes a PHP Smite API client, at some point when I've built on it further I will extract this into a separate composer component.
+[Symfony 5](https://symfony.com/doc/current/setup.html) website-skeleton has been used for the base of the project.
 
 ***REMOVED******REMOVED*** Installation
 
@@ -17,10 +17,11 @@ Currently the project also includes a PHP Smite API client, at some point when I
 4. `yarn encore prod`
 5. `cp .env .env.local`
 6. Update `SMITE_DEV_ID` and `SMITE_AUTH_KEY` to reference your developer key.
+6. Create a database and setup the config for the variable `DATABASE_URL`.
 
 ***REMOVED******REMOVED*** Live Website
-You can check this project out by visiting: [Smite Stats](https://smitestats.com/)
+You can view this project running in production by visiting: [Smite Stats](https://smitestats.com/)
 
 ***REMOVED******REMOVED*** Smite API Access
 
-To be able to use the Smite API you must complete [this form](https://fs12.formsite.com/HiRez/form48/secure_index.html) to request permission for access keys.
+To request permission from Hi-Rez for access keys to use the Smite API, you must complete [this form](https://fs12.formsite.com/HiRez/form48/secure_index.html).
