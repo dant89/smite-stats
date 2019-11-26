@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class PlayerStatsCommand extends Command
 {
-    protected static $defaultName = 'smite:player-stats';
+    protected static $defaultName = 'smite:player:stats';
 
     /**
      * @var EntityManagerInterface
