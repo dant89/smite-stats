@@ -94,7 +94,7 @@ class Clan
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_last_player_crawl", type="datetime", nullable=false)
+     * @ORM\Column(name="date_last_player_crawl", type="datetime", nullable=true)
      */
     private $dateLastPlayerCrawl;
 
