@@ -47,26 +47,30 @@ class GetClanPlayersCommand extends Command
 
         $newPlayerIds = [];
 
+        $clanIndex = 1;
         /** @var Clan $clan */
         foreach ($clans as $clan) {
             if ($clan->getSmiteClanId()) {
                 $clanPlayers = $this->smite->getTeamPlayers($clan->getSmiteClanId());
-                foreach ($clanPlayers as $clanPlayer) {
-
-                    $clanPlayerName = $clanPlayer['Name'] ?? null;
-                    $output->writeln($clanPlayer['Name']);
-                    if (!is_null($clanPlayerName)) {
-                        $player = $this->smite->getPlayerIdByName($clanPlayerName);
-                        $playerId = $player['player_id'] ?? null;
-                        if (!is_null($playerId)) {
-                            $existingPlayer = $playerRepo->findOneBy(['smitePlayerId' => $playerId]);
-                            if (is_null($existingPlayer)) {
-                                $newPlayerIds[] = $playerId;
+                if (!empty($clanPlayers)) {
+                    $clanPlayersCount = count($clanPlayers);
+                    $output->writeln("{$clanPlayersCount} players in clan {$clanIndex}...");
+                    foreach ($clanPlayers as $clanPlayer) {
+                        $clanPlayerName = $clanPlayer['Name'] ?? null;
+                        if (!is_null($clanPlayerName)) {
+                            $player = $this->smite->getPlayerIdByName($clanPlayerName);
+                            $playerId = $player['player_id'] ?? null;
+                            if (!is_null($playerId)) {
+                                $existingPlayer = $playerRepo->findOneBy(['smitePlayerId' => $playerId]);
+                                if (is_null($existingPlayer)) {
+                                    $newPlayerIds[] = $playerId;
+                                }
                             }
                         }
                     }
                 }
             }
+            $clanIndex++;
         }
 
         $playersAddedCount = 0;
