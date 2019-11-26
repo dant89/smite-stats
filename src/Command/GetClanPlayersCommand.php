@@ -48,6 +48,8 @@ class GetClanPlayersCommand extends Command
         $newPlayerIds = [];
 
         $clanIndex = 1;
+        $playersAddedCount = 0;
+
         /** @var Clan $clan */
         foreach ($clans as $clan) {
             if ($clan->getSmiteClanId()) {
@@ -70,27 +72,28 @@ class GetClanPlayersCommand extends Command
                     }
                 }
             }
+
+            $clanPlayersAdded = 0;
+            if (!empty($newPlayerIds)) {
+                foreach ($newPlayerIds as $newPlayerId) {
+                    $newPlayer = new Player();
+                    $newPlayer->setSmitePlayerId($newPlayerId);
+                    $newPlayer->setDateCreated(new \DateTime());
+                    $newPlayer->setDateUpdated(new \DateTime());
+                    $this->entityManager->persist($newPlayer);
+                    $clanPlayersAdded++;
+                    $playersAddedCount++;
+                }
+                $this->entityManager->flush();
+            }
+
+            $newPlayerIds = [];
+            $output->writeln("{$clanPlayersAdded} new players added from clan {$clanIndex}!");
+
             $clanIndex++;
         }
 
-        $playersAddedCount = 0;
-
-        if (!empty($newPlayerIds)) {
-            foreach ($newPlayerIds as $newPlayerId) {
-                $newPlayer = new Player();
-                $newPlayer->setSmitePlayerId($newPlayerId);
-                $newPlayer->setDateCreated(new \DateTime());
-                $newPlayer->setDateUpdated(new \DateTime());
-                $this->entityManager->persist($newPlayer);
-                $playersAddedCount++;
-            }
-            $this->entityManager->flush();
-        }
-
-        $newPlayerIdsCount = count($newPlayerIds);
-
-        $output->writeln("{$newPlayerIdsCount} new player IDs...");
-        $output->writeln("{$playersAddedCount} new players added!");
+        $output->writeln("Total {$playersAddedCount} new players added!");
 
         return 0;
     }
