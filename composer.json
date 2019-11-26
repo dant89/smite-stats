@@ -12,6 +12,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-igbinary": "^2.0",
+        "ext-redis": "^4.2",
         "ext-xml": "^7.2",
         "dant89/smite-api-php-client": "^1.1.0",
         "sensio/framework-extra-bundle": "^5.5",
