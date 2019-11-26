@@ -628,6 +628,22 @@ class Smite
         return $data;
     }
 
+    /**
+     * @return array|null
+     */
+    public function getUsage(): ?array
+    {
+        if (is_null($this->sessionId)) {
+            return null;
+        }
+
+        /** @var ToolClient $toolClient */
+        $toolClient = $this->smiteClient->getHttpClient('tool');
+        $response = $toolClient->getDataUsed($this->timestamp, $this->sessionId);
+
+        return $response->getContent();
+    }
+
     protected function logApiCall(string $name, bool $cached, int $responseStatus = null): void
     {
         $apiCall = new ApiCall();
