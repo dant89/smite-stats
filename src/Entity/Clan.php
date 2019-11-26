@@ -92,6 +92,13 @@ class Clan
     private $dateUpdated;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_last_player_crawl", type="datetime", nullable=false)
+     */
+    private $dateLastPlayerCrawl;
+
+    /**
      * @var int|null
      *
      * @ORM\Column(name="crawled", type="integer", nullable=false, options={"default":0})
@@ -293,6 +300,24 @@ class Clan
     public function setDateUpdated(\DateTime $dateUpdated): Clan
     {
         $this->dateUpdated = $dateUpdated;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateLastPlayerCrawl(): \DateTime
+    {
+        return $this->dateLastPlayerCrawl;
+    }
+
+    /**
+     * @param \DateTime $dateLastPlayerCrawl
+     * @return Clan
+     */
+    public function setDateLastPlayerCrawl(\DateTime $dateLastPlayerCrawl): Clan
+    {
+        $this->dateLastPlayerCrawl = $dateLastPlayerCrawl;
         return $this;
     }
 
