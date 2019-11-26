@@ -216,27 +216,27 @@
                                                         <h4>Team {{ key }} {{ key == match.Winning_TaskForce ? 'Winners' : 'Losers' }}</h4>
                                                         <div class="border border-info mb-1 p-2">
 
-                                                            {% for player in players %}
+                                                            {% for match_player in players %}
                                                             <div class="mb-1 p-1">
-                                                                {% if player.name|clan_remove|slug %}
+                                                                {% if match_player.playerName|clan_remove|slug %}
                                                                 <h5><a href="{{ path('player_view', {
-                                                                        gamertag: player.name|clan_remove|slug,
-                                                                        id: player.playerId
-                                                                    }) }}" title="Smite Player {{ player.name }}">{{ player.name }}</a></h5>
+                                                                        gamertag: match_player.playerName|clan_remove|slug,
+                                                                        id: match_player.playerId
+                                                                    }) }}" title="Smite Player {{ match_player.playerName }}">{{ match_player.playerName }}</a></h5>
                                                                 {% else %}
                                                                     <strong>Unknown</strong>
                                                                 {% endif %}
                                                                 <ul>
-                                                                    <li>Level: {{ player.Account_Level }}</li>
-                                                                    <li>God: {{ player.Reference_Name }}</li>
-                                                                    <li>Skin: {{ player.Skin }}</li>
-                                                                    <li>Kills: {{ player.Kills_Player }}</li>
-                                                                    <li>Deaths: {{ player.Deaths }}</li>
-                                                                    <li>Damage Mitigated: {{ player.Damage_Mitigated }}</li>
-                                                                    <li>Damage Taken: {{ player.Damage_Taken }}</li>
-                                                                    <li>Gold Earned: {{ player.Gold_Earned }}</li>
-                                                                    <li>Gold Per Minute: {{ player.Gold_Per_Minute }}</li>
-                                                                    <li>Healing: {{ player.Healing }}</li>
+                                                                    <li>Level: {{ match_player.Account_Level }}</li>
+                                                                    <li>God: {{ match_player.Reference_Name }}</li>
+                                                                    <li>Skin: {{ match_player.Skin }}</li>
+                                                                    <li>Kills: {{ match_player.Kills_Player }}</li>
+                                                                    <li>Deaths: {{ match_player.Deaths }}</li>
+                                                                    <li>Damage Mitigated: {{ match_player.Damage_Mitigated }}</li>
+                                                                    <li>Damage Taken: {{ match_player.Damage_Taken }}</li>
+                                                                    <li>Gold Earned: {{ match_player.Gold_Earned }}</li>
+                                                                    <li>Gold Per Minute: {{ match_player.Gold_Per_Minute }}</li>
+                                                                    <li>Healing: {{ match_player.Healing }}</li>
                                                                 </ul>
                                                             </div>
                                                             {% endfor %}
