@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class UpdatePlayersCommand extends Command
 {
-    protected static $defaultName = 'smite:update-players';
+    protected static $defaultName = 'smite:player:update';
 
     /**
      * @var EntityManagerInterface
