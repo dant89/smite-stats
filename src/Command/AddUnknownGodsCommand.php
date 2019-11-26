@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class AddUnknownGodsCommand extends Command
 {
-    protected static $defaultName = 'smite:add-unknown-gods';
+    protected static $defaultName = 'smite:god:store-gods';
 
     /**
      * @var EntityManagerInterface

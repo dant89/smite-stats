@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class AddUnknownPlayersCommand extends Command
 {
-    protected static $defaultName = 'smite:store-new-player-ids';
+    protected static $defaultName = 'smite:player:store-player-ids';
 
     /**
      * @var EntityManagerInterface
