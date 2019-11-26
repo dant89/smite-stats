@@ -104,21 +104,15 @@ class Smite
     }
 
     /**
-     * @throws InvalidArgumentException
+     * @return array|null
      */
-    public function ping()
+    public function ping(): ?array
     {
-        $cache = $this->cache->getItem("smite_gods");
-        if ($cache->isHit()) {
-            $this->logApiCall($cache->getKey(), true);
-            return $cache->get();
-        }
-
         /** @var ToolClient $toolClient */
         $toolClient = $this->smiteClient->getHttpClient('tool');
         $response = $toolClient->ping();
 
-        return $response;
+        return $response->getContent();
     }
 
     /**
