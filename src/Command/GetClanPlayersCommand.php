@@ -64,7 +64,7 @@ class GetClanPlayersCommand extends Command
                             $playerId = $player['player_id'] ?? null;
                             if (!is_null($playerId)) {
                                 $existingPlayer = $playerRepo->findOneBy(['smitePlayerId' => $playerId]);
-                                if (is_null($existingPlayer)) {
+                                if (is_null($existingPlayer) && !in_array($playerId, $newPlayerIds)) {
                                     $newPlayerIds[] = $playerId;
                                 }
                             }
@@ -79,6 +79,7 @@ class GetClanPlayersCommand extends Command
 
             $clanPlayersAdded = 0;
             if (!empty($newPlayerIds)) {
+                $newPlayerIds = array_unique($newPlayerIds);
                 foreach ($newPlayerIds as $newPlayerId) {
                     $newPlayer = new Player();
                     $newPlayer->setSmitePlayerId($newPlayerId);
