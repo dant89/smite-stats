@@ -104,21 +104,15 @@ class Smite
     }
 
     /**
-     * @throws InvalidArgumentException
+     * @return array|null
      */
-    public function ping()
+    public function ping(): ?array
     {
-        $cache = $this->cache->getItem("smite_gods");
-        if ($cache->isHit()) {
-            $this->logApiCall($cache->getKey(), true);
-            return $cache->get();
-        }
-
         /** @var ToolClient $toolClient */
         $toolClient = $this->smiteClient->getHttpClient('tool');
         $response = $toolClient->ping();
 
-        return $response;
+        return $response->getContent();
     }
 
     /**
@@ -626,6 +620,22 @@ class Smite
 
         $this->logApiCall($cache->getKey(), false, $response->getStatus());
         return $data;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getUsage(): ?array
+    {
+        if (is_null($this->sessionId)) {
+            return null;
+        }
+
+        /** @var ToolClient $toolClient */
+        $toolClient = $this->smiteClient->getHttpClient('tool');
+        $response = $toolClient->getDataUsed($this->timestamp, $this->sessionId);
+
+        return $response->getContent();
     }
 
     protected function logApiCall(string $name, bool $cached, int $responseStatus = null): void
