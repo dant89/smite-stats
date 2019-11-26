@@ -16,6 +16,6 @@ class SlugExtension extends AbstractExtension
 
     public function createSlug($subject)
     {
-        return strtolower(trim(preg_replace('/([^a-z0-9-]+)/is', '', $subject)));
+        return strtolower(trim(preg_replace('/([^a-z0-9-]+)/is', '-', $subject)));
     }
 }

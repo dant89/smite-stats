@@ -74,7 +74,8 @@ class Smite
      */
     protected function authenticate(): bool
     {
-        $cache = $this->cache->getItem('smite_session_id');
+        $cacheKey = $this->generateCacheKey('smite_session_id');
+        $cache = $this->cache->getItem($cacheKey);
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
             $this->sessionId = $cache->get();
@@ -125,7 +126,8 @@ class Smite
             return null;
         }
 
-        $cache = $this->cache->getItem("smite_gods");
+        $cacheKey = $this->generateCacheKey('smite_gods');
+        $cache = $this->cache->getItem($cacheKey);
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
             return $cache->get();
@@ -144,7 +146,7 @@ class Smite
             $this->cache->save($cache);
         } else {
             $this->logger->error('API call failed.', [
-                'item' => 'smite_gods',
+                'item' => $cacheKey,
                 'response' => $response
             ]);
         }
@@ -184,7 +186,8 @@ class Smite
             return null;
         }
 
-        $cache = $this->cache->getItem("smite_leaderboards_{$queue}_{$tier}_{$round}");
+        $cacheKey = $this->generateCacheKey('smite_leaderboards', implode('_', [$queue, $tier, $round]));
+        $cache = $this->cache->getItem($cacheKey);
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
             return $cache->get();
@@ -203,7 +206,7 @@ class Smite
             $this->cache->save($cache);
         } else {
             $this->logger->error('API call failed.', [
-                'item' => "smite_leaderboards_{$queue}_{$tier}_{$round}",
+                'item' => $cacheKey,
                 'response' => $response
             ]);
         }
@@ -223,9 +226,8 @@ class Smite
             return null;
         }
 
-        $uniqueKey = md5(implode('_', $matchIds));
-
-        $cache = $this->cache->getItem("smite_team_match_details_{$uniqueKey}");
+        $cacheKey = $this->generateCacheKey('smite_team_match_details', implode('_', $matchIds));
+        $cache = $this->cache->getItem($cacheKey);
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
             return $cache->get();
@@ -244,7 +246,7 @@ class Smite
             $this->cache->save($cache);
         } else {
             $this->logger->error('API call failed.', [
-                'item' => "smite_team_match_details_{$uniqueKey}",
+                'item' => $cacheKey,
                 'response' => $response
             ]);
         }
@@ -265,7 +267,8 @@ class Smite
             return null;
         }
 
-        $cache = $this->cache->getItem("smite_player_achievements_{$playerId}");
+        $cacheKey = $this->generateCacheKey('smite_player_achievements', $playerId);
+        $cache = $this->cache->getItem($cacheKey);
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
             return $cache->get();
@@ -284,7 +287,7 @@ class Smite
             $this->cache->save($cache);
         } else {
             $this->logger->error('API call failed.', [
-                'item' => "smite_player_achievements_{$playerId}",
+                'item' => $cacheKey,
                 'response' => $response
             ]);
         }
@@ -304,7 +307,8 @@ class Smite
             return null;
         }
 
-        $cache = $this->cache->getItem("smite_player_{$portalId}");
+        $cacheKey = $this->generateCacheKey('smite_player_id', $portalId);
+        $cache = $this->cache->getItem($cacheKey);
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
             return $cache->get();
@@ -327,7 +331,7 @@ class Smite
             $this->cache->save($cache);
         } else {
             $this->logger->error('API call failed.', [
-                'item' => "smite_player_{$portalId}",
+                'item' => $cacheKey,
                 'response' => $response
             ]);
         }
@@ -348,7 +352,8 @@ class Smite
             return null;
         }
 
-        $cache = $this->cache->getItem("smite_player_{$name}");
+        $cacheKey = $this->generateCacheKey('smite_player_name', $name);
+        $cache = $this->cache->getItem($cacheKey);
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
             return $cache->get();
@@ -371,7 +376,7 @@ class Smite
             $this->cache->save($cache);
         } else {
             $this->logger->error('API call failed.', [
-                'item' => "smite_player_{$name}",
+                'item' => $cacheKey,
                 'response' => $response
             ]);
         }
@@ -392,7 +397,8 @@ class Smite
             return null;
         }
 
-        $cache = $this->cache->getItem("smite_player_gods_{$playerId}");
+        $cacheKey = $this->generateCacheKey('smite_player_god_details', $playerId);
+        $cache = $this->cache->getItem($cacheKey);
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
             return $cache->get();
@@ -411,7 +417,7 @@ class Smite
             $this->cache->save($cache);
         } else {
             $this->logger->error('API call failed.', [
-                'item' => "smite_player_gods_{$playerId}",
+                'item' => $cacheKey,
                 'response' => $response
             ]);
         }
@@ -432,7 +438,8 @@ class Smite
             return null;
         }
 
-        $cache = $this->cache->getItem("smite_player_matches_{$playerId}");
+        $cacheKey = $this->generateCacheKey('smite_player_matches', $playerId);
+        $cache = $this->cache->getItem($cacheKey);
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
             return $cache->get();
@@ -451,7 +458,7 @@ class Smite
             $this->cache->save($cache);
         } else {
             $this->logger->error('API call failed.', [
-                'item' => "smite_player_matches_{$playerId}",
+                'item' => $cacheKey,
                 'response' => $response
             ]);
         }
@@ -471,7 +478,8 @@ class Smite
             return null;
         }
 
-        $cache = $this->cache->getItem("smite_team_{$id}");
+        $cacheKey = $this->generateCacheKey('smite_team_details', $id);
+        $cache = $this->cache->getItem($cacheKey);
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
             return $cache->get();
@@ -494,7 +502,7 @@ class Smite
             $this->cache->save($cache);
         } else {
             $this->logger->error('API call failed.', [
-                'item' => "smite_team_{$id}",
+                'item' => $cacheKey,
                 'response' => $response
             ]);
         }
@@ -514,7 +522,8 @@ class Smite
             return null;
         }
 
-        $cache = $this->cache->getItem("smite_team_search_{$term}");
+        $cacheKey = $this->generateCacheKey('smite_team_search', $term);
+        $cache = $this->cache->getItem($cacheKey);
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
             return $cache->get();
@@ -537,7 +546,7 @@ class Smite
             $this->cache->save($cache);
         } else {
             $this->logger->error('API call failed.', [
-                'item' => "smite_team_search_{$term}",
+                'item' => $cacheKey,
                 'response' => $response
             ]);
         }
@@ -557,7 +566,8 @@ class Smite
             return null;
         }
 
-        $cache = $this->cache->getItem("smite_team_players_{$teamId}");
+        $cacheKey = $this->generateCacheKey("smite_team_players", $teamId);
+        $cache = $this->cache->getItem($cacheKey);
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
             return $cache->get();
@@ -576,7 +586,7 @@ class Smite
             $this->cache->save($cache);
         } else {
             $this->logger->error('API call failed.', [
-                'item' => "smite_team_players_{$teamId}",
+                'item' => $cacheKey,
                 'response' => $response
             ]);
         }
@@ -594,7 +604,8 @@ class Smite
             return null;
         }
 
-        $cache = $this->cache->getItem("smite_top_matches");
+        $cacheKey = $this->generateCacheKey("smite_top_matches");
+        $cache = $this->cache->getItem($cacheKey);
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
             return $cache->get();
@@ -613,7 +624,7 @@ class Smite
             $this->cache->save($cache);
         } else {
             $this->logger->error('API call failed.', [
-                'item' => "smite_top_matches",
+                'item' => $cacheKey,
                 'response' => $response
             ]);
         }
@@ -622,9 +633,6 @@ class Smite
         return $data;
     }
 
-    /**
-     * @return array|null
-     */
     public function getUsage(): ?array
     {
         if (is_null($this->sessionId)) {
@@ -636,6 +644,11 @@ class Smite
         $response = $toolClient->getDataUsed($this->timestamp, $this->sessionId);
 
         return $response->getContent();
+    }
+
+    protected function generateCacheKey(string $prepend, ?string $value = null): string
+    {
+        return $prepend . (isset($value) ? '_' . md5($value) : null);
     }
 
     protected function logApiCall(string $name, bool $cached, int $responseStatus = null): void
