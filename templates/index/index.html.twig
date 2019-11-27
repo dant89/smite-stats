@@ -24,7 +24,7 @@
                         <div class="row">
                         {% for god in gods %}
                             <div class="col-6 col-sm-4">
-                                <div class="rounded smite-god" style="background-image: url({{ god.cardUrl }})">
+                                <div class="rounded smite-god" rel="nofollow" style="background-image: url({{ god.cardUrl }})">
                                     <a href="{{ path('god_view', {name: god.name|slug}) }}" title="Smite God {{ god.name }}">{{ god.name }}</a>
                                 </div>
                             </div>
@@ -84,11 +84,11 @@
 
                     <div class="col-12">
                         <h2>Featured Players</h2>
-                        <a href="{{ path('player_view', {gamertag: 'beav2290', id: '701418647'}) }}">Beav2290</a><br/>
-                        <a href="{{ path('player_view', {gamertag: 'buckerz2012', id: '701275468'}) }}">BucKerz2012</a><br/>
-                        <a href="{{ path('player_view', {gamertag: 'jc2294', id: '702523354'}) }}">JC2294</a><br/>
-                        <a href="{{ path('player_view', {gamertag: 'jimski87', id: '701273540'}) }}">Jimski87</a><br/>
-                        <a href="{{ path('player_view', {gamertag: 'silver-iv7', id: '702565842'}) }}">Silver IV7</a>
+                        <a href="{{ path('player_view', {gamertag: 'beav2290', id: '701418647'}) }}" rel="nofollow">Beav2290</a><br/>
+                        <a href="{{ path('player_view', {gamertag: 'buckerz2012', id: '701275468'}) }}" rel="nofollow">BucKerz2012</a><br/>
+                        <a href="{{ path('player_view', {gamertag: 'jc2294', id: '702523354'}) }}" rel="nofollow">JC2294</a><br/>
+                        <a href="{{ path('player_view', {gamertag: 'jimski87', id: '701273540'}) }}" rel="nofollow">Jimski87</a><br/>
+                        <a href="{{ path('player_view', {gamertag: 'silver-iv7', id: '702565842'}) }}" rel="nofollow">Silver IV7</a>
                     </div>
 
                 </div>
