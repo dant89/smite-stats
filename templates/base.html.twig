@@ -3,12 +3,11 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="Smite stats from the worlds best Smite statistics provider. Up to date and in-depth details on your latest matches, kills, best gods and much more!">
         <title>{% block title %}Smite{% endblock %}</title>
+        {% block header_meta %}{% endblock %}
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
-        {% block header_meta %}{% endblock %}
     </head>
     <body>
         {% include 'header.html.twig' %}
