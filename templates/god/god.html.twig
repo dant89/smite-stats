@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}God {{ god.name }} - Unofficial SMITE{% endblock %}
+{% block title %}{{ god.name }} Smite God - Unofficial SMITE{% endblock %}
 
 {% block header_meta %}
     <link rel="canonical" href="https://smitestats.com/gods/{{ god.Name|slug }}" />
@@ -15,7 +15,7 @@
 
                 <div class="col-md-4 col-lg-3">
                     <div class="rounded smite-god" style="background-image: url({{ god.cardUrl }})">
-                        <a href="{{ path('god_view', {name: god.name|slug}) }}" title="Smite God {{ god.name }}"><h1>{{ god.name }}</h1></a>
+                        <h1><a href="{{ path('god_view', {name: god.name|slug}) }}" title="Smite God {{ god.name }}">{{ god.name }}</a></h1>
                     </div>
                 </div>
 
