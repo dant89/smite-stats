@@ -3,7 +3,7 @@
 {% block title %}{{ player.name }} Smite Player - Unofficial SMITE{% endblock %}
 
 {% block header_meta %}
-    <link rel="canonical" href="https://smitestats.com/player/{{ player_name_slug }}-{{ player.smitePlayerId }}" />
+    <link rel="canonical" href="https://smitestats.com/player/{{ player.name|clan_remove|slug }}-{{ player.smitePlayerId }}" />
 {% endblock %}
 
 {% block body %}
