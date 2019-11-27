@@ -1,4 +1,6 @@
 @import "~bootstrap";
+@import "~@fortawesome/fontawesome-free/css/brands.min.css";
+@import "~@fortawesome/fontawesome-free/css/fontawesome.min.css";
 
 body {
     background-color: ***REMOVED***000;
@@ -105,4 +107,8 @@ main a {
     border: 1px solid grey;
     margin-bottom: 10px;
     padding: 5px;
+}
+
+footer .social a i {
+    font-size: 24px;
 }
