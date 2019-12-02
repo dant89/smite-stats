@@ -9,9 +9,9 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class GetPlayerMatchIdsCommand extends Command
+class GetPlayerIdsBySearchCommand extends Command
 {
-    protected static $defaultName = 'smite:player:store-match-ids';
+    protected static $defaultName = 'smite:player:search-player-ids';
 
     /**
      * @var EntityManagerInterface
@@ -32,7 +32,7 @@ class GetPlayerMatchIdsCommand extends Command
 
     protected function configure()
     {
-        $this->setDescription('Store match IDs that aren\'t currently in the database');
+        $this->setDescription('Search for and store player IDs that aren\'t currently in the database');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -40,19 +40,45 @@ class GetPlayerMatchIdsCommand extends Command
         $playerRepo = $this->entityManager->getRepository(Player::class);
         $players = $playerRepo->findBy(['crawled' => 1]);
 
-        if (!empty($players)) {
-            foreach ($players as $player) {
-                $playerMatches = $this->smite->getPlayerMatches($player->getSmitePlayerId()) ?? [];
-                if (!empty($playerMatches)) {
-                    foreach ($playerMatches as $playerMatch) {
-                        $playerMatchDetail = $this->smite->getMatchDetailsBatch([$playerMatch['Match']]);
+        $searchTerms = 0;
+        $newPlayers = 0;
+        $currentPlayer = 1;
+        $playerCount = count($players);
 
-                        // TODO figure out how best to store matches and any match details required
-                        return 0;
+        if (!empty($players)) {
+            /** @var Player $player */
+            foreach ($players as $player) {
+                $output->writeln("Searching player {$currentPlayer} of {$playerCount}...");
+
+                $nameParts = explode(' ', $player->getName());
+                foreach ($nameParts as $namePart) {
+                    $searchPlayers = $this->smite->searchPlayerByName($namePart) ?? [];
+                    $searchTerms++;
+
+                    $newPlayerIds = [];
+                    foreach ($searchPlayers as $searchPlayer) {
+                        $playerId = $searchPlayer['player_id'];
+                        if (!in_array($playerId, $newPlayerIds)) {
+                            $newPlayerIds[] = $playerId;
+                            $existingPlayer = $playerRepo->findOneBy(['smitePlayerId' => $playerId]);
+                            if (is_null($existingPlayer)) {
+                                $newPlayer = new Player();
+                                $newPlayer->setSmitePlayerId($searchPlayer['player_id']);
+                                $newPlayer->setDateCreated(new \DateTime());
+                                $newPlayer->setDateUpdated(new \DateTime());
+                                $this->entityManager->persist($newPlayer);
+                                $newPlayers++;
+                            }
+                        }
                     }
+                    $this->entityManager->flush();
                 }
+                $currentPlayer++;
             }
         }
+
+        $output->writeln("{$searchTerms} terms searched...");
+        $output->writeln("{$newPlayers} new players added!");
 
         return 0;
     }
