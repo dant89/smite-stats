@@ -297,6 +297,47 @@ class Smite
     }
 
     /**
+     * @param string $playerName
+     * @return array|null
+     * @throws InvalidArgumentException
+     * @throws \Exception
+     */
+    public function searchPlayerByName(string $playerName): ?array
+    {
+        if (is_null($this->sessionId)) {
+            return null;
+        }
+
+        $cacheKey = $this->generateCacheKey('smite_player_search', $playerName);
+        $cache = $this->cache->getItem($cacheKey);
+        if ($cache->isHit()) {
+            $this->logApiCall($cache->getKey(), true);
+            return $cache->get();
+        }
+
+        /** @var PlayerInfoClient $playerInfoClient */
+        $playerInfoClient = $this->smiteClient->getHttpClient('player_info');
+        $response = $playerInfoClient->searchPlayers($playerName, $this->sessionId, $this->timestamp);
+
+        $data = null;
+
+        if ($response->getStatus() === 200) {
+            $data = $response->getContent();
+            $cache->set($data);
+            $cache->expiresAfter(3600 / 2); // 30 minutes
+            $this->cache->save($cache);
+        } else {
+            $this->logger->error('API call failed.', [
+                'item' => $cacheKey,
+                'response' => $response
+            ]);
+        }
+
+        $this->logApiCall($cache->getKey(), false, $response->getStatus());
+        return $data;
+    }
+
+    /**
      * @param string $portalId
      * @return array|null
      * @throws InvalidArgumentException
