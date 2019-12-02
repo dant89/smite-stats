@@ -38,7 +38,7 @@ class GetPlayerIdsBySearchCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $playerRepo = $this->entityManager->getRepository(Player::class);
-        $players = $playerRepo->findBy(['crawled' => 1], ['id' => 'DESC'], 1000);
+        $players = $playerRepo->findBy(['crawled' => 1], ['id' => 'DESC'], 100);
 
         $searchTerms = 0;
         $newPlayers = 0;
@@ -57,17 +57,19 @@ class GetPlayerIdsBySearchCommand extends Command
 
                     $newPlayerIds = [];
                     foreach ($searchPlayers as $searchPlayer) {
-                        $playerId = $searchPlayer['player_id'];
-                        if (!in_array($playerId, $newPlayerIds)) {
-                            $newPlayerIds[] = $playerId;
-                            $existingPlayer = $playerRepo->findOneBy(['smitePlayerId' => $playerId]);
-                            if (is_null($existingPlayer)) {
-                                $newPlayer = new Player();
-                                $newPlayer->setSmitePlayerId($searchPlayer['player_id']);
-                                $newPlayer->setDateCreated(new \DateTime());
-                                $newPlayer->setDateUpdated(new \DateTime());
-                                $this->entityManager->persist($newPlayer);
-                                $newPlayers++;
+                        $playerId = $searchPlayer['player_id'] ?? null;
+                        if (!is_null($playerId) && is_int($playerId) && $playerId > 0) {
+                            if (!in_array($playerId, $newPlayerIds)) {
+                                $newPlayerIds[] = $playerId;
+                                $existingPlayer = $playerRepo->findOneBy(['smitePlayerId' => $playerId]);
+                                if (is_null($existingPlayer)) {
+                                    $newPlayer = new Player();
+                                    $newPlayer->setSmitePlayerId($searchPlayer['player_id']);
+                                    $newPlayer->setDateCreated(new \DateTime());
+                                    $newPlayer->setDateUpdated(new \DateTime());
+                                    $this->entityManager->persist($newPlayer);
+                                    $newPlayers++;
+                                }
                             }
                         }
                     }
