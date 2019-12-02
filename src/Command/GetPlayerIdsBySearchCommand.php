@@ -38,7 +38,7 @@ class GetPlayerIdsBySearchCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $playerRepo = $this->entityManager->getRepository(Player::class);
-        $players = $playerRepo->findBy(['crawled' => 1]);
+        $players = $playerRepo->findBy(['crawled' => 1], ['id' => 'DESC'], 1000);
 
         $searchTerms = 0;
         $newPlayers = 0;
@@ -71,6 +71,9 @@ class GetPlayerIdsBySearchCommand extends Command
                             }
                         }
                     }
+                    $newPlayersCount = count($newPlayerIds);
+                    $output->writeln("Adding {$newPlayersCount} new players!");
+
                     $this->entityManager->flush();
                 }
                 $currentPlayer++;
