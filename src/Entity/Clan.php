@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Clan
  *
- * @ORM\Table(name="clan")
+ * @ORM\Table(name="clan", uniqueConstraints={@ORM\UniqueConstraint(name="unique_clan_id", columns={"smite_clan_id"})})
  * @ORM\Entity
  */
 class Clan
