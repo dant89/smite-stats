@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Smite Player{% if search_term %} {{ search_term }}{% endif %} Search Results - Unofficial SMITE{% endblock %}
+
+{% block header_meta %}
+    <link rel="canonical" href="https://smitestats.com/player/" />
+{% endblock %}
+
+{% block body %}
+
+    <div class="bg-light pt-3 pb-3">
+        <div class="container">
+
+            <h1>Smite Player Search{% if search_term %} {{ search_term }}{% endif %}</h1>
+
+            <div class="row">
+            {% if players %}
+                {% for player in players %}
+                <div class="col-sm-3">
+                    <div class="card mb-4 box-shadow">
+                        <div class="card-body">
+
+                            {% if player.Name|clan_remove|slug %}
+                            <a href="{{ path('player_view', {
+                                gamertag: player.Name|clan_remove|slug,
+                                id: player.player_id
+                            }) }}" title="Smite Player {{ player.Name }}">{{ player.Name }}</a>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+            {% else %}
+                <div class="col">
+                    <p>No players were found for this search term, please try another!</p>
+                </div>
+            {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

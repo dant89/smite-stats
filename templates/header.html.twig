@@ -9,9 +9,21 @@
         </div>
     </div>
     <nav>
-        <div class="container text-left">
-            <a class="mr-3" href="{{ path('homepage') }}" rel="nofollow">Home</a>
-            <a class="mr-3" href="{{ path('gods') }}">Gods</a>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7 text-left">
+                    <a class="mr-3" href="{{ path('homepage') }}" rel="nofollow">Home</a>
+                    <a class="mr-3" href="{{ path('gods') }}">Gods</a>
+                    <a class="mr-3" href="{{ path('players') }}">Players</a>
+                </div>
+                <div class="col-md-5">
+                    <form action="{{ path('player_search') }}" class="form-inline float-right" method="get">
+                        <input class="form-control mr-sm-1" name="player_name" placeholder="Gamertag to search..." type="text" />
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
+
         </div>
     </nav>
 </div>
