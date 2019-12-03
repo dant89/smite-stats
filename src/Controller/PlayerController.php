@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Player;
+use App\Entity\PlayerSearch;
 use App\Service\Smite;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -34,6 +36,22 @@ class PlayerController extends AbstractController
         $this->entityManager = $entityManager;
         $this->logger = $logger;
         $this->smite = $smite;
+    }
+
+    /**
+     * @Route("/player/", name="players")
+     * @param int id
+     * @return Response
+     */
+    public function index(): Response
+    {
+        $playerRepo = $this->entityManager->getRepository(Player::class);
+        /** @var Player $player */
+        $newestPlayers = $playerRepo->findNewestPlayerNameNotNull(20);
+
+        return $this->render('player/index.html.twig', [
+            'newest_players' => $newestPlayers
+        ]);
     }
 
     /**
@@ -171,6 +189,48 @@ class PlayerController extends AbstractController
             'player_name_slug' => $playerNameSlug,
             'gods' => $gods,
             'matches' => $formattedMatches
+        ]);
+    }
+
+    /**
+     * @Route("/player_search", name="player_search")
+     * @param Request $request
+     * @return Response
+     * @throws InvalidArgumentException
+     */
+    public function playerSearch(Request $request): Response
+    {
+        $playerName = $request->get('player_name');
+
+        $players = [];
+        if (!is_null($playerName) && !empty($playerName)) {
+
+            $playerSearch = new PlayerSearch();
+            $playerSearch->setTerm($playerName);
+            $playerSearch->setDateSearched(new \DateTime());
+            $this->entityManager->persist($playerSearch);
+            $this->entityManager->flush();
+
+            $players = $this->smite->searchPlayerByName($playerName);
+
+            $playerRepo = $this->entityManager->getRepository(Player::class);
+            /** @var Player $player */
+            foreach ($players as $player) {
+                $existingPlayer = $playerRepo->findOneBy(['smitePlayerId' => $player['player_id']]);
+                if (is_null($existingPlayer)) {
+                    $newPlayer = new Player();
+                    $newPlayer->setSmitePlayerId($player['player_id']);
+                    $newPlayer->setDateCreated(new \DateTime());
+                    $newPlayer->setDateUpdated(new \DateTime());
+                    $this->entityManager->persist($newPlayer);
+                }
+                $this->entityManager->flush();
+            }
+        }
+
+        return $this->render('player/search.html.twig', [
+            'players' => $players,
+            'search_term' => $playerName
         ]);
     }
 }

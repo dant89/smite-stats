@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Smite Players - Unofficial SMITE{% endblock %}
+
+{% block header_meta %}
+    <link rel="canonical" href="https://smitestats.com/player/" />
+{% endblock %}
+
+{% block body %}
+
+    <div class="bg-light pt-3 pb-3">
+        <div class="container">
+
+            <h1>Smite Players</h1>
+
+            <div class="row">
+                <div class="col-12">
+
+                    {% for player in newest_players %}
+
+                    <div class="card mb-4 box-shadow">
+                        <div class="card-body">
+
+                            {% if player.name|clan_remove|slug %}
+                            <a href="{{ path('player_view', {
+                                gamertag: player.name|clan_remove|slug,
+                                id: player.smitePlayerId
+                            }) }}" title="Smite Player {{ player.name }}">{{ player.name }}</a>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
