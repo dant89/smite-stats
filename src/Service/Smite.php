@@ -216,6 +216,46 @@ class Smite
     }
 
     /**
+     * @param string $matchId
+     * @return array
+     * @throws InvalidArgumentException
+     */
+    public function getMatchDetails(string $matchId): ?array
+    {
+        if (is_null($this->sessionId)) {
+            return null;
+        }
+
+        $cacheKey = $this->generateCacheKey("smite_team_match_detail_{$matchId}");
+        $cache = $this->cache->getItem($cacheKey);
+        if ($cache->isHit()) {
+            $this->logApiCall($cache->getKey(), true);
+            return $cache->get();
+        }
+
+        /** @var MatchClient $teamClient */
+        $matchClient = $this->smiteClient->getHttpClient('match');
+        $response = $matchClient->getMatchDetails($matchId, $this->sessionId, $this->timestamp);
+
+        $data = null;
+
+        if ($response->getStatus() === 200) {
+            $data = $response->getContent();
+            $cache->set($data);
+            $cache->expiresAfter(3600 / 2); // 30 minutes
+            $this->cache->save($cache);
+        } else {
+            $this->logger->error('API call failed.', [
+                'item' => $cacheKey,
+                'response' => $response
+            ]);
+        }
+
+        $this->logApiCall($cache->getKey(), false, $response->getStatus());
+        return $data;
+    }
+
+    /**
      * @param array $matchIds
      * @return array
      * @throws InvalidArgumentException
@@ -236,6 +276,46 @@ class Smite
         /** @var MatchClient $teamClient */
         $matchClient = $this->smiteClient->getHttpClient('match');
         $response = $matchClient->getMatchDetailsBatch($matchIds, $this->sessionId, $this->timestamp);
+
+        $data = null;
+
+        if ($response->getStatus() === 200) {
+            $data = $response->getContent();
+            $cache->set($data);
+            $cache->expiresAfter(3600 / 2); // 30 minutes
+            $this->cache->save($cache);
+        } else {
+            $this->logger->error('API call failed.', [
+                'item' => $cacheKey,
+                'response' => $response
+            ]);
+        }
+
+        $this->logApiCall($cache->getKey(), false, $response->getStatus());
+        return $data;
+    }
+
+    /**
+     * @param string $matchId
+     * @return array
+     * @throws InvalidArgumentException
+     */
+    public function getMatchPlayerDetails(string $matchId): ?array
+    {
+        if (is_null($this->sessionId)) {
+            return null;
+        }
+
+        $cacheKey = $this->generateCacheKey("smite_team_match_player_details_{$matchId}");
+        $cache = $this->cache->getItem($cacheKey);
+        if ($cache->isHit()) {
+            $this->logApiCall($cache->getKey(), true);
+            return $cache->get();
+        }
+
+        /** @var MatchClient $teamClient */
+        $matchClient = $this->smiteClient->getHttpClient('match');
+        $response = $matchClient->getMatchPlayerDetails($matchId, $this->sessionId, $this->timestamp);
 
         $data = null;
 

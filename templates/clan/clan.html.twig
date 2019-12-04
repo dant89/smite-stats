@@ -81,7 +81,7 @@
 
                                                         {% if gods[god.god] and gods[god.god] %}
                                                         <div class="col-md-4 col-lg-12">
-                                                            <div class="rounded smite-god" style="background-image: url({{ gods[god.god].godCard_URL }})">
+                                                            <div class="rounded smite-god" style="background-image: url({{ gods[god.god].cardUrl }})">
                                                                 <a href="{{ path('god_view', {name: god.god|slug}) }}" title="Smite God {{ god.god }}">{{ god.god }}</a>
                                                             </div>
                                                         </div>
