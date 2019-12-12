@@ -5,7 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(name="match_player_item", uniqueConstraints={@ORM\UniqueConstraint(name="unique_match_player_item", columns={"item_id", "item_name", "match_player_id"})})
+ * @ORM\Table(name="match_player_item", uniqueConstraints={@ORM\UniqueConstraint(name="unique_match_player_item", columns={"item_id", "item_name", "item_number", "match_player_id"})})
  * @ORM\Entity
  */
 class MatchPlayerItem
