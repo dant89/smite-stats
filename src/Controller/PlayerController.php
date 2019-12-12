@@ -202,11 +202,14 @@ class PlayerController extends AbstractController
 
         $playerGodInfo = array_slice($playerGods, 0, 8, true);
 
-        $playerUpdatedMinsAgo = $player->getDateUpdated()->diff(new \DateTime())->i;
+        $playerUpdated = $player->getDateUpdated()->diff(new \DateTime());
+        $playerUpdatedMins = $playerUpdated->days * 24 * 60;
+        $playerUpdatedMins += $playerUpdated->h * 60;
+        $playerUpdatedMins += $playerUpdated->i;
 
         return $this->render('player/player.html.twig', [
             'achievements' => $achievements,
-            'last_updated' => $playerUpdatedMinsAgo,
+            'last_updated' => $playerUpdatedMins,
             'player' => $player,
             'player_god_info' => $playerGodInfo,
             'player_stats' => $playerStats,
