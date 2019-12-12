@@ -90,10 +90,16 @@ class PlayerController extends AbstractController
             if (empty($playerDetails)) {
                 throw new NotFoundHttpException();
             }
-
-            $player = $this->playerMapper->from($playerDetails);
-            $this->entityManager->persist($player);
-            $this->entityManager->flush();
+            // Create player
+            if (is_null($player)) {
+                $player = $this->playerMapper->from($playerDetails);
+                $this->entityManager->persist($player);
+                $this->entityManager->flush();
+            } else {
+                $player = $this->playerMapper->fromExisting($player, $playerDetails);
+                $this->entityManager->persist($player);
+                $this->entityManager->flush();
+            }
         }
 
         $playerNameSlug = preg_replace('/\[.*?\]/is', '', $player->getName());
@@ -115,7 +121,7 @@ class PlayerController extends AbstractController
         }
 
         // TODO Can check if we need to get match details of if they are already stored
-        $matchIds = array_slice($matchIds, 0, 5, true);
+        $matchIds = array_slice($matchIds, 0, 10, true);
         $matchDetails = $this->smite->getMatchDetailsBatch($matchIds);
 
         $formattedMatches = [];
@@ -169,18 +175,25 @@ class PlayerController extends AbstractController
                     'Match' => $matchDetail['Match'],
                     'Minutes' => $matchDetail['Minutes'],
                     'Region' => $matchDetail['Region'],
-                    'Winning_TaskForce' => $matchDetail['Winning_TaskForce'],
                     'Teams' => $teams[$matchDetail['Match']]
                 ];
             }
             $this->entityManager->flush();
         }
 
-        // FIXME seems to be a bug if team 1 wins but team 2 is ordered first
-        if (!empty($matchDetails)) {
-            foreach ($matchDetails as $matchDetail) {
-                $win = (array_key_exists($player->getSmitePlayerId(), $teams[$matchDetail['Match']][$matchDetail['Winning_TaskForce']]));
-                $formattedMatches[$matchDetail['Match']]['Win'] = $win;
+        if (!empty($formattedMatches)) {
+            foreach ($formattedMatches as &$formattedMatch) {
+                $formattedMatch['Winning_TaskForce'] = $formattedMatch['Teams'][1][0]['Winning_TaskForce'];
+
+                $matchPlayers = $formattedMatch['Teams'][$formattedMatch['Winning_TaskForce']];
+                $winner = false;
+                foreach ($matchPlayers as $matchPlayer) {
+                    if ((int)$matchPlayer['ActivePlayerId'] === $id) {
+                        $winner = true;
+                    }
+                }
+
+                $formattedMatch['Player_Won'] = $winner;
             }
         }
 
