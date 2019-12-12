@@ -90,10 +90,16 @@ class PlayerController extends AbstractController
             if (empty($playerDetails)) {
                 throw new NotFoundHttpException();
             }
-
-            $player = $this->playerMapper->from($playerDetails);
-            $this->entityManager->persist($player);
-            $this->entityManager->flush();
+            // Create player
+            if (is_null($player)) {
+                $player = $this->playerMapper->from($playerDetails);
+                $this->entityManager->persist($player);
+                $this->entityManager->flush();
+            } else {
+                $player = $this->playerMapper->fromExisting($player, $playerDetails);
+                $this->entityManager->persist($player);
+                $this->entityManager->flush();
+            }
         }
 
         $playerNameSlug = preg_replace('/\[.*?\]/is', '', $player->getName());
