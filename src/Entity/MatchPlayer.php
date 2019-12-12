@@ -5,9 +5,11 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Match
+ * MatchPlayer
  *
- * @ORM\Table(name="match_player", uniqueConstraints={@ORM\UniqueConstraint(name="unique_match_player_id", columns={"smite_match_id", "smite_player_id"})})
+ * We need a unique index including the god_id as private players don't have a smite_player_id so we can get clashes
+ *
+ * @ORM\Table(name="match_player", uniqueConstraints={@ORM\UniqueConstraint(name="unique_match_player_id", columns={"smite_match_id", "smite_player_id", "god_id"})})
  * @ORM\Entity
  */
 class MatchPlayer
@@ -205,9 +207,9 @@ class MatchPlayer
     private $duelWins = 0;
 
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      *
-     * @ORM\Column(name="entry_datetime", type="datetime", nullable=false)
+     * @ORM\Column(name="entry_datetime", type="datetime", nullable=true)
      */
     private $entryDatetime;
 
@@ -219,7 +221,7 @@ class MatchPlayer
     private $finalMatchLevel = 0;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="first_ban_side", type="string", length=255, nullable=true)
      */
@@ -228,9 +230,9 @@ class MatchPlayer
     /**
      * @var int
      *
-     * @ORM\Column(name="god_id", type="integer", nullable=false, options={"unsigned"=true, "default"=0})
+     * @ORM\Column(name="god_id", type="integer", nullable=false, options={"unsigned"=true})
      */
-    private $godId = 0;
+    private $godId;
 
     /**
      * @var int
@@ -394,7 +396,7 @@ class MatchPlayer
     private $killsWildJuggernaut = 0;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="map_game", type="string", length=255, nullable=true)
      */
@@ -464,21 +466,21 @@ class MatchPlayer
     private $rankStatJoust;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="reference_name", type="string", length=255, nullable=true)
      */
     private $referenceName;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="region", type="string", length=255, nullable=true)
      */
     private $region;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="skin", type="string", length=255, nullable=true)
      */
@@ -534,7 +536,7 @@ class MatchPlayer
     private $teamId = 0;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="team_name", type="string", length=255, nullable=true)
      */
@@ -562,7 +564,7 @@ class MatchPlayer
     private $wardsPlaced = 0;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="win_status", type="string", length=255, nullable=true)
      */
@@ -583,11 +585,32 @@ class MatchPlayer
     private $match_queue_id = 0;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="name", type="string", length=255, nullable=true)
      */
     private $name;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_created", type="datetime", nullable=false)
+     */
+    private $dateCreated;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_updated", type="datetime", nullable=false)
+     */
+    private $dateUpdated;
+
+    /**
+     * @var int|null
+     *
+     * @ORM\Column(name="crawled", type="integer", nullable=false, options={"default":0})
+     */
+    private $crawled = 0;
 
     /**
      * @return int
@@ -1094,18 +1117,18 @@ class MatchPlayer
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getEntryDatetime(): \DateTime
+    public function getEntryDatetime(): ?\DateTime
     {
         return $this->entryDatetime;
     }
 
     /**
-     * @param \DateTime $entryDatetime
+     * @param \DateTime|null $entryDatetime
      * @return MatchPlayer
      */
-    public function setEntryDatetime(\DateTime $entryDatetime): MatchPlayer
+    public function setEntryDatetime(?\DateTime $entryDatetime): MatchPlayer
     {
         $this->entryDatetime = $entryDatetime;
         return $this;
@@ -1130,18 +1153,18 @@ class MatchPlayer
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getFirstBanSide(): string
+    public function getFirstBanSide(): ?string
     {
         return $this->firstBanSide;
     }
 
     /**
-     * @param string $firstBanSide
+     * @param string|null $firstBanSide
      * @return MatchPlayer
      */
-    public function setFirstBanSide(string $firstBanSide): MatchPlayer
+    public function setFirstBanSide(?string $firstBanSide): MatchPlayer
     {
         $this->firstBanSide = $firstBanSide;
         return $this;
@@ -1580,18 +1603,18 @@ class MatchPlayer
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMapGame(): string
+    public function getMapGame(): ?string
     {
         return $this->mapGame;
     }
 
     /**
-     * @param string $mapGame
+     * @param string|null $mapGame
      * @return MatchPlayer
      */
-    public function setMapGame(string $mapGame): MatchPlayer
+    public function setMapGame(?string $mapGame): MatchPlayer
     {
         $this->mapGame = $mapGame;
         return $this;
@@ -1760,54 +1783,54 @@ class MatchPlayer
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getReferenceName(): string
+    public function getReferenceName(): ?string
     {
         return $this->referenceName;
     }
 
     /**
-     * @param string $referenceName
+     * @param string|null $referenceName
      * @return MatchPlayer
      */
-    public function setReferenceName(string $referenceName): MatchPlayer
+    public function setReferenceName(?string $referenceName): MatchPlayer
     {
         $this->referenceName = $referenceName;
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getRegion(): string
+    public function getRegion(): ?string
     {
         return $this->region;
     }
 
     /**
-     * @param string $region
+     * @param string|null $region
      * @return MatchPlayer
      */
-    public function setRegion(string $region): MatchPlayer
+    public function setRegion(?string $region): MatchPlayer
     {
         $this->region = $region;
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getSkin(): string
+    public function getSkin(): ?string
     {
         return $this->skin;
     }
 
     /**
-     * @param string $skin
+     * @param string|null $skin
      * @return MatchPlayer
      */
-    public function setSkin(string $skin): MatchPlayer
+    public function setSkin(?string $skin): MatchPlayer
     {
         $this->skin = $skin;
         return $this;
@@ -1940,18 +1963,18 @@ class MatchPlayer
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getTeamName(): string
+    public function getTeamName(): ?string
     {
         return $this->teamName;
     }
 
     /**
-     * @param string $teamName
+     * @param string|null $teamName
      * @return MatchPlayer
      */
-    public function setTeamName(string $teamName): MatchPlayer
+    public function setTeamName(?string $teamName): MatchPlayer
     {
         $this->teamName = $teamName;
         return $this;
@@ -2012,18 +2035,18 @@ class MatchPlayer
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getWinStatus(): string
+    public function getWinStatus(): ?string
     {
         return $this->winStatus;
     }
 
     /**
-     * @param string $winStatus
+     * @param string|null $winStatus
      * @return MatchPlayer
      */
-    public function setWinStatus(string $winStatus): MatchPlayer
+    public function setWinStatus(?string $winStatus): MatchPlayer
     {
         $this->winStatus = $winStatus;
         return $this;
@@ -2066,20 +2089,74 @@ class MatchPlayer
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
     /**
-     * @param string $name
+     * @param string|null $name
      * @return MatchPlayer
      */
-    public function setName(string $name): MatchPlayer
+    public function setName(?string $name): MatchPlayer
     {
         $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated(): \DateTime
+    {
+        return $this->dateCreated;
+    }
+
+    /**
+     * @param \DateTime $dateCreated
+     * @return MatchPlayer
+     */
+    public function setDateCreated(\DateTime $dateCreated): MatchPlayer
+    {
+        $this->dateCreated = $dateCreated;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateUpdated(): \DateTime
+    {
+        return $this->dateUpdated;
+    }
+
+    /**
+     * @param \DateTime $dateUpdated
+     * @return MatchPlayer
+     */
+    public function setDateUpdated(\DateTime $dateUpdated): MatchPlayer
+    {
+        $this->dateUpdated = $dateUpdated;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getCrawled(): ?int
+    {
+        return $this->crawled;
+    }
+
+    /**
+     * @param int|null $crawled
+     * @return MatchPlayer
+     */
+    public function setCrawled(?int $crawled): MatchPlayer
+    {
+        $this->crawled = $crawled;
         return $this;
     }
 }
