@@ -75,6 +75,18 @@ main a {
     text-transform: uppercase;
 }
 
+.player-smite-god {
+    background-position: top center;
+    background-repeat: no-repeat;
+    border: 1px solid gold;
+    height:125px;
+    margin-bottom: 10px;
+    max-width:125px;
+    overflow: hidden;
+    position: relative;
+}
+
+
 .smite-god {
     background-position:  top center;
     background-repeat: no-repeat;
