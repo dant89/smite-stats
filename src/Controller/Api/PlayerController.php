@@ -51,8 +51,11 @@ class PlayerController
             throw new NotFoundHttpException();
         }
 
-        $updatedMinsAgo = $player->getDateUpdated()->diff(new \DateTime())->i;
-        if ($updatedMinsAgo <= 15) {
+        $playerUpdated = $player->getDateUpdated()->diff(new \DateTime());
+        $playerUpdatedMins = $playerUpdated->days * 24 * 60;
+        $playerUpdatedMins += $playerUpdated->h * 60;
+        $playerUpdatedMins += $playerUpdated->i;
+        if ($playerUpdatedMins <= 15) {
             throw new AccessDeniedHttpException('Player updated recently, please wait longer.');
         }
 
