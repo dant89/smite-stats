@@ -1,5 +1,5 @@
 require('../css/app.css');
 
-const $ = require('jquery');
+global.$ = require('jquery');
 require('popper.js');
 require('bootstrap');

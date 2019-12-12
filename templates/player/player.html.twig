@@ -6,17 +6,34 @@
     <link rel="canonical" href="https://smitestats.com/player/{{ player.name|clan_remove|slug }}-{{ player.smitePlayerId }}" />
 {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+    var smitePlayerId = {{ player.smitePlayerId }};
+    </script>
+{% endblock %}
+
 {% block body %}
 
     <div class="bg-light pt-3 pb-3">
         <div class="container">
 
-            {% if player.name %}
-            <h1><a href="{{ path('player_view', {
-                    gamertag: player.name|clan_remove|slug,
-                    id: player.smitePlayerId
-                }) }}" title="Smite Player {{ player.name }}">{{ player.name }} Smite Player</a></h1>
-            {% endif %}
+            <div class="row">
+                <div class="col-sm-8">
+                    {% if player.name %}
+                    <h1><a href="{{ path('player_view', {
+                            gamertag: player.name|clan_remove|slug,
+                            id: player.smitePlayerId
+                        }) }}" title="Smite Player {{ player.name }}">{{ player.name }} Smite Player</a></h1>
+                    {% endif %}
+                </div>
+
+                <div class="col-sm-4">
+                    {% if last_updated >= 15 %}
+                    <button class="btn btn-sm btn-primary float-right" id="player-refresh" type="button">Refresh player</button>
+                    {% endif %}
+                </div>
+            </div>
 
             <div class="row">
                 <div class="col-12">
@@ -25,39 +42,48 @@
                         <div class="card-body">
 
                             <div class="row">
-                                <div class="col col-sm-12 col-md-1">
-                                    <img class="rounded" src="{{ player.avatarUrl }}" width="50px" />
-                                </div>
-                                <div class="col col-sm-12 col-md-3">
-                                    <h3>{{ player.Name }}</h3>
-                                    <h5>Level: {{ player.level }}</h5>
+                                <div class="col col-sm-12">
+
+                                    <h2><img class="rounded" src="{{ player.avatarUrl }}" width="50px" /> {{ player.name }} (<span class="text-primary">{{ player.level }}</span>)</h2>
+
                                     {% if player.teamName %}
-                                    <h5>Clan: <a href="{{ path('clan_view', {
+                                    <h5>
+                                        Clan: <a href="{{ path('clan_view', {
                                             name: player.teamName|slug
-                                        }) }}" title="Smite Clan {{ player.teamName }}">{{ player.teamName }}</a></h5>
+                                        }) }}" title="Smite Clan {{ player.teamName }}">{{ player.teamName }}</a>
+                                    </h5>
                                     {% endif %}
+
+                                    <span class="float-left">Last Updated: {{ player.dateUpdated|date('H:i:s Y/m/d') }}</span>
+
                                 </div>
-                                <div class="col col-sm-6 col-md-2">
+                            </div>
+
+                            <hr />
+
+                            <div class="row">
+
+                                <div class="col col-sm-6 col-md-3">
                                     <ul class="list-unstyled">
                                         <li>Hours Played: {{ player.hoursPlayed }}</li>
                                         <li>Achievements: {{ player.totalAchievements }}</li>
                                     </ul>
                                 </div>
-                                <div class="col col-sm-6 col-md-2">
+                                <div class="col col-sm-6 col-md-3">
                                     <ul class="list-unstyled">
                                         <li>Wins: {{ player.wins }}</li>
                                         <li>Losses: {{ player.losses }}</li>
                                         <li>Quits: {{ player.leaves }}</li>
                                     </ul>
                                 </div>
-                                <div class="col col-sm-6 col-md-2">
+                                <div class="col col-sm-6 col-md-3">
                                     <ul class="list-unstyled">
                                         <li>Kills: {{ player_stats.Kills }}</li>
                                         <li>Assists: {{ player_stats.Assists }}</li>
                                         <li>Deaths: {{ player_stats.Deaths }}</li>
                                     </ul>
                                 </div>
-                                <div class="col col-sm-6 col-md-2">
+                                <div class="col col-sm-6 col-md-3">
                                     <ul class="list-unstyled">
                                     {% if player_stats.Deaths %}
                                         <li>K/D: {{ (player_stats.Kills / player_stats.Deaths)|round(2) }}</li>
@@ -70,7 +96,13 @@
                                 </div>
                             </div>
 
-                            {% if player_god_info %}
+                        </div>
+                    </div>
+
+                    {% if player_god_info %}
+                    <div class="card mb-4 box-shadow">
+                        <div class="card-body">
+
                             <div class="row">
                                 <div class="col-12">
                                     <h3>Top Gods</h3>
@@ -128,10 +160,10 @@
 
                                 </div>
                             </div>
-                            {% endif %}
 
                         </div>
                     </div>
+                    {% endif %}
 
                     {% if achievements %}
                     <div class="card mb-4 box-shadow">
@@ -142,7 +174,7 @@
                                     <h3>Player Statistics</h3>
 
                                     <div class="row">
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-6 col-md-3">
                                             <ul>
                                                 <li>Double Kills: {{ achievements.DoubleKills ?? 0 }}</li>
                                                 <li>Triple Kills: {{ achievements.TripleKills ?? 0 }}</li>
@@ -151,7 +183,7 @@
                                             </ul>
                                         </div>
 
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-6 col-md-3">
                                             <ul>
                                                 <li>Shutdown Spree: {{ achievements.ShutdownSpree ?? 0 }}</li>
                                                 <li>Killing Spree: {{ achievements.KillingSpree ?? 0 }}</li>
@@ -163,7 +195,7 @@
                                             </ul>
                                         </div>
 
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-6 col-md-3">
                                             <ul>
                                                 <li>Assisted Kills: {{ achievements.AssistedKills ?? 0 }}</li>
                                                 <li>Deaths: {{ achievements.Deaths ?? 0 }}</li>
@@ -171,7 +203,7 @@
                                             </ul>
                                         </div>
 
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-6 col-md-3">
                                             <ul>
                                                 <li>Camps Cleared: {{ achievements.CampsCleared ?? 0 }}</li>
                                                 <li>Fire Giant Kills: {{ achievements.FireGiantKills ?? 0 }}</li>
@@ -206,14 +238,15 @@
                                         <div class="col-12">
                                             <div class="game-result p-2 mb-4 border {{ match.Win ? 'border-success' : 'border-danger' }} rounded">
                                                 <h4>{{ match.Win ? 'Won' : 'Lost' }}!</h4>
-                                                {{ match.Map_Game }} on {{ match.Entry_Datetime }}<br />
+                                                Game type: {{ match.Map_Game }}<br />
+                                                Date: {{ match.Entry_Datetime }}<br />
                                                 Region: {{ match.Region }}<br />
-                                                Lasted {{ match.Minutes }} minutes!
+                                                Game length: {{ match.Minutes }} minutes
 
                                                 <div class="row mt-2">
                                                     {% for key, players in match.Teams %}
                                                     <div class="col">
-                                                        <h4>Team {{ key }} {{ key == match.Winning_TaskForce ? 'Winners' : 'Losers' }}</h4>
+                                                        <h4>{{ key == match.Winning_TaskForce ? 'Winners' : 'Losers' }}</h4>
                                                         <div class="border border-info mb-1 p-2">
 
                                                             {% for match_player in players %}
@@ -231,6 +264,7 @@
                                                                     <li>God: {{ match_player.Reference_Name }}</li>
                                                                     <li>Skin: {{ match_player.Skin }}</li>
                                                                     <li>Kills: {{ match_player.Kills_Player }}</li>
+                                                                    <li>Assists: {{ match_player.Assists }}</li>
                                                                     <li>Deaths: {{ match_player.Deaths }}</li>
                                                                     <li>Damage Mitigated: {{ match_player.Damage_Mitigated }}</li>
                                                                     <li>Damage Taken: {{ match_player.Damage_Taken }}</li>

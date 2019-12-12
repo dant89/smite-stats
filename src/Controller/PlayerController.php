@@ -2,39 +2,53 @@
 
 namespace App\Controller;
 
+use App\Entity\MatchPlayer;
+use App\Entity\MatchPlayerAbility;
+use App\Entity\MatchPlayerBan;
+use App\Entity\MatchPlayerItem;
 use App\Entity\Player;
 use App\Entity\PlayerSearch;
+use App\Mapper\MatchPlayerMapper;
+use App\Mapper\PlayerMapper;
 use App\Service\Smite;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Psr\Cache\InvalidArgumentException;
 
 class PlayerController extends AbstractController
 {
-    /**
-     * @var EntityManagerInterface
-     */
+    /** @var EntityManagerInterface */
     protected $entityManager;
 
-    /**
-     * @var LoggerInterface
-     */
+    /** @var LoggerInterface */
     protected $logger;
 
-    /**
-     * @var Smite
-     */
+    /** @var MatchPlayerMapper */
+    protected $matchPlayerMapper;
+
+    /** @var PlayerMapper */
+    protected $playerMapper;
+
+    /** @var Smite */
     protected $smite;
 
-    public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger, Smite $smite)
-    {
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        LoggerInterface $logger,
+        MatchPlayerMapper $matchPlayerMapper,
+        PlayerMapper $playerMapper,
+        Smite $smite
+    ) {
         $this->entityManager = $entityManager;
         $this->logger = $logger;
+        $this->matchPlayerMapper = $matchPlayerMapper;
+        $this->playerMapper = $playerMapper;
         $this->smite = $smite;
     }
 
@@ -65,6 +79,8 @@ class PlayerController extends AbstractController
     {
         // Check to see if we have this player stored in the database
         $playerRepo = $this->entityManager->getRepository(Player::class);
+        $matchPlayerRepo = $this->entityManager->getRepository(MatchPlayer::class);
+
         /** @var Player $player */
         $player = $playerRepo->findOneBy(['smitePlayerId' => $id]);
 
@@ -75,35 +91,7 @@ class PlayerController extends AbstractController
                 throw new NotFoundHttpException();
             }
 
-            // TODO move to a crawler function to ensure less duplicate code
-            // Store this player ID in the player database
-            $player = new Player();
-            $player->setSmitePlayerId($id);
-            $player->setAvatarUrl($playerDetails['Avatar_URL']);
-            $player->setDateRegistered(new \DateTime($playerDetails['Created_Datetime']));
-            $player->setDateLastLogin(new \DateTime($playerDetails['Last_Login_Datetime']));
-            $player->setHoursPlayed($playerDetails['HoursPlayed'] ?? 0);
-            $player->setLeaves($playerDetails['Leaves'] ?? 0);
-            $player->setLevel($playerDetails['Level'] ?? 0);
-            $player->setLosses($playerDetails['Losses'] ?? 0);
-            $player->setMasteryLevel($playerDetails['MasteryLevel'] ?? 0);
-            $player->setName($playerDetails['Name']);
-            $player->setPersonalStatusMessage($playerDetails['Personal_Status_Message']);
-            $player->setRankStatConquest($playerDetails['Rank_Stat_Conquest'] ?? 0);
-            $player->setRankStatDuel($playerDetails['Rank_Stat_Duel'] ?? 0);
-            $player->setRankStatJoust($playerDetails['Rank_Stat_Joust'] ?? 0);
-            $player->setRegion($playerDetails['Region']);
-            $player->setTeamId($playerDetails['TeamId']);
-            $player->setTeamName($playerDetails['Team_Name']);
-            $player->setTierConquest($playerDetails['Tier_Conquest'] ?? 0);
-            $player->setTierDuel($playerDetails['Tier_Duel'] ?? 0);
-            $player->setTierJoust($playerDetails['Tier_Joust'] ?? 0);
-            $player->setTotalAchievements($playerDetails['Total_Achievements'] ?? 0);
-            $player->setTotalWorshippers($playerDetails['Total_Worshippers'] ?? 0);
-            $player->setDateCreated(new \DateTime());
-            $player->setDateUpdated(new \DateTime());
-            $player->setWins($playerDetails['Wins'] ?? 0);
-            $player->setCrawled(1);
+            $player = $this->playerMapper->from($playerDetails);
             $this->entityManager->persist($player);
             $this->entityManager->flush();
         }
@@ -111,7 +99,6 @@ class PlayerController extends AbstractController
         $playerNameSlug = preg_replace('/\[.*?\]/is', '', $player->getName());
         $playerNameSlug = preg_replace('/([^a-z0-9-]+)/is', '', $playerNameSlug);
         if (empty($playerNameSlug)) {
-            // TODO fix issues with Japanese characters being converted to an empty string バイオレット
             throw new NotFoundHttpException('An error occurred fetching a player name.');
         }
 
@@ -127,17 +114,54 @@ class PlayerController extends AbstractController
             }
         }
 
+        // TODO Can check if we need to get match details of if they are already stored
         $matchIds = array_slice($matchIds, 0, 5, true);
         $matchDetails = $this->smite->getMatchDetailsBatch($matchIds);
 
-        // TODO use ActivePlayerId
         $formattedMatches = [];
-        $test = [];
         $teams = [];
         if (!empty($matchDetails)) {
             foreach ($matchDetails as $matchDetail) {
 
-                $teams[$matchDetail['Match']][$matchDetail['TaskForce']][$matchDetail['ActivePlayerId']] = $matchDetail;
+                // TODO check if this allows multiple player_ids of 0 per match with unique god
+                $existingMatch = $matchPlayerRepo->findOneBy([
+                    'smiteMatchId' => $matchDetail['Match'],
+                    'smitePlayerId' => $matchDetail['ActivePlayerId'],
+                    'godId' => $matchDetail['GodId']
+                ]);
+                if (is_null($existingMatch)) {
+                    $newMatchPlayer = $this->matchPlayerMapper->from($matchDetail);
+                    $this->entityManager->persist($newMatchPlayer);
+
+                    for ($i = 1; $i <= 6; $i++) {
+                        $ability = new MatchPlayerAbility();
+                        $ability->setAbilityId($matchDetail["ItemId{$i}"] ?: null);
+                        $ability->setAbilityName($matchDetail["Item_Purch_{$i}"] ?: null);
+                        $ability->setAbilityNumber($i);
+                        $ability->setMatchPlayer($newMatchPlayer);
+                        $this->entityManager->persist($ability);
+                    }
+
+                    for ($i = 1; $i <= 4; $i++) {
+                        $item = new MatchPlayerItem();
+                        $item->setItemId($matchDetail["ActiveId{$i}"] ?: null);
+                        $item->setItemName($matchDetail["Item_Active_{$i}"] ?: null);
+                        $item->setItemNumber($i);
+                        $item->setMatchPlayer($newMatchPlayer);
+                        $this->entityManager->persist($item);
+                    }
+
+                    for ($i = 1; $i <= 10; $i++) {
+                        $ban = new MatchPlayerBan();
+                        $ban->setBanId($matchDetail["Ban{$i}Id"] ?: null);
+                        $ban->setBanName($matchDetail["Ban{$i}"] ?: null);
+                        $ban->setBanNumber($i);
+                        $ban->setMatchPlayer($newMatchPlayer);
+                        $this->entityManager->persist($ban);
+                    }
+                }
+
+                $teams[$matchDetail['Match']][$matchDetail['TaskForce']][] = $matchDetail;
 
                 $formattedMatches[$matchDetail['Match']] = [
                     'Entry_Datetime' => $matchDetail['Entry_Datetime'],
@@ -148,11 +172,8 @@ class PlayerController extends AbstractController
                     'Winning_TaskForce' => $matchDetail['Winning_TaskForce'],
                     'Teams' => $teams[$matchDetail['Match']]
                 ];
-
-                if ($matchDetail['Match'] === 982362009) {
-                    $test[] = $matchDetail;
-                }
             }
+            $this->entityManager->flush();
         }
 
         // FIXME seems to be a bug if team 1 wins but team 2 is ordered first
@@ -163,14 +184,14 @@ class PlayerController extends AbstractController
             }
         }
 
-        $playerGods = $this->smite->getPlayerGodDetails($player->getSmitePlayerId()) ?? [];
-
         $playerStats = [
             'Kills' => 0,
             'Assists' => 0,
             'Deaths' => 0,
         ];
 
+        // TODO could store this with a PlayerGod entity
+        $playerGods = $this->smite->getPlayerGodDetails($player->getSmitePlayerId()) ?? [];
         if (!empty($playerGods)) {
             foreach ($playerGods as $playerGod) {
                 $playerStats['Kills'] += $playerGod['Kills'];
@@ -179,10 +200,13 @@ class PlayerController extends AbstractController
             }
         }
 
-        $playerGodInfo = array_slice($playerGods, 0, 4, true);
+        $playerGodInfo = array_slice($playerGods, 0, 8, true);
+
+        $playerUpdatedMinsAgo = $player->getDateUpdated()->diff(new \DateTime())->i;
 
         return $this->render('player/player.html.twig', [
             'achievements' => $achievements,
+            'last_updated' => $playerUpdatedMinsAgo,
             'player' => $player,
             'player_god_info' => $playerGodInfo,
             'player_stats' => $playerStats,
