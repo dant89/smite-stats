@@ -61,6 +61,15 @@ class AddUnknownGodsCommand extends Command
         $updatedGodAbilityCount = 0;
         $updatedGodCount = 0;
 
+        $existingGodAbilities = $godAbilityRepo->findAll();
+        $existingGodAbilityIds = [];
+        /** @var GodAbility $existingGodAbility */
+        foreach ($existingGodAbilities as $existingGodAbility) {
+            if (!in_array($existingGodAbility->getAbilityId(), $existingGodAbilityIds)) {
+                $existingGodAbilityIds[] = $existingGodAbility->getAbilityId();
+            }
+        }
+
         $gods = $this->smite->getGods();
         if (!empty($gods)) {
             $godCount = count($gods);
@@ -85,15 +94,6 @@ class AddUnknownGodsCommand extends Command
                 } else {
                     /** @var God $existingGod */
                     $existingGod = $repository->findOneBy(['smiteId' => $god['id']]);
-                    $existingGodAbilities = $godAbilityRepo->findBy(['god' => $existingGod->getSmiteId()]);
-
-                    $existingGodAbilityIds = [];
-                    /** @var GodAbility $existingGodAbility */
-                    foreach ($existingGodAbilities as $existingGodAbility) {
-                        if (!in_array($existingGodAbility->getAbilityId(), $existingGodAbilityIds)) {
-                            $existingGodAbilityIds[] = $existingGodAbility->getAbilityId();
-                        }
-                    }
 
                     for ($i = 1; $i <= 5; $i++) {
                         if (!in_array($god["Ability_{$i}"]["Id"], $existingGodAbilityIds)) {
