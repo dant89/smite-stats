@@ -200,8 +200,6 @@ class PlayerController extends AbstractController
             }
         }
 
-        $playerGodInfo = array_slice($playerGods, 0, 8, true);
-
         $playerUpdated = $player->getDateUpdated()->diff(new \DateTime());
         $playerUpdatedMins = $playerUpdated->days * 24 * 60;
         $playerUpdatedMins += $playerUpdated->h * 60;
@@ -211,7 +209,7 @@ class PlayerController extends AbstractController
             'achievements' => $achievements,
             'last_updated' => $playerUpdatedMins,
             'player' => $player,
-            'player_god_info' => $playerGodInfo,
+            'player_god_info' => $playerGods,
             'player_stats' => $playerStats,
             'player_name_slug' => $playerNameSlug,
             'gods' => $gods,
