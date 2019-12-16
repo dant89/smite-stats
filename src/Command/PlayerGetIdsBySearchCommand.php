@@ -9,7 +9,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class GetPlayerIdsBySearchCommand extends Command
+class PlayerGetIdsBySearchCommand extends Command
 {
     protected static $defaultName = 'smite:player:search-player-ids';
 
