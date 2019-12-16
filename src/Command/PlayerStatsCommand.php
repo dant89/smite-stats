@@ -31,9 +31,7 @@ class PlayerStatsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $repository = $this->entityManager->getRepository(Player::class);
-
-        $players = $repository->findAll();
-        $playersCount = count($players);
+        $playersCount = $repository->count([]);
 
         $output->writeln("{$playersCount} players stored");
 
