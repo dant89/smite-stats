@@ -11,7 +11,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class GetPlayerClanIdsCommand extends Command
+class PlayerGetClanIdsCommand extends Command
 {
     protected static $defaultName = 'smite:player:store-clan-ids';
 
