@@ -7,10 +7,10 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * MatchPlayer
  *
- * We need a unique index including the god_id as private players don't have a smite_player_id so we can get clashes
+ * smite_match_id combined with god_id should be unique, smite_player_id is NULLABLE so it can't guarantee uniqueness
  *
- * @ORM\Table(name="match_player", uniqueConstraints={@ORM\UniqueConstraint(name="unique_match_player_id", columns={"smite_match_id", "smite_player_id", "god_id"})})
- * @ORM\Entity
+ * @ORM\Table(name="match_player", uniqueConstraints={@ORM\UniqueConstraint(name="unique_match_player_id", columns={"smite_match_id", "task_force", "god_id"})})
+ * @ORM\Entity(repositoryClass="App\Repository\MatchPlayerRepository")
  */
 class MatchPlayer
 {
@@ -31,11 +31,10 @@ class MatchPlayer
     private $smiteMatchId;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="smite_player_id", type="integer", nullable=false, options={"unsigned"=true})
+     * @ORM\ManyToOne(targetEntity="Player", inversedBy="matches")
+     * @ORM\JoinColumn(name="smite_player_id", referencedColumnName="smite_player_id", nullable=true)
      */
-    private $smitePlayerId;
+    private $smitePlayer;
 
     /**
      * @ORM\OneToMany(targetEntity="MatchPlayerAbility", mappedBy="matchPlayer")
@@ -649,20 +648,20 @@ class MatchPlayer
     }
 
     /**
-     * @return int
+     * @return mixed
      */
-    public function getSmitePlayerId(): int
+    public function getSmitePlayer()
     {
-        return $this->smitePlayerId;
+        return $this->smitePlayer;
     }
 
     /**
-     * @param int $smitePlayerId
+     * @param mixed $smitePlayer
      * @return MatchPlayer
      */
-    public function setSmitePlayerId(int $smitePlayerId): MatchPlayer
+    public function setSmitePlayer($smitePlayer)
     {
-        $this->smitePlayerId = $smitePlayerId;
+        $this->smitePlayer = $smitePlayer;
         return $this;
     }
 
