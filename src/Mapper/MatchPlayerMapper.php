@@ -3,9 +3,7 @@
 namespace App\Mapper;
 
 use App\Entity\MatchPlayer;
-use App\Entity\MatchPlayerAbility;
-use App\Entity\MatchPlayerBan;
-use App\Entity\MatchPlayerItem;
+use App\Entity\Player;
 use Psr\Log\LoggerInterface;
 
 class MatchPlayerMapper
@@ -18,14 +16,14 @@ class MatchPlayerMapper
         $this->logger = $logger;
     }
 
-    public function from(array $data): MatchPlayer
+    public function from(array $data, ?Player $player = null): MatchPlayer
     {
         try {
             $matchPlayer = new MatchPlayer();
             $matchPlayer->setSmiteMatchId($data['Match']);
             $matchPlayer->setName($data['name']);
             $matchPlayer->setAccountLevel($data['Account_Level']);
-            $matchPlayer->setSmitePlayerId($data['ActivePlayerId']);
+            $matchPlayer->setSmitePlayer($player);
             $matchPlayer->setAssists($data['Assists']);
             $matchPlayer->setCampsCleared($data['Camps_Cleared']);
             $matchPlayer->setConquestLosses($data['Conquest_Losses']);

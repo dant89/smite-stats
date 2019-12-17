@@ -61,7 +61,8 @@ class PlayerController extends AbstractController
     {
         $playerRepo = $this->entityManager->getRepository(Player::class);
         /** @var Player $player */
-        $newestPlayers = $playerRepo->findNewestPlayerNameNotNull(20);
+        $newestPlayersQuery = $playerRepo->findNewestPlayerNameNotNullQuery(20);
+        $newestPlayers = $newestPlayersQuery->execute();
 
         return $this->render('player/index.html.twig', [
             'newest_players' => $newestPlayers
@@ -121,22 +122,38 @@ class PlayerController extends AbstractController
         }
 
         // TODO Can check if we need to get match details of if they are already stored
+        // TODO Check if in array of returned matches, if not crawl then reorder on match ID desc
         $matchIds = array_slice($matchIds, 0, 10, true);
         $matchDetails = $this->smite->getMatchDetailsBatch($matchIds);
 
         $formattedMatches = [];
         $teams = [];
+
+        // Might be worth grouping match details into a match id key so easier to figure out if need storing
         if (!empty($matchDetails)) {
             foreach ($matchDetails as $matchDetail) {
 
-                // TODO check if this allows multiple player_ids of 0 per match with unique god
+                // Search by the unique index constraint on PlayerMatch
                 $existingMatch = $matchPlayerRepo->findOneBy([
                     'smiteMatchId' => $matchDetail['Match'],
-                    'smitePlayerId' => $matchDetail['ActivePlayerId'],
-                    'godId' => $matchDetail['GodId']
+                    'godId' => $matchDetail['GodId'],
+                    'taskForce' => $matchDetail['TaskForce']
                 ]);
+
                 if (is_null($existingMatch)) {
-                    $newMatchPlayer = $this->matchPlayerMapper->from($matchDetail);
+                    /** @var Player $matchPlayer */
+                    $matchPlayer = $playerRepo->find($matchDetail['ActivePlayerId']);
+
+                    if (is_null($matchPlayer)) {
+                        $playerDetails = $this->smite->getPlayerDetailsByPortalId($matchDetail['ActivePlayerId']);
+                        if (!empty($playerDetails)) {
+                            $matchPlayer = $this->playerMapper->from($playerDetails);
+                            $this->entityManager->persist($matchPlayer);
+                            $this->entityManager->flush();
+                        }
+                    }
+
+                    $newMatchPlayer = $this->matchPlayerMapper->from($matchDetail, $matchPlayer);
                     $this->entityManager->persist($newMatchPlayer);
 
                     for ($i = 1; $i <= 6; $i++) {
@@ -165,30 +182,34 @@ class PlayerController extends AbstractController
                         $ban->setMatchPlayer($newMatchPlayer);
                         $this->entityManager->persist($ban);
                     }
+
+                    $storedMatch = $newMatchPlayer;
+                    $this->entityManager->flush();
+                } else {
+                    $storedMatch = $existingMatch;
                 }
 
-                $teams[$matchDetail['Match']][$matchDetail['TaskForce']][] = $matchDetail;
-
-                $formattedMatches[$matchDetail['Match']] = [
-                    'Entry_Datetime' => $matchDetail['Entry_Datetime'],
-                    'Map_Game' => $matchDetail['Map_Game'],
-                    'Match' => $matchDetail['Match'],
-                    'Minutes' => $matchDetail['Minutes'],
-                    'Region' => $matchDetail['Region'],
-                    'Teams' => $teams[$matchDetail['Match']]
+                $teams[$storedMatch->getSmiteMatchId()][$storedMatch->getTaskForce()][] = $storedMatch;
+                $formattedMatches[$storedMatch->getSmiteMatchId()] = [
+                    'Entry_Datetime' => $storedMatch->getEntryDatetime(),
+                    'Map_Game' => $storedMatch->getMapGame(),
+                    'Match' => $storedMatch->getSmiteMatchId(),
+                    'Minutes' => $storedMatch->getMinutes(),
+                    'Region' => $storedMatch->getRegion(),
+                    'Teams' => $teams[$storedMatch->getSmiteMatchId()]
                 ];
             }
-            $this->entityManager->flush();
         }
 
         if (!empty($formattedMatches)) {
             foreach ($formattedMatches as &$formattedMatch) {
-                $formattedMatch['Winning_TaskForce'] = $formattedMatch['Teams'][1][0]['Winning_TaskForce'];
+                $formattedMatch['Winning_TaskForce'] = $formattedMatch['Teams'][1][0]->getWinningTaskForce();
 
                 $matchPlayers = $formattedMatch['Teams'][$formattedMatch['Winning_TaskForce']];
                 $winner = false;
+                /** @var MatchPlayer $matchPlayer */
                 foreach ($matchPlayers as $matchPlayer) {
-                    if ((int)$matchPlayer['ActivePlayerId'] === $id) {
+                    if ($matchPlayer->getSmitePlayer() === $id) {
                         $winner = true;
                     }
                 }
