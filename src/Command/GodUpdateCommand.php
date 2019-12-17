@@ -10,9 +10,9 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class AddUnknownGodsCommand extends Command
+class GodUpdateCommand extends Command
 {
-    protected static $defaultName = 'smite:god:store-gods';
+    protected static $defaultName = 'smite:god:update';
 
     /**
      * @var EntityManagerInterface

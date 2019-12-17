@@ -273,30 +273,30 @@
                                                                 <div class="mb-1 p-1">
                                                                     <div class="row">
                                                                         <div class="col-md-4">
-                                                                            <div class="player-smite-god" style="background-image: url('https://web2.hirez.com/smite/god-cards/{{ match_player.Reference_Name|slug }}.jpg')"></div>
+                                                                            <div class="player-smite-god" style="background-image: url('https://web2.hirez.com/smite/god-cards/{{ match_player.ReferenceName|slug }}.jpg')"></div>
                                                                         </div>
                                                                         <div class="col-md-8">
                                                                             <h5>
-                                                                                {% if match_player.playerName|clan_remove|slug %}
+                                                                                {% if match_player.smitePlayer and match_player.smitePlayer.name|clan_remove|slug %}
                                                                                     <a href="{{ path('player_view', {
-                                                                                        gamertag: match_player.playerName|clan_remove|slug,
-                                                                                        id: match_player.playerId
-                                                                                    }) }}" title="Smite Player {{ match_player.playerName }}">{{ match_player.playerName }}</a>
+                                                                                        gamertag: match_player.smitePlayer.name|clan_remove|slug,
+                                                                                        id: match_player.smitePlayer.smitePlayerId
+                                                                                    }) }}" title="Smite Player {{ match_player.smitePlayer.name }}">{{ match_player.smitePlayer.name }}</a>
                                                                                 {% else %}
                                                                                     Unknown
                                                                                 {% endif %}
                                                                             </h5>
 
-                                                                            (<span class="text-primary">{{ match_player.Account_Level }}</span>) -
-                                                                            <span class="text-success">{{ match_player.Kills_Player }}</span> /
+                                                                            (<span class="text-primary">{{ match_player.AccountLevel }}</span>) -
+                                                                            <span class="text-success">{{ match_player.KillsSingle }}</span> /
                                                                             <span class="text-warning">{{ match_player.Assists }}</span> /
                                                                             <span class="text-danger">{{ match_player.Deaths }}</span>
 
                                                                             <ul class="list-unstyled small">
-                                                                                <li>Damage Mitigated: {{ match_player.Damage_Mitigated }}</li>
-                                                                                <li>Damage Taken: {{ match_player.Damage_Taken }}</li>
-                                                                                <li>Gold Earned: {{ match_player.Gold_Earned }}</li>
-                                                                                <li>Gold per Minute: {{ match_player.Gold_Per_Minute }}</li>
+                                                                                <li>Damage Mitigated: {{ match_player.DamageMitigated }}</li>
+                                                                                <li>Damage Taken: {{ match_player.DamageTaken }}</li>
+                                                                                <li>Gold Earned: {{ match_player.GoldEarned }}</li>
+                                                                                <li>Gold per Minute: {{ match_player.GoldPerMinute }}</li>
                                                                                 <li>Healing: {{ match_player.Healing }}</li>
                                                                             </ul>
                                                                         </div>

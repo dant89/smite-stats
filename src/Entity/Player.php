@@ -7,26 +7,23 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Player
  *
- * @ORM\Table(name="player", uniqueConstraints={@ORM\UniqueConstraint(name="unique_player_id", columns={"smite_player_id"})})
  * @ORM\Entity(repositoryClass="App\Repository\PlayerRepository")
  */
 class Player
 {
     /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false, options={"unsigned"=true})
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $id;
-
-    /**
      * @var string
      *
-     * @ORM\Column(name="smite_player_id", type="string", length=255, nullable=false)
+     * @ORM\Column(name="smite_player_id", type="integer", length=10, nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
      */
     private $smitePlayerId;
+
+    /**
+     * @ORM\OneToMany(targetEntity="MatchPlayer", mappedBy="smitePlayer")
+     */
+    private $matches;
 
     /**
      * @var string|null
@@ -204,24 +201,6 @@ class Player
     private $crawled = 0;
 
     /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     * @return Player
-     */
-    public function setId(int $id): Player
-    {
-        $this->id = $id;
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getSmitePlayerId(): string
@@ -236,6 +215,24 @@ class Player
     public function setSmitePlayerId(string $smitePlayerId): Player
     {
         $this->smitePlayerId = $smitePlayerId;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMatches()
+    {
+        return $this->matches;
+    }
+
+    /**
+     * @param mixed $matches
+     * @return Player
+     */
+    public function setMatches($matches)
+    {
+        $this->matches = $matches;
         return $this;
     }
 

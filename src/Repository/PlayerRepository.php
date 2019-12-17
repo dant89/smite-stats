@@ -17,7 +17,7 @@ class PlayerRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('p');
         return $qb->where('p.name IS NOT NULL')
-            ->orderBy('p.id', 'DESC')
+            ->orderBy('p.dateCreated', 'DESC')
             ->getQuery();
     }
 
