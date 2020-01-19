@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Smite {{ role|capitalize }} Gods - Unofficial SMITE{% endblock %}
+
+{% block header_meta %}
+    <link rel="canonical" href="https://smitestats.com/gods/roles/{{ role }}" />
+{% endblock %}
+
+{% block body %}
+
+    <div class="bg-light pt-3 pb-3">
+        <div class="container">
+
+            <div class="row">
+
+                <div class="col-12">
+                    <h1><a href="{{ path('gods_role', {role: role|slug}) }}">Smite {{ role|capitalize }} Gods</a></h1>
+
+                    <div class="row">
+                        {% for god in gods %}
+                            <div class="col-6 col-sm-4 col-md-3">
+                                <div class="rounded smite-god" style="background-image: url({{ god.cardUrl }})">
+                                    <a href="{{ path('god_view', {name: god.name|slug}) }}" title="Smite God {{ god.name }}">{{ god.name }}</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
