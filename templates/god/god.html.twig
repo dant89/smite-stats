@@ -13,54 +13,94 @@
 
             <div class="row">
 
-                <div class="col-md-4 col-lg-3">
-                    <div class="rounded smite-god" style="background-image: url({{ god.cardUrl }})">
-                        <h1><a href="{{ path('god_view', {name: god.name|slug}) }}" title="Smite God {{ god.name }}">{{ god.name }}</a></h1>
-                    </div>
-                </div>
+                <div class="col-md-4">
 
-                <div class="col-md-4 col-lg-5">
-                    <h4>{{ god.title }}</h4>
-                    <h4>{{ god.pantheon }}</h4>
-                    <h4>{{ god.roles }}</h4>
-                    <h4>{{ god.type }}</h4>
-                    <h4>{{ god.pros }}</h4>
-                    <h4>{{ god.cons }}</h4>
-                </div>
-
-                <div class="col-md-4 col-md-4">
-                    <h3>Statistics</h3>
-                    <ul>
-                        <li>Attack Speed: {{ god.attackSpeed }}</li>
-                        <li>Health: {{ god.health }}</li>
-                        <li>Mana: {{ god.mana }}</li>
-                        <li>Magic Protection: {{ god.magicProtection }}</li>
-                        <li>Magical Power: {{ god.magicalPower }}</li>
-                        <li>Speed: {{ god.speed }}</li>
-                    </ul>
-                </div>
-
-                <div class="col-12">
-
-                    <p>{{ god.lore }}</p>
-
-                    <div class="god-abilities">
-                        <div class="row">
-                            {% for ability in god.abilities %}
-                            <div class="col-12 col-md-4">
-                                <div class="god-ability rounded">
-                                    <img class="float-left mr-2" src="{{ ability.url }}" /><br />
-                                    <h3>{{ ability.summary }}</h3><br />
-                                    <p>{{ ability.description }}</p>
-                                    <ul>
-                                        <li>Cost: {{ ability.cost }}</li>
-                                        <li>Cooldown: {{ ability.cooldown }}</li>
-                                    </ul>
+                    <div class="card mb-4 box-shadow">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-auto">
+                                    <h1><a href="{{ path('god_view', {name: god.name|slug}) }}" title="Smite God {{ god.name }}">{{ god.name }}</a></h1>
                                 </div>
                             </div>
-                            {% endfor %}
+                        </div>
+
+                        <div class="card-body">
+
+                            <img src="{{ god.cardUrl }}" />
+                            <hr />
+
+                            <ul class="list-unstyled">
+                                <li><strong>Title</strong>: {{ god.title }}</li>
+                                <li><strong>Pantheon</strong>: <a href="{{ path('gods_pantheon', {pantheon: god.pantheon|slug}) }}">{{ god.pantheon }}</a></li>
+                                <li><strong>Roles</strong>: <a href="{{ path('gods_role', {role: god.roles|slug}) }}">{{ god.roles }}</a></li>
+                                <li><strong>Type</strong>: {{ god.type }}</li>
+                                {% if god.pros %}
+                                <li><strong>Pros</strong>: {{ god.pros }}</li>
+                                {% endif %}
+                                {% if god.cons %}
+                                <li><strong>Cons</strong>: {{ god.cons }}</li>
+                                {% endif %}
+                            </ul>
+                            <hr />
+
+                            <ul class="list-unstyled">
+                                <li><strong>Attack Speed</strong>: {{ god.attackSpeed }}</li>
+                                <li><strong>Health</strong>: {{ god.health }}</li>
+                                <li><strong>Mana</strong>: {{ god.mana }}</li>
+                                <li><strong>Magic Protection</strong>: {{ god.magicProtection }}</li>
+                                <li><strong>Magical Power</strong>: {{ god.magicalPower }}</li>
+                                <li><strong>Speed</strong>: {{ god.speed }}</li>
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-8">
+
+                    <div class="card mb-4 box-shadow">
+                        <div class="card-body">
+                            <p>{{ god.lore }}</p>
+
                         </div>
                     </div>
+
+                    {% for ability in god.abilities %}
+                    <div class="card mb-4 box-shadow">
+                        <div class="card-header">
+                            <div class="row">
+
+                                <div class="col-auto">
+                                    <img class="float-left mr-2" src="{{ ability.url }}" />
+                                </div>
+
+                                <div class="col-auto">
+                                    <h4>{{ ability.summary }}</h4>
+                                    <h5>
+                                        {% if ability.abilityNumber < 5 %}
+                                            Ability {{ ability.abilityNumber }}
+                                        {% else %}
+                                            Passive
+                                        {% endif %}
+                                    </h5>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p>{{ ability.description }}</p>
+
+                            {% if ability.abilityNumber < 5 %}
+                                <ul>
+                                    <li>Cost: {{ ability.cost }}</li>
+                                    <li>Cooldown: {{ ability.cooldown }}</li>
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
 
                 </div>
 

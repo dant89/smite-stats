@@ -14,12 +14,15 @@
             <h1>Smite Players</h1>
 
             <div class="row">
-                <div class="col-12">
 
-                    {% for player in newest_players %}
-
+                {% for player in newest_players %}
+                <div class="col-md-4">
                     <div class="card mb-4 box-shadow">
                         <div class="card-body">
+
+                            {% if player.avatarUrl %}
+                                <img height="25px" src="{{ player.avatarUrl }}" />
+                            {% endif %}
 
                             {% if player.name|clan_remove|slug %}
                             <a href="{{ path('player_view', {
@@ -30,9 +33,9 @@
 
                         </div>
                     </div>
-                    {% endfor %}
-
                 </div>
+                {% endfor %}
+
             </div>
 
         </div>
