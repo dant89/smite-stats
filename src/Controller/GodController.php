@@ -45,6 +45,46 @@ class GodController extends AbstractController
     }
 
     /**
+     * @Route("/gods/pantheons/{pantheon}", name="gods_pantheon")
+     * @param string $pantheon
+     * @return Response
+     */
+    public function godsByPantheon(string $pantheon): Response
+    {
+        $repository = $this->entityManager->getRepository(God::class);
+        $gods = $repository->findBy(['pantheon' => $pantheon]);
+
+        if (empty($gods)) {
+            throw new NotFoundHttpException();
+        }
+
+        return $this->render('god/pantheon.html.twig', [
+            'gods' => $gods,
+            'pantheon' => strtolower($pantheon)
+        ]);
+    }
+
+    /**
+     * @Route("/gods/roles/{role}", name="gods_role")
+     * @param string $role
+     * @return Response
+     */
+    public function godsByRole(string $role): Response
+    {
+        $repository = $this->entityManager->getRepository(God::class);
+        $gods = $repository->findBy(['roles' => $role]);
+
+        if (empty($gods)) {
+            throw new NotFoundHttpException();
+        }
+
+        return $this->render('god/role.html.twig', [
+            'gods' => $gods,
+            'role' => strtolower($role)
+        ]);
+    }
+
+    /**
      * @Route("/gods/{name}", name="god_view")
      * @param string $name
      * @return Response

@@ -13,11 +13,12 @@ class PlayerRepository extends ServiceEntityRepository
         parent::__construct($registry, Player::class);
     }
 
-    public function findNewestPlayerNameNotNullQuery()
+    public function findNewestPlayerNameNotNullQuery(int $limit = 0)
     {
         $qb = $this->createQueryBuilder('p');
         return $qb->where('p.name IS NOT NULL')
             ->orderBy('p.dateCreated', 'DESC')
+            ->setMaxResults($limit)
             ->getQuery();
     }
 

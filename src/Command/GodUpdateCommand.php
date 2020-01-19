@@ -148,7 +148,7 @@ class GodUpdateCommand extends Command
         $god->setPhysicalProtection($data['PhysicalProtection']);
         $god->setPhysicalProtectionPerLevel($data['PhysicalProtectionPerLevel']);
         $god->setPros($data['Pros']);
-        $god->setRoles($data['Roles']);
+        $god->setRoles(trim($data['Roles']));
         $god->setSpeed($data['Speed']);
         $god->setTitle($data['Title']);
         $god->setType($data['Type']);
