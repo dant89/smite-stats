@@ -13,6 +13,14 @@ class PlayerRepository extends ServiceEntityRepository
         parent::__construct($registry, Player::class);
     }
 
+    public function getCount()
+    {
+        $qb = $this->createQueryBuilder('p');
+        $qb->select('count(p.smitePlayerId)');
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
     public function findNewestPlayerNameNotNullQuery(int $limit = 0)
     {
         $qb = $this->createQueryBuilder('p');
