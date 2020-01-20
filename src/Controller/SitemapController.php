@@ -27,7 +27,7 @@ class SitemapController extends AbstractController
         $playerRepo = $this->entityManager->getRepository(Player::class);
         $players = $playerRepo->getCount();
 
-        $pages = ceil($players / 49950);
+        $pages = ceil($players / 10000);
 
         return $this->render('sitemap/index.xml.twig', [
             'pages' => $pages
@@ -41,14 +41,14 @@ class SitemapController extends AbstractController
      */
     public function players(int $page = 1): Response
     {
-        // get 50,000 players starting at this page
+        // get 10,000 players starting at this page
         $offset = 0;
         if ($page > 1) {
-            $offset = ($page - 1) * 50000;
+            $offset = ($page - 1) * 10000;
         }
 
         $playerRepo = $this->entityManager->getRepository(Player::class);
-        $players = $playerRepo->findBy([], ['smitePlayerId' => 'asc'], 49950, $offset);
+        $players = $playerRepo->findBy([], ['smitePlayerId' => 'asc'], 10000, $offset);
 
         return $this->render('sitemap/players.xml.twig', [
             'players' => $players
