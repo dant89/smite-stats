@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+    <loc>http://smitestats.com/player/</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+</url>
+{% for player in players %}
+    {% if player.name|clan_remove|slug %}
+        <url>
+            <loc>http://smitestats.com{{ path('player_view', {gamertag: player.name|clan_remove|slug, id: player.smitePlayerId}) }}</loc>
+        </url>
+    {% endif %}
+{% endfor %}
+</urlset>
