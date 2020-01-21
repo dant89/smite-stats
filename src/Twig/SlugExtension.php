@@ -16,6 +16,11 @@ class SlugExtension extends AbstractExtension
 
     public function createSlug($subject)
     {
-        return strtolower(preg_replace('/([^a-z0-9-]+)/is', '-', trim($subject)));
+        $noWhitespace = trim($subject);
+        $hyphenated = preg_replace('/([^a-z0-9-]+)/is', '-', $noWhitespace);
+        $trailingHyphensRemoved = trim($hyphenated, '-');
+        $lower = strtolower($trailingHyphensRemoved);
+
+        return $lower;
     }
 }
