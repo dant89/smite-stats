@@ -13,12 +13,26 @@ class PlayerRepository extends ServiceEntityRepository
         parent::__construct($registry, Player::class);
     }
 
-    public function getCount()
+    public function getCountNameNotNull()
     {
         $qb = $this->createQueryBuilder('p');
-        $qb->select('count(p.smitePlayerId)');
+        $qb->select('COUNT(p.smitePlayerId)')
+            ->where('p.name IS NOT NULL');
 
         return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function findPlayerIdsNameNotNullAsc(int $limit = 0, int $offset = 0)
+    {
+        $qb = $this->createQueryBuilder('p');
+        $qb->select('p.smitePlayerId, p.name')
+            ->where('p.name IS NOT NULL')
+            ->orderBy('p.dateCreated', 'DESC')
+            ->setMaxResults($limit)
+            ->setFirstResult($offset);
+
+        $query = $qb->getQuery();
+        return $query->execute();
     }
 
     public function findNewestPlayerNameNotNullQuery(int $limit = 0)
