@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Player;
+use App\Repository\PlayerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,9 +14,15 @@ class SitemapController extends AbstractController
     /** @var EntityManagerInterface */
     protected $entityManager;
 
+    /**
+     * @var PlayerRepository
+     */
+    protected $playerRepo;
+
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
+        $this->playerRepo = $this->entityManager->getRepository(Player::class);
     }
 
     /**
@@ -24,10 +31,9 @@ class SitemapController extends AbstractController
      */
     public function sitemapPlayerIndex(): Response
     {
-        $playerRepo = $this->entityManager->getRepository(Player::class);
-        $players = $playerRepo->getCount();
+        $playerCount = $this->playerRepo->getCountNameNotNull();
 
-        $pages = ceil($players / 10000);
+        $pages = ceil($playerCount / 10000);
 
         $response = new Response();
         $response->headers->set('Content-Type', 'text/xml');
@@ -49,8 +55,7 @@ class SitemapController extends AbstractController
             $offset = ($page - 1) * 10000;
         }
 
-        $playerRepo = $this->entityManager->getRepository(Player::class);
-        $players = $playerRepo->findBy([], ['smitePlayerId' => 'asc'], 10000, $offset);
+        $players = $this->playerRepo->findPlayerIdsNameNotNullAsc(10000, $offset);
 
         $response = new Response();
         $response->headers->set('Content-Type', 'text/xml');
