@@ -27,7 +27,7 @@ class PlayerRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('p');
         $qb->select('p.smitePlayerId, p.name')
             ->where('p.name IS NOT NULL')
-            ->orderBy('p.dateCreated', 'DESC')
+            ->orderBy('p.smitePlayerId', 'ASC')
             ->setMaxResults($limit)
             ->setFirstResult($offset);
 
