@@ -311,7 +311,7 @@ class PlayerController extends AbstractController
             }
         }
 
-        $playerGods = $playerGodRepo->findBy(['smitePlayer' => $player]);
+        $playerGods = $playerGodRepo->findBy(['smitePlayer' => $player], ['rank' => 'DESC']);
         if (!empty($playerGods)) {
             /** @var PlayerGod $playerGod */
             foreach ($playerGods as $playerGod) {
