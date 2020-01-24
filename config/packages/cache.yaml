@@ -1,10 +1,10 @@
 framework:
     cache:
-        ***REMOVED*** Put the unique name of your app here: the prefix seed
-        ***REMOVED*** is used to compute stable namespaces for cache keys.
+        ***REMOVED*** Unique name of your app: used to compute stable namespaces for cache keys.
         ***REMOVED***prefix_seed: your_vendor_name/app_name
 
-        ***REMOVED*** The app cache caches to the filesystem by default.
+        ***REMOVED*** The "app" cache stores to the filesystem by default.
+        ***REMOVED*** The data in this cache should persist between deploys.
         ***REMOVED*** Other options include:
 
         ***REMOVED*** Redis
