@@ -194,9 +194,9 @@ class Player
     private $dateUpdated;
 
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      *
-     * @ORM\Column(name="gods_date_updated", type="datetime", nullable=false)
+     * @ORM\Column(name="gods_date_updated", type="datetime", nullable=true)
      */
     private $godsDateUpdated;
 
@@ -676,18 +676,18 @@ class Player
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getGodsDateUpdated(): \DateTime
+    public function getGodsDateUpdated(): ?\DateTime
     {
         return $this->godsDateUpdated;
     }
 
     /**
-     * @param \DateTime $godsDateUpdated
+     * @param \DateTime|null $godsDateUpdated
      * @return Player
      */
-    public function setGodsDateUpdated(\DateTime $godsDateUpdated): Player
+    public function setGodsDateUpdated(?\DateTime $godsDateUpdated): Player
     {
         $this->godsDateUpdated = $godsDateUpdated;
         return $this;
