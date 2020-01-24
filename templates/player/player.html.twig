@@ -19,6 +19,14 @@
     <div class="bg-light pt-3 pb-3">
         <div class="container">
 
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('players') }}">Players</a></li>
+                    <li class="breadcrumb-item active">{{ player.name }}</li>
+                </ol>
+            </nav>
+
             <div class="row">
                 <div class="col-sm-8">
                     {% if player.name %}
@@ -107,9 +115,13 @@
                             <div class="card mb-4 box-shadow">
                                 <div class="card-body">
 
-                                    <h3>Top Gods</h3>
+                                    <h3 class="d-inline-block">Top Gods</h3>
+                                    <a class="btn btn-sm btn-primary float-right" href="{{ path('player_gods_view', {
+                                        gamertag: player.name|clan_remove|slug,
+                                        id: player.smitePlayerId
+                                    }) }}">View all Gods</a>
 
-                                    <div class="carousel slide" data-ride="carousel" id="godCarousel">
+                                    <div class="carousel slide mt-3" data-ride="carousel" id="godCarousel">
 
                                         <div class="carousel-inner w-100" role="listbox">
 

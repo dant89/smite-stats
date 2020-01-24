@@ -11,6 +11,14 @@
     <div class="bg-light pt-3 pb-3">
         <div class="container">
 
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('gods') }}">Gods</a></li>
+                    <li class="breadcrumb-item active">{{ god.name }}</li>
+                </ol>
+            </nav>
+
             <div class="row">
 
                 <div class="col-md-4">

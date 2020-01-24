@@ -339,6 +339,98 @@ class PlayerController extends AbstractController
     }
 
     /**
+     * @Route("/player/{gamertag}-{id}/gods", name="player_gods_view", requirements={"gamertag": "[-\w]+"})
+     * @param string $gamertag
+     * @param int id
+     * @return Response
+     * @throws InvalidArgumentException
+     */
+    public function playerGods(string $gamertag, int $id): Response
+    {
+        // Check to see if we have this player stored in the database
+        $godRepo = $this->entityManager->getRepository(God::class);
+        $playerRepo = $this->entityManager->getRepository(Player::class);
+        $playerGodRepo = $this->entityManager->getRepository(PlayerGod::class);
+
+        $gods = $this->smite->getGodsByNameKey();
+
+        /** @var Player $player */
+        $player = $playerRepo->findOneBy(['smitePlayerId' => $id]);
+
+        // See if we can find this player via the smite api
+        if (is_null($player)) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!is_null($player->getGodsDateUpdated())) {
+            $playerGodsUpdated = $player->getGodsDateUpdated()->diff(new \DateTime());
+            $playerGodsUpdatedMins = $playerGodsUpdated->days * 24 * 60;
+            $playerGodsUpdatedMins += $playerGodsUpdated->h * 60;
+            $playerGodsUpdatedMins += $playerGodsUpdated->i;
+        } else {
+            $playerGodsUpdatedMins = (61 * 24);
+        }
+
+        // If the God details were updated in the last 24 hours, use database info
+        if ($playerGodsUpdatedMins > (60 * 24)) {
+            $playerGods = $this->smite->getPlayerGodDetails($player->getSmitePlayerId()) ?? [];
+            if (!empty($playerGods)) {
+                foreach ($playerGods as $playerGod) {
+
+                    $god = $godRepo->findOneBy(['smiteId' => $playerGod['god_id']]);
+                    if (!is_null($god)) {
+                        /** @var PlayerGod $existingPlayerGod */
+                        $existingPlayerGod = $playerGodRepo->findOneBy([
+                            'god' => $god,
+                            'smitePlayer' => $player
+                        ]);
+                        if (is_null($existingPlayerGod)) {
+                            $storedPlayerGod = new PlayerGod();
+                            $storedPlayerGod->setGod($god);
+                            $storedPlayerGod->setSmitePlayer($player);
+                            $storedPlayerGod->setAssists($playerGod['Assists']);
+                            $storedPlayerGod->setDeaths($playerGod['Deaths']);
+                            $storedPlayerGod->setKills($playerGod['Kills']);
+                            $storedPlayerGod->setLosses($playerGod['Losses']);
+                            $storedPlayerGod->setMinionKills($playerGod['MinionKills']);
+                            $storedPlayerGod->setRank($playerGod['Rank']);
+                            $storedPlayerGod->setWins($playerGod['Wins']);
+                            $storedPlayerGod->setWorshippers($playerGod['Worshippers']);
+                            $storedPlayerGod->setDateCreated(new \DateTime());
+                            $storedPlayerGod->setDateUpdated(new \DateTime());
+                            $player->setGodsDateUpdated(new \DateTime());
+                            $this->entityManager->persist($storedPlayerGod);
+                            $this->entityManager->persist($player);
+                        } else {
+                            $existingPlayerGod->setAssists($playerGod['Assists']);
+                            $existingPlayerGod->setDeaths($playerGod['Deaths']);
+                            $existingPlayerGod->setKills($playerGod['Kills']);
+                            $existingPlayerGod->setLosses($playerGod['Losses']);
+                            $existingPlayerGod->setMinionKills($playerGod['MinionKills']);
+                            $existingPlayerGod->setRank($playerGod['Rank']);
+                            $existingPlayerGod->setWins($playerGod['Wins']);
+                            $existingPlayerGod->setWorshippers($playerGod['Worshippers']);
+                            $existingPlayerGod->setDateUpdated(new \DateTime());
+                            $player->setGodsDateUpdated(new \DateTime());
+                            $this->entityManager->persist($existingPlayerGod);
+                            $this->entityManager->persist($player);
+                        }
+                    }
+                }
+                $this->entityManager->flush();
+            }
+        }
+
+        $playerGods = $playerGodRepo->findBy(['smitePlayer' => $player], ['rank' => 'DESC']);
+
+        return $this->render('player/gods.html.twig', [
+            'player' => $player,
+            'player_god_info' => $playerGods,
+            'gods' => $gods
+        ]);
+    }
+
+    /**
      * @Route("/player_search", name="player_search")
      * @param Request $request
      * @return Response
