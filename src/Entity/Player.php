@@ -194,6 +194,13 @@ class Player
     private $dateUpdated;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="gods_date_updated", type="datetime", nullable=false)
+     */
+    private $godsDateUpdated;
+
+    /**
      * @var int|null
      *
      * @ORM\Column(name="crawled", type="integer", nullable=false, options={"default":0})
@@ -665,6 +672,24 @@ class Player
     public function setDateUpdated(\DateTime $dateUpdated): Player
     {
         $this->dateUpdated = $dateUpdated;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getGodsDateUpdated(): \DateTime
+    {
+        return $this->godsDateUpdated;
+    }
+
+    /**
+     * @param \DateTime $godsDateUpdated
+     * @return Player
+     */
+    public function setGodsDateUpdated(\DateTime $godsDateUpdated): Player
+    {
+        $this->godsDateUpdated = $godsDateUpdated;
         return $this;
     }
 
