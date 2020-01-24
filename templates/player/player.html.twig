@@ -120,9 +120,9 @@
                                                         <div class="col-md-3">
                                                             <div class="card card-body bg-light">
 
-                                                                {% if gods[god.god] %}
-                                                                    <div class="rounded smite-god" style="background-image: url({{ gods[god.god].cardUrl }})">
-                                                                        <a href="{{ path('god_view', {name: god.god|slug}) }}" title="Smite God {{ god.god }}">{{ god.god }}</a>
+                                                                {% if gods[god.god.name] %}
+                                                                    <div class="rounded smite-god" style="background-image: url({{ gods[god.god.name].cardUrl }})">
+                                                                        <a href="{{ path('god_view', {name: god.god.name|slug}) }}" title="Smite God {{ god.god.name }}">{{ god.god.name }}</a>
                                                                     </div>
                                                                 {% endif %}
 
@@ -130,30 +130,30 @@
 
                                                                     <div class="col col-sm-6 col-md-4 col-lg-12">
                                                                         <ul class="list-unstyled">
-                                                                            <li>Rank: {{ god.Rank }}</li>
-                                                                            {% if god.Losses and god.Wins %}
-                                                                                <li>Win %: {{ ((god.Wins / (god.Wins + god.Losses)) * 100)|round(2) }}%</li>
-                                                                            {% elseif god.Wins %}
+                                                                            <li>Rank: {{ god.rank }}</li>
+                                                                            {% if god.losses and god.wins %}
+                                                                                <li>Win %: {{ ((god.wins / (god.Wins + god.losses)) * 100)|round(2) }}%</li>
+                                                                            {% elseif god.wins %}
                                                                                 <li>Win Percent: {{ 100|round(2) }}%</li>
                                                                             {% else %}
                                                                                 <li>Win Percent: {{ 0|round(2) }}%</li>
                                                                             {% endif %}
-                                                                            <li>Wins: {{ god.Wins }}</li>
-                                                                            <li>Losses: {{ god.Losses }}</li>
+                                                                            <li>Wins: {{ god.wins }}</li>
+                                                                            <li>Losses: {{ god.losses }}</li>
                                                                         </ul>
                                                                     </div>
 
                                                                     <div class="col col-sm-6 col-md-4 col-lg-12">
                                                                         <ul class="list-unstyled">
-                                                                            <li>Kills: {{ god.Kills }}</li>
-                                                                            <li>Assists: {{ god.Assists }}</li>
-                                                                            <li>Deaths: {{ god.Deaths }}</li>
-                                                                            {% if god.Deaths %}
-                                                                                <li>K/D: {{ (god.Kills / god.Deaths)|round(2) }}</li>
-                                                                                <li>K/D/A: {{ ((god.Kills + god.Assists) / god.Deaths)|round(2) }}</li>
+                                                                            <li>Kills: {{ god.kills }}</li>
+                                                                            <li>Assists: {{ god.assists }}</li>
+                                                                            <li>Deaths: {{ god.deaths }}</li>
+                                                                            {% if god.deaths %}
+                                                                                <li>K/D: {{ (god.kills / god.deaths)|round(2) }}</li>
+                                                                                <li>K/D/A: {{ ((god.kills + god.assists) / god.deaths)|round(2) }}</li>
                                                                             {% else %}
-                                                                                <li>K/D: {{ god.Kills|round(2) }}</li>
-                                                                                <li>K/D/A: {{ (god.Kills + god.Assists)|round(2) }}</li>
+                                                                                <li>K/D: {{ god.kills|round(2) }}</li>
+                                                                                <li>K/D/A: {{ (god.kills + god.assists)|round(2) }}</li>
                                                                             {% endif %}
                                                                         </ul>
                                                                     </div>

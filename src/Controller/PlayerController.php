@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\God;
 use App\Entity\MatchPlayer;
 use App\Entity\MatchPlayerAbility;
 use App\Entity\MatchPlayerBan;
 use App\Entity\MatchPlayerItem;
 use App\Entity\Player;
+use App\Entity\PlayerGod;
 use App\Entity\PlayerSearch;
 use App\Mapper\MatchPlayerMapper;
 use App\Mapper\PlayerMapper;
@@ -16,7 +18,6 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Psr\Cache\InvalidArgumentException;
@@ -61,7 +62,7 @@ class PlayerController extends AbstractController
     {
         $playerRepo = $this->entityManager->getRepository(Player::class);
         /** @var Player $player */
-        $newestPlayersQuery = $playerRepo->findNewestPlayerNameNotNullQuery(20);
+        $newestPlayersQuery = $playerRepo->findNewestPlayerNameNotNullQuery(30);
         $newestPlayers = $newestPlayersQuery->execute();
 
         return $this->render('player/index.html.twig', [
@@ -78,8 +79,12 @@ class PlayerController extends AbstractController
      */
     public function player(string $gamertag, int $id): Response
     {
+        // TODO controller contains too much logic - tidy
+
         // Check to see if we have this player stored in the database
+        $godRepo = $this->entityManager->getRepository(God::class);
         $playerRepo = $this->entityManager->getRepository(Player::class);
+        $playerGodRepo = $this->entityManager->getRepository(PlayerGod::class);
         $matchPlayerRepo = $this->entityManager->getRepository(MatchPlayer::class);
 
         /** @var Player $player */
@@ -111,23 +116,42 @@ class PlayerController extends AbstractController
 
         $gods = $this->smite->getGodsByNameKey();
 
+        ***REMOVED*** TODO uses an api request, store or cache?
         $achievements = $this->smite->getPlayerAchievements($player->getSmitePlayerId()) ?? [];
-        $matches = $this->smite->getPlayerMatches($player->getSmitePlayerId()) ?? [];
 
-        $matchIds = [];
+        // Handle player matches
+        $existingMatchIds = [];
+        $matchPlayerIds = $matchPlayerRepo->getUniqueMatchIds($player);
+        foreach ($matchPlayerIds as $matchPlayerId) {
+            if (!in_array($matchPlayerId['smiteMatchId'], $existingMatchIds)) {
+                $existingMatchIds[] = $matchPlayerId['smiteMatchId'];
+            }
+        }
+
+        ***REMOVED*** TODO uses an api request, store or cache?
+        $matches = $this->smite->getPlayerMatches($player->getSmitePlayerId()) ?? [];
+        $recentMatchIds = [];
         if (!empty($matches)) {
             foreach ($matches as $match) {
-                $matchIds[] = $match['Match'];
+                $recentMatchIds[] = $match['Match'];
             }
         }
 
         // TODO Can check if we need to get match details of if they are already stored
         // TODO Check if in array of returned matches, if not crawl then reorder on match ID desc
-        $matchIds = array_slice($matchIds, 0, 10, true);
-        $matchDetails = $this->smite->getMatchDetailsBatch($matchIds);
+        $recentMatchIds = array_slice($recentMatchIds, 0, 10, true);
+        $matchDetails = $this->smite->getMatchDetailsBatch($recentMatchIds);
+
+
+
+        // TODO store the latest matches, then query the database for matches by id for user - simple solution!
 
         $formattedMatches = [];
         $teams = [];
+
+
+        // TODO this is far too slow!!! if can't speed up, use a bus and crawled 0 by default and show a
+        // TODO 'getting match details' periodically until crawl has completed
 
         // Might be worth grouping match details into a match id key so easier to figure out if need storing
         if (!empty($matchDetails)) {
@@ -141,6 +165,8 @@ class PlayerController extends AbstractController
                 ]);
 
                 if (is_null($existingMatch)) {
+
+                    // TODO send to message bus
                     /** @var Player $matchPlayer */
                     $matchPlayer = $playerRepo->find($matchDetail['ActivePlayerId']);
 
@@ -149,7 +175,6 @@ class PlayerController extends AbstractController
                         if (!empty($playerDetails)) {
                             $matchPlayer = $this->playerMapper->from($playerDetails);
                             $this->entityManager->persist($matchPlayer);
-                            $this->entityManager->flush();
                         }
                     }
 
@@ -218,19 +243,77 @@ class PlayerController extends AbstractController
             }
         }
 
+
+        // TODO get the latest stored matches for a player
+
         $playerStats = [
             'Kills' => 0,
             'Assists' => 0,
             'Deaths' => 0,
         ];
 
-        // TODO could store this with a PlayerGod entity
-        $playerGods = $this->smite->getPlayerGodDetails($player->getSmitePlayerId()) ?? [];
+        $playerGodsUpdated = $player->getGodsDateUpdated()->diff(new \DateTime());
+        $playerGodsUpdatedMins = $playerGodsUpdated->days * 24 * 60;
+        $playerGodsUpdatedMins += $playerGodsUpdated->h * 60;
+        $playerGodsUpdatedMins += $playerGodsUpdated->i;
+
+        // If the God details were updated in the last 24 hours, use database info
+        if ($playerGodsUpdatedMins > (60 * 24)) {
+            $playerGods = $this->smite->getPlayerGodDetails($player->getSmitePlayerId()) ?? [];
+            if (!empty($playerGods)) {
+                foreach ($playerGods as $playerGod) {
+
+                    $god = $godRepo->findOneBy(['smiteId' => $playerGod['god_id']]);
+                    if (!is_null($god)) {
+                        /** @var PlayerGod $existingPlayerGod */
+                        $existingPlayerGod = $playerGodRepo->findOneBy([
+                            'god' => $god,
+                            'smitePlayer' => $player
+                        ]);
+                        if (is_null($existingPlayerGod)) {
+                            $storedPlayerGod = new PlayerGod();
+                            $storedPlayerGod->setGod($god);
+                            $storedPlayerGod->setSmitePlayer($player);
+                            $storedPlayerGod->setAssists($playerGod['Assists']);
+                            $storedPlayerGod->setDeaths($playerGod['Deaths']);
+                            $storedPlayerGod->setKills($playerGod['Kills']);
+                            $storedPlayerGod->setLosses($playerGod['Losses']);
+                            $storedPlayerGod->setMinionKills($playerGod['MinionKills']);
+                            $storedPlayerGod->setRank($playerGod['Rank']);
+                            $storedPlayerGod->setWins($playerGod['Wins']);
+                            $storedPlayerGod->setWorshippers($playerGod['Worshippers']);
+                            $storedPlayerGod->setDateCreated(new \DateTime());
+                            $storedPlayerGod->setDateUpdated(new \DateTime());
+                            $player->setGodsDateUpdated(new \DateTime());
+                            $this->entityManager->persist($storedPlayerGod);
+                            $this->entityManager->persist($player);
+                        } else {
+                            $existingPlayerGod->setAssists($playerGod['Assists']);
+                            $existingPlayerGod->setDeaths($playerGod['Deaths']);
+                            $existingPlayerGod->setKills($playerGod['Kills']);
+                            $existingPlayerGod->setLosses($playerGod['Losses']);
+                            $existingPlayerGod->setMinionKills($playerGod['MinionKills']);
+                            $existingPlayerGod->setRank($playerGod['Rank']);
+                            $existingPlayerGod->setWins($playerGod['Wins']);
+                            $existingPlayerGod->setWorshippers($playerGod['Worshippers']);
+                            $existingPlayerGod->setDateUpdated(new \DateTime());
+                            $player->setGodsDateUpdated(new \DateTime());
+                            $this->entityManager->persist($existingPlayerGod);
+                            $this->entityManager->persist($player);
+                        }
+                    }
+                }
+                $this->entityManager->flush();
+            }
+        }
+
+        $playerGods = $playerGodRepo->findBy(['smitePlayer' => $player]);
         if (!empty($playerGods)) {
+            /** @var PlayerGod $playerGod */
             foreach ($playerGods as $playerGod) {
-                $playerStats['Kills'] += $playerGod['Kills'];
-                $playerStats['Assists'] += $playerGod['Assists'];
-                $playerStats['Deaths'] += $playerGod['Deaths'];
+                $playerStats['Kills'] += $playerGod->getKills();
+                $playerStats['Assists'] += $playerGod->getAssists();
+                $playerStats['Deaths'] += $playerGod->getDeaths();
             }
         }
 
@@ -274,16 +357,18 @@ class PlayerController extends AbstractController
 
             $playerRepo = $this->entityManager->getRepository(Player::class);
             /** @var Player $player */
-            foreach ($players as $player) {
-                $existingPlayer = $playerRepo->findOneBy(['smitePlayerId' => $player['player_id']]);
-                if (is_null($existingPlayer)) {
-                    $newPlayer = new Player();
-                    $newPlayer->setSmitePlayerId($player['player_id']);
-                    $newPlayer->setDateCreated(new \DateTime());
-                    $newPlayer->setDateUpdated(new \DateTime());
-                    $this->entityManager->persist($newPlayer);
+            if ($players) {
+                foreach ($players as $player) {
+                    $existingPlayer = $playerRepo->findOneBy(['smitePlayerId' => $player['player_id']]);
+                    if (is_null($existingPlayer)) {
+                        $newPlayer = new Player();
+                        $newPlayer->setSmitePlayerId($player['player_id']);
+                        $newPlayer->setDateCreated(new \DateTime());
+                        $newPlayer->setDateUpdated(new \DateTime());
+                        $this->entityManager->persist($newPlayer);
+                    }
+                    $this->entityManager->flush();
                 }
-                $this->entityManager->flush();
             }
         }
 
