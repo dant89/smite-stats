@@ -252,10 +252,14 @@ class PlayerController extends AbstractController
             'Deaths' => 0,
         ];
 
-        $playerGodsUpdated = $player->getGodsDateUpdated()->diff(new \DateTime());
-        $playerGodsUpdatedMins = $playerGodsUpdated->days * 24 * 60;
-        $playerGodsUpdatedMins += $playerGodsUpdated->h * 60;
-        $playerGodsUpdatedMins += $playerGodsUpdated->i;
+        if (!is_null($player->getGodsDateUpdated())) {
+            $playerGodsUpdated = $player->getGodsDateUpdated()->diff(new \DateTime());
+            $playerGodsUpdatedMins = $playerGodsUpdated->days * 24 * 60;
+            $playerGodsUpdatedMins += $playerGodsUpdated->h * 60;
+            $playerGodsUpdatedMins += $playerGodsUpdated->i;
+        } else {
+            $playerGodsUpdatedMins = (61 * 24);
+        }
 
         // If the God details were updated in the last 24 hours, use database info
         if ($playerGodsUpdatedMins > (60 * 24)) {
