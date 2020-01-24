@@ -2,11 +2,13 @@
 bin/*
 !bin/console
 public/images/SMITE_Logo_2016_BlackTagline_300dpi.png
+sample/*
 
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
 /.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/
 /vendor/
