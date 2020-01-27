@@ -142,8 +142,6 @@ class PlayerController extends AbstractController
         $recentMatchIds = array_slice($recentMatchIds, 0, 10, true);
         $matchDetails = $this->smite->getMatchDetailsBatch($recentMatchIds);
 
-
-
         // TODO store the latest matches, then query the database for matches by id for user - simple solution!
 
         $formattedMatches = [];
@@ -234,8 +232,13 @@ class PlayerController extends AbstractController
                 $winner = false;
                 /** @var MatchPlayer $matchPlayer */
                 foreach ($matchPlayers as $matchPlayer) {
-                    if ($matchPlayer->getSmitePlayer() === $id) {
-                        $winner = true;
+                    /** @var Player $smitePlayer */
+                    $smitePlayer = $matchPlayer->getSmitePlayer();
+                    if (!is_null($smitePlayer)) {
+                        $smitePlayerId = (int) $smitePlayer->getSmitePlayerId();
+                        if ($smitePlayerId === $id) {
+                            $winner = true;
+                        }
                     }
                 }
 
