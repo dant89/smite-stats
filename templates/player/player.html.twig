@@ -28,9 +28,9 @@
                     {{ player.leaves }}
                 ],
                 backgroundColor: [
-                    "rgb(255, 99, 132)",
-                    "rgb(54, 162, 235)",
-                    "rgb(255, 205, 86)"
+                    "rgb(40, 167, 69)",
+                    "rgb(220, 53, 69)",
+                    "rgb(255, 193, 7)"
                 ]
             }]
         },
@@ -55,9 +55,9 @@
                     {{ achievements.Deaths }}
                 ],
                 backgroundColor: [
-                    "rgb(255, 99, 132)",
-                    "rgb(54, 162, 235)",
-                    "rgb(255, 205, 86)"
+                    "rgb(40, 167, 69)",
+                    "rgb(255, 193, 7)",
+                    "rgb(220, 53, 69)"
                 ]
             }]
         },
@@ -107,7 +107,7 @@
                         <div class="card-body">
 
                             <div class="row">
-                                <div class="col col-sm-6">
+                                <div class="col col-sm-12">
 
                                     <h2><img class="rounded" src="{{ player.avatarUrl }}" width="50px" /> {{ player.name }} (<span class="text-primary">{{ player.level }}</span>)</h2>
 
@@ -134,12 +134,10 @@
 
                                 </div>
                                 <div class="col col-sm-6 col-md-3">
-                                    <h5>Wins / Losses / Leaves</h5>
-                                    <canvas id="winPercentChart" width="400" height="300"></canvas>
+                                    <canvas id="winPercentChart" width="400" height="350"></canvas>
                                 </div>
                                 <div class="col col-sm-6 col-md-3">
-                                    <h5>Kills / Deaths / Assists</h5>
-                                    <canvas id="killsChart" width="400" height="300"></canvas>
+                                    <canvas id="killsChart" width="400" height="350"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -166,7 +164,7 @@
                                                 {% if god.god %}
 
                                                     <div class="carousel-item{% if loop.index == 1 %} active{% endif %}">
-                                                        <div class="col-md-3">
+                                                        <div class="col-sm-12 col-md-6 col-lg-3">
                                                             <div class="card card-body bg-light">
 
                                                                 {% if gods[god.god.name] %}
@@ -237,7 +235,7 @@
 
                     {% if achievements %}
                     <div class="row">
-                        <div class="col-4">
+                        <div class="col-md-12 col-lg-4">
 
                             <div class="card mb-4 box-shadow">
                                 <div class="card-header">
@@ -303,7 +301,7 @@
 
                         </div>
 
-                        <div class="col-4">
+                        <div class="col-md-12 col-lg-4">
 
                             <div class="card mb-4 box-shadow">
                                 <div class="card-header">
@@ -375,7 +373,7 @@
 
                         </div>
 
-                        <div class="col-4">
+                        <div class="col-md-12 col-lg-4">
 
                             <div class="card mb-4 box-shadow">
                                 <div class="card-header">
