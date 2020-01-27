@@ -2,9 +2,11 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\MatchPlayer;
 use App\Entity\Player;
 use App\Service\Smite;
 use Doctrine\ORM\EntityManagerInterface;
+use Proxies\__CG__\App\Entity\Match;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -91,9 +93,12 @@ class PlayerController
         $this->entityManager->persist($player);
         $this->entityManager->flush();
 
-        $jsonPlayer = $this->serializer->serialize($player, 'json');
+        $jsonPlayer = $this->serializer->serialize($player, 'json', [
+            'circular_reference_handler' => function () {
+                return null;
+            }
+        ]);
 
         return new JsonResponse($jsonPlayer);
     }
-
 }
