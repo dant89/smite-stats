@@ -1,6 +1,5 @@
 @import "~bootstrap";
-@import "~@fortawesome/fontawesome-free/css/brands.min.css";
-@import "~@fortawesome/fontawesome-free/css/fontawesome.min.css";
+@import "~@fortawesome/fontawesome-free/css/all.min.css";
 
 body {
     background-color: #000;
@@ -21,6 +20,10 @@ main {
 
 main a {
     color: #9e6700;
+}
+
+.bg-dark-opaque {
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 .header-box {
