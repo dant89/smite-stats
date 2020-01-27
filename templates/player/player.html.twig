@@ -11,6 +11,61 @@
     {{ parent() }}
     <script type="text/javascript">
     var smitePlayerId = {{ player.smitePlayerId }};
+
+    var ctxWinPercent = document.getElementById('winPercentChart');
+    var winPercentChart = new Chart(ctxWinPercent, {
+        type: 'doughnut',
+        data: {
+            labels: [
+                'Wins',
+                'Losses',
+                'Leaves'
+            ],
+            datasets: [{
+                data: [
+                    {{ player.wins }},
+                    {{ player.losses }},
+                    {{ player.leaves }}
+                ],
+                backgroundColor: [
+                    "rgb(255, 99, 132)",
+                    "rgb(54, 162, 235)",
+                    "rgb(255, 205, 86)"
+                ]
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+
+    var ctxKills = document.getElementById('killsChart');
+    var killsChart = new Chart(ctxKills, {
+        type: 'doughnut',
+        data: {
+            labels: [
+                'Kills',
+                'Assists',
+                'Deaths'
+            ],
+            datasets: [{
+                data: [
+                    {{ achievements.PlayerKills }},
+                    {{ achievements.AssistedKills }},
+                    {{ achievements.Deaths }}
+                ],
+                backgroundColor: [
+                    "rgb(255, 99, 132)",
+                    "rgb(54, 162, 235)",
+                    "rgb(255, 205, 86)"
+                ]
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+
     </script>
 {% endblock %}
 
@@ -28,7 +83,7 @@
             </nav>
 
             <div class="row">
-                <div class="col-sm-8">
+                <div class="col-sm-6">
                     {% if player.name %}
                     <h1><a href="{{ path('player_view', {
                             gamertag: player.name|clan_remove|slug,
@@ -37,10 +92,11 @@
                     {% endif %}
                 </div>
 
-                <div class="col-sm-4">
-                    {% if last_updated >= 15 %}
-                    <button class="btn btn-sm btn-primary float-right" id="player-refresh" type="button">Refresh player</button>
-                    {% endif %}
+                <div class="col-sm-6 text-right">
+                {% if last_updated >= 15 %}
+                    <span class="text-muted d-inline-block">Last Updated: {{ player.dateUpdated|date('H:i:s Y/m/d') }}</span>
+                    <button class="btn btn-sm btn-primary d-inline-block" id="player-refresh" type="button">Refresh player</button>
+                {% endif %}
                 </div>
             </div>
 
@@ -51,7 +107,7 @@
                         <div class="card-body">
 
                             <div class="row">
-                                <div class="col col-sm-12">
+                                <div class="col col-sm-6">
 
                                     <h2><img class="rounded" src="{{ player.avatarUrl }}" width="50px" /> {{ player.name }} (<span class="text-primary">{{ player.level }}</span>)</h2>
 
@@ -63,48 +119,29 @@
                                     </h5>
                                     {% endif %}
 
-                                    <span class="float-left">Last Updated: {{ player.dateUpdated|date('H:i:s Y/m/d') }}</span>
-
-                                </div>
-                            </div>
-
-                            <hr />
-
-                            <div class="row">
-
-                                <div class="col col-sm-6 col-md-3">
                                     <ul class="list-unstyled">
+                                        <li></li>
                                         <li>Hours Played: {{ player.hoursPlayed }}</li>
                                         <li>Achievements: {{ player.totalAchievements }}</li>
+                                        {% if achievements.Deaths %}
+                                            <li>K/D: {{ (achievements.PlayerKills / achievements.Deaths)|round(2) }}</li>
+                                            <li>K/D/A: {{ ((achievements.PlayerKills + achievements.AssistedKills) / achievements.Deaths)|round(2) }}</li>
+                                        {% else %}
+                                            <li>K/D: {{ achievements.PlayerKills|round(2) }}</li>
+                                            <li>K/D/A: {{ (achievements.PlayerKills + achievements.AssistedKills)|round(2) }}</li>
+                                        {% endif %}
                                     </ul>
+
                                 </div>
                                 <div class="col col-sm-6 col-md-3">
-                                    <ul class="list-unstyled">
-                                        <li>Wins: {{ player.wins }}</li>
-                                        <li>Losses: {{ player.losses }}</li>
-                                        <li>Quits: {{ player.leaves }}</li>
-                                    </ul>
+                                    <h5>Wins / Losses / Leaves</h5>
+                                    <canvas id="winPercentChart" width="400" height="300"></canvas>
                                 </div>
                                 <div class="col col-sm-6 col-md-3">
-                                    <ul class="list-unstyled">
-                                        <li>Kills: {{ player_stats.Kills }}</li>
-                                        <li>Assists: {{ player_stats.Assists }}</li>
-                                        <li>Deaths: {{ player_stats.Deaths }}</li>
-                                    </ul>
-                                </div>
-                                <div class="col col-sm-6 col-md-3">
-                                    <ul class="list-unstyled">
-                                    {% if player_stats.Deaths %}
-                                        <li>K/D: {{ (player_stats.Kills / player_stats.Deaths)|round(2) }}</li>
-                                        <li>K/D/A: {{ ((player_stats.Kills + player_stats.Assists) / player_stats.Deaths)|round(2) }}</li>
-                                    {% else %}
-                                        <li>K/D: {{ player_stats.Kills|round(2) }}</li>
-                                        <li>K/D/A: {{ (player_stats.Kills + player_stats.Assists)|round(2) }}</li>
-                                    {% endif %}
-                                    </ul>
+                                    <h5>Kills / Deaths / Assists</h5>
+                                    <canvas id="killsChart" width="400" height="300"></canvas>
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
@@ -199,57 +236,219 @@
                     {% endif %}
 
                     {% if achievements %}
-                    <div class="card mb-4 box-shadow">
-                        <div class="card-body">
+                    <div class="row">
+                        <div class="col-4">
 
-                            <div class="row">
-                                <div class="col-12">
-                                    <h3>Player Statistics</h3>
+                            <div class="card mb-4 box-shadow">
+                                <div class="card-header">
+                                    <strong>Kill Stats</strong>
+                                </div>
+                                <div class="card-body">
 
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-3">
-                                            <ul>
-                                                <li>Double Kills: {{ achievements.DoubleKills ?? 0 }}</li>
-                                                <li>Triple Kills: {{ achievements.TripleKills ?? 0 }}</li>
-                                                <li>Quadra Kills: {{ achievements.QuadraKills ?? 0 }}</li>
-                                                <li>Penta Kills: {{ achievements.PentaKills ?? 0 }}</li>
-                                            </ul>
-                                        </div>
+                                    <ul class="list-unstyled">
+                                        <li>
+                                            <span class="d-block bg-primary text-white">
+                                                <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
+                                                    <i class="fas fa-skull fa-fw"></i>
+                                                </span>
+                                                {{ achievements.PlayerKills|number_format }} Kills
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="d-block bg-success text-white">
+                                                <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
+                                                    <i class="fas fa-skull fa-fw"></i>
+                                                    <i class="fas fa-skull fa-fw"></i>
+                                                </span>
+                                                {{ achievements.DoubleKills ?? 0 |number_format }} Double Kills
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="d-block bg-danger text-white">
+                                                <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
+                                                    <i class="fas fa-skull fa-fw"></i>
+                                                    <i class="fas fa-skull fa-fw"></i>
+                                                    <i class="fas fa-skull fa-fw"></i>
+                                                </span>
+                                                {{ achievements.TripleKills|number_format }} Triple Kills
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="d-block bg-info text-white">
+                                                <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
+                                                    <i class="fas fa-skull fa-fw"></i>
+                                                    <i class="fas fa-skull fa-fw"></i>
+                                                    <i class="fas fa-skull fa-fw"></i>
+                                                    <i class="fas fa-skull fa-fw"></i>
+                                                </span>
+                                                {{ achievements.QuadraKills|number_format }} Quadra Kills
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="d-block bg-secondary text-white">
+                                                <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
+                                                    <i class="fas fa-skull fa-fw"></i>
+                                                    <i class="fas fa-skull fa-fw"></i>
+                                                    <i class="fas fa-skull fa-fw"></i>
+                                                    <i class="fas fa-skull fa-fw"></i>
+                                                    <i class="fas fa-skull fa-fw"></i>
+                                                </span>
+                                                {{ achievements.PentaKills|number_format }} Penta Kills
+                                            </span>
+                                        </li>
+                                    </ul>
 
-                                        <div class="col-sm-6 col-md-3">
-                                            <ul>
-                                                <li>Shutdown Spree: {{ achievements.ShutdownSpree ?? 0 }}</li>
-                                                <li>Killing Spree: {{ achievements.KillingSpree ?? 0 }}</li>
-                                                <li>Divine Spree: {{ achievements.DivineSpree ?? 0 }}</li>
-                                                <li>Immortal Spree: {{ achievements.ImmortalSpree ?? 0 }}</li>
-                                                <li>Unstoppable Spree: {{ achievements.UnstoppableSpree ?? 0 }}</li>
-                                                <li>Rampage Spree: {{ achievements.RampageSpree ?? 0 }}</li>
-                                                <li>God Like Spree: {{ achievements.GodLikeSpree ?? 0 }}</li>
-                                            </ul>
-                                        </div>
+                                </div>
+                            </div>
 
-                                        <div class="col-sm-6 col-md-3">
-                                            <ul>
-                                                <li>Assisted Kills: {{ achievements.AssistedKills ?? 0 }}</li>
-                                                <li>Deaths: {{ achievements.Deaths ?? 0 }}</li>
-                                                <li>First Bloods: {{ achievements.FirstBloods ?? 0 }}</li>
-                                            </ul>
-                                        </div>
+                        </div>
 
-                                        <div class="col-sm-6 col-md-3">
-                                            <ul>
-                                                <li>Camps Cleared: {{ achievements.CampsCleared ?? 0 }}</li>
-                                                <li>Fire Giant Kills: {{ achievements.FireGiantKills ?? 0 }}</li>
-                                                <li>Gold Fury Kills: {{ achievements.GoldFuryKills ?? 0 }}</li>
-                                                <li>Minion Kills: {{ achievements.MinionKills ?? 0 }}</li>
-                                                <li>Phoenix Kills: {{ achievements.PhoenixKills ?? 0 }}</li>
-                                                <li>Siege Juggernaut Kills: {{ achievements.SiegeJuggernautKills ?? 0 }}</li>
-                                                <li>Wild Juggernaut Kills: {{ achievements.WildJuggernautKills ?? 0 }}</li>
-                                                <li>Tower Kills: {{ achievements.TowerKills ?? 0 }}</li>
-                                            </ul>
-                                        </div>
+                        <div class="col-4">
 
-                                    </div>
+                            <div class="card mb-4 box-shadow">
+                                <div class="card-header">
+                                    <strong>Spree Stats</strong>
+                                </div>
+                                <div class="card-body">
+
+                                    <ul class="list-unstyled">
+                                        <li>
+                                            <span class="d-block bg-success text-white">
+                                                <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
+                                                    <i class="fas fa-stop-circle fa-fw"></i>
+                                                </span>
+                                                {{ achievements.ShutdownSpree|number_format}} Shutdown Sprees
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="d-block bg-danger text-white">
+                                                <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
+                                                    <i class="fas fa-skull-crossbones fa-fw"></i>
+                                                </span>
+                                                {{ achievements.KillingSpree|number_format }} Killing Sprees (x3)
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="d-block bg-info text-white">
+                                                <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
+                                                    <i class="fas fa-skull-crossbones fa-fw"></i>
+                                                </span>
+                                                {{ achievements.RampageSpree|number_format }} Rampage Sprees (x5)
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="d-block bg-secondary text-white">
+                                                <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
+                                                    <i class="fas fa-skull-crossbones fa-fw"></i>
+                                                </span>
+                                                {{ achievements.UnstoppableSpree|number_format }} Unstoppable Sprees (x7)
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="d-block bg-primary text-white">
+                                                <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
+                                                    <i class="fas fa-skull-crossbones fa-fw"></i>
+                                                </span>
+                                                {{ achievements.DivineSpree|number_format }} Divine Sprees (x9)
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="d-block bg-success text-white">
+                                                <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
+                                                    <i class="fas fa-skull-crossbones fa-fw"></i>
+                                                </span>
+                                                {{ achievements.ImmortalSpree|number_format }} Immortal Sprees (x11)
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="d-block bg-danger text-white">
+                                                <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
+                                                    <i class="fas fa-skull-crossbones fa-fw"></i>
+                                                </span>
+                                                {{ achievements.GodLikeSpree|number_format }} God Like Sprees (x13)
+                                            </span>
+                                        </li>
+                                    </ul>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-4">
+
+                            <div class="card mb-4 box-shadow">
+                                <div class="card-header">
+                                    <strong>Achievement Stats</strong>
+                                </div>
+                                <div class="card-body">
+
+                                    <ul class="list-unstyled">
+                                        <li>
+                                            <span class="d-block bg-danger text-white">
+                                                <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
+                                                    <i class="fas fa-campground fa-fw"></i>
+                                                </span>
+                                                {{ achievements.CampsCleared|number_format }} Camps Cleared
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="d-block bg-info text-white">
+                                                <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
+                                                    <i class="fab fa-freebsd fa-fw"></i>
+                                                </span>
+                                                {{ achievements.FireGiantKills|number_format }} Fire Giant Kills
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="d-block bg-secondary text-white">
+                                                <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
+                                                    <i class="fas fa-user-alt fa-fw"></i>
+                                                </span>
+                                                {{ achievements.GoldFuryKills|number_format }} Gold Fury Kills
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="d-block bg-primary text-white">
+                                                <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
+                                                    <i class="fas fa-users fa-fw"></i>
+                                                </span>
+                                                {{ achievements.MinionKills|number_format }} Minion Kills
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="d-block bg-success text-white">
+                                                <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
+                                                    <i class="fab fa-phoenix-framework fa-fw"></i>
+                                                </span>
+                                                {{ achievements.PhoenixKills|number_format }} Phoenix Kills
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="d-block bg-danger text-white">
+                                                <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
+                                                    <i class="fas fa-angry fa-fw"></i>
+                                                </span>
+                                                {{ achievements.SiegeJuggernautKills|number_format }} Siege Juggernaut Kills
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="d-block bg-info text-white">
+                                                <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
+                                                    <i class="fas fa-tired fa-fw"></i>
+                                                </span>
+                                                {{ achievements.WildJuggernautKills|number_format }} Wild Juggernaut Kills
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="d-block bg-secondary text-white">
+                                                <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
+                                                    <i class="fas fa-gopuram fa-fw"></i>
+                                                </span>
+                                                {{ achievements.TowerKills|number_format }} Tower Kills
+                                            </span>
+                                        </li>
+                                    </ul>
 
                                 </div>
                             </div>
