@@ -243,14 +243,7 @@ class PlayerController extends AbstractController
             }
         }
 
-
         // TODO get the latest stored matches for a player
-
-        $playerStats = [
-            'Kills' => 0,
-            'Assists' => 0,
-            'Deaths' => 0,
-        ];
 
         if (!is_null($player->getGodsDateUpdated())) {
             $playerGodsUpdated = $player->getGodsDateUpdated()->diff(new \DateTime());
@@ -312,14 +305,6 @@ class PlayerController extends AbstractController
         }
 
         $playerGods = $playerGodRepo->findBy(['smitePlayer' => $player], ['rank' => 'DESC']);
-        if (!empty($playerGods)) {
-            /** @var PlayerGod $playerGod */
-            foreach ($playerGods as $playerGod) {
-                $playerStats['Kills'] += $playerGod->getKills();
-                $playerStats['Assists'] += $playerGod->getAssists();
-                $playerStats['Deaths'] += $playerGod->getDeaths();
-            }
-        }
 
         $playerUpdated = $player->getDateUpdated()->diff(new \DateTime());
         $playerUpdatedMins = $playerUpdated->days * 24 * 60;
@@ -331,7 +316,6 @@ class PlayerController extends AbstractController
             'last_updated' => $playerUpdatedMins,
             'player' => $player,
             'player_god_info' => $playerGods,
-            'player_stats' => $playerStats,
             'player_name_slug' => $playerNameSlug,
             'gods' => $gods,
             'matches' => $formattedMatches
