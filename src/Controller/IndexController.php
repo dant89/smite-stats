@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\ApiCall;
 use App\Service\Smite;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,12 +13,18 @@ use Symfony\Component\Routing\Annotation\Route;
 class IndexController extends AbstractController
 {
     /**
+     * @var EntityManagerInterface
+     */
+    protected $entityManager;
+
+    /**
      * @var Smite
      */
     protected $smite;
 
-    public function __construct(Smite $smite)
+    public function __construct(EntityManagerInterface $entityManager ,Smite $smite)
     {
+        $this->entityManager = $entityManager;
         $this->smite = $smite;
     }
 
@@ -53,6 +61,20 @@ class IndexController extends AbstractController
         return $this->render('index/index.html.twig', [
             'gods' => $gods,
             'leaderboards' => $leaderboardTypes
+        ]);
+    }
+
+    /**
+     * @Route("/usage_stats", name="stats")
+     * @return Response
+     */
+    public function stats(): Response
+    {
+        $apiCallRepo = $this->entityManager->getRepository(ApiCall::class);
+        $usageStats = $apiCallRepo->getDailyApiUsageStats();
+
+        return $this->render('index/stats.html.twig', [
+            'usage_stats' => $usageStats
         ]);
     }
 }
