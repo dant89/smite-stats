@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * God
  *
  * @ORM\Table(name="api_call")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\ApiCallRepository")
  */
 class ApiCall
 {
