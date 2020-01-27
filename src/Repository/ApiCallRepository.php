@@ -18,10 +18,10 @@ class ApiCallRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()
             ->getConnection();
 
-        $stmt = $conn->prepare('SELECT COUNT(*) AS total_calls, date_created AS call_date
+        $stmt = $conn->prepare('SELECT COUNT(*) AS total_calls, DATE(date_created) AS call_date
             FROM api_call
-            GROUP BY DATE(date_created)
-            ORDER BY date_created DESC');
+            GROUP BY call_date
+            ORDER BY call_date DESC');
         $stmt->execute();
 
         return $stmt->fetchAll();
