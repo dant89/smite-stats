@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ player.name }} Latest Matches - Smite Player - Unofficial SMITE{% endblock %}
+
+{% block header_meta %}
+    <link rel="canonical" href="https://smitestats.com/player/{{ player.name|clan_remove|slug }}-{{ player.smitePlayerId }}" />
+    <meta name="description" content="Smite Player statistics for {{ player.name|clan_remove|slug }}. View current stats including Gods, matches, achievements and many more of the player {{ player.name }}.">
+{% endblock %}
+
+{% block body %}
+
+    <div class="bg-light pt-3 pb-3">
+        <div class="container">
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('players') }}">Players</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('player_view', {
+                            gamertag: player.name|clan_remove|slug,
+                            id: player.smitePlayerId
+                        }) }}">{{ player.name }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Matches</li>
+                </ol>
+            </nav>
+
+            <div class="row mb-3">
+                <div class="col-sm-12">
+                    {% if player.name %}
+                        <h1 class="d-inline-block"><a href="{{ path('player_view', {
+                                gamertag: player.name|clan_remove|slug,
+                                id: player.smitePlayerId
+                            }) }}" title="Smite Player {{ player.name }}">{{ player.name }} Smite Player</a></h1>
+                    {% endif %}
+                    <a class="btn btn-sm btn-primary float-right" href="{{ path('player_view', {
+                        gamertag: player.name|clan_remove|slug,
+                        id: player.smitePlayerId
+                    }) }}">View Player Stats</a>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+
+                    <div class="card mb-4 box-shadow">
+                        <div class="card-body">
+
+                            <div class="row">
+                                <div class="col-12">
+
+                                    <h3 class="d-inline-block">Latest Matches</h3>
+                                    {% if matches %}
+                                        {% include 'player/templates/matches.html.twig' %}
+                                    {% endif %}
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

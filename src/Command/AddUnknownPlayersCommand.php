@@ -79,13 +79,16 @@ class AddUnknownPlayersCommand extends Command
                             !in_array($matchDetail['ActivePlayerId'], $playerIds) &&
                             !in_array($matchDetail['ActivePlayerId'], $existingPlayerIds)
                         ) {
-                            $playerIds[] = $matchDetail['ActivePlayerId'];
-                            $newPlayer = new Player();
-                            $newPlayer->setSmitePlayerId($matchDetail['ActivePlayerId']);
-                            $newPlayer->setDateCreated(new \DateTime());
-                            $newPlayer->setDateUpdated(new \DateTime());
-                            $this->entityManager->persist($newPlayer);
-                            $newPlayerCount++;
+                            $playerId = (int) $matchDetail['ActivePlayerId'];
+                            $playerIds[] = $playerId;
+                            if ($playerId !== 0) {
+                                $newPlayer = new Player();
+                                $newPlayer->setSmitePlayerId($playerId);
+                                $newPlayer->setDateCreated(new \DateTime());
+                                $newPlayer->setDateUpdated(new \DateTime());
+                                $this->entityManager->persist($newPlayer);
+                                $newPlayerCount++;
+                            }
                         }
                         $matchCount++;
                     }
