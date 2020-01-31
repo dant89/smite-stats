@@ -57,8 +57,8 @@ class PlayerGetIdsBySearchCommand extends Command
 
                     $newPlayerIds = [];
                     foreach ($searchPlayers as $searchPlayer) {
-                        $playerId = $searchPlayer['player_id'] ?? null;
-                        if (!is_null($playerId) && is_int($playerId) && $playerId > 0) {
+                        $playerId = (int) $searchPlayer['player_id'] ?? null;
+                        if (!is_null($playerId) && $playerId !== 0) {
                             if (!in_array($playerId, $newPlayerIds)) {
                                 $newPlayerIds[] = $playerId;
                                 $existingPlayer = $playerRepo->findOneBy(['smitePlayerId' => $playerId]);

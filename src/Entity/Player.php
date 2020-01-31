@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Player
@@ -17,6 +18,7 @@ class Player
      * @ORM\Column(name="smite_player_id", type="integer", length=10, nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="NONE")
+     * @Assert\GreaterThan(0)
      */
     private $smitePlayerId;
 
@@ -208,18 +210,18 @@ class Player
     private $crawled = 0;
 
     /**
-     * @return string
+     * @return int
      */
-    public function getSmitePlayerId(): string
+    public function getSmitePlayerId(): int
     {
         return $this->smitePlayerId;
     }
 
     /**
-     * @param string $smitePlayerId
+     * @param int $smitePlayerId
      * @return Player
      */
-    public function setSmitePlayerId(string $smitePlayerId): Player
+    public function setSmitePlayerId(int $smitePlayerId): Player
     {
         $this->smitePlayerId = $smitePlayerId;
         return $this;

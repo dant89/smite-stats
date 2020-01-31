@@ -61,8 +61,8 @@ class ClanGetPlayersCommand extends Command
                         $clanPlayerName = $clanPlayer['Name'] ?? null;
                         if (!is_null($clanPlayerName)) {
                             $player = $this->smite->getPlayerIdByName($clanPlayerName);
-                            $playerId = $player['player_id'] ?? null;
-                            if (!is_null($playerId)) {
+                            $playerId = (int) $player['player_id'] ?? null;
+                            if (!is_null($playerId) && $playerId !== 0) {
                                 $existingPlayer = $playerRepo->findOneBy(['smitePlayerId' => $playerId]);
                                 if (is_null($existingPlayer) && !in_array($playerId, $newPlayerIds)) {
                                     $newPlayerIds[] = $playerId;

@@ -1,0 +1,63 @@
+<div class="row">
+    {% for match in matches %}
+        <div class="col-12">
+
+            <div class="card mb-2 box-shadow">
+                <div class="card-body bg-light">
+
+                    <strong>{{ match.Player_Won ? 'Won' : 'Lost' }}</strong> a <strong>{{ match.Map_Game }}</strong> match on <strong>{{ match.Entry_Datetime|date }}</strong> lasting <strong>{{ match.Minutes }}</strong> minutes
+
+                    <div class="row mt-2">
+
+                        {% for key, players in match.Teams %}
+                            <div class="col">
+                                <div class="border border-{{ key == match.Winning_TaskForce ? 'success' : 'danger' }} rounded mb-1 p-2">
+
+                                    {% for match_player in players %}
+                                        <div class="mb-1 p-1">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="player-smite-god" style="background-image: url('https://web2.hirez.com/smite/god-cards/{{ match_player.ReferenceName|slug }}.jpg')"></div>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <h5>
+                                                        {% if match_player.smitePlayer and match_player.smitePlayer.name|clan_remove|slug %}
+                                                            <a href="{{ path('player_view', {
+                                                                gamertag: match_player.smitePlayer.name|clan_remove|slug,
+                                                                id: match_player.smitePlayer.smitePlayerId
+                                                            }) }}" title="Smite Player {{ match_player.smitePlayer.name }}">{{ match_player.smitePlayer.name }}</a>
+                                                        {% else %}
+                                                            Unknown
+                                                        {% endif %}
+                                                    </h5>
+
+                                                    (<span class="text-primary">{{ match_player.AccountLevel }}</span>) -
+                                                    <span class="text-success">{{ match_player.KillsSingle }}</span> /
+                                                    <span class="text-warning">{{ match_player.Assists }}</span> /
+                                                    <span class="text-danger">{{ match_player.Deaths }}</span>
+
+                                                    <ul class="list-unstyled small">
+                                                        <li>Damage Mitigated: {{ match_player.DamageMitigated }}</li>
+                                                        <li>Damage Taken: {{ match_player.DamageTaken }}</li>
+                                                        <li>Gold Earned: {{ match_player.GoldEarned }}</li>
+                                                        <li>Gold per Minute: {{ match_player.GoldPerMinute }}</li>
+                                                        <li>Healing: {{ match_player.Healing }}</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    {% endfor %}
+
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    {% endfor %}
+</div>
