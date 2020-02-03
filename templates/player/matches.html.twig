@@ -3,8 +3,7 @@
 {% block title %}{{ player.name }} Latest Matches - Smite Player - Unofficial SMITE{% endblock %}
 
 {% block header_meta %}
-    <link rel="canonical" href="https://smitestats.com/player/{{ player.name|clan_remove|slug }}-{{ player.smitePlayerId }}" />
-    <meta name="description" content="Smite Player statistics for {{ player.name|clan_remove|slug }}. View current stats including Gods, matches, achievements and many more of the player {{ player.name }}.">
+    <link rel="canonical" href="https://smitestats.com/player/{{ player.name|clan_remove|slug }}-{{ player.smitePlayerId }}/matches" />
 {% endblock %}
 
 {% block body %}
