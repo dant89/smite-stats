@@ -5,10 +5,11 @@ namespace App\Service;
 use App\Entity\God;
 use App\Entity\MatchPlayer;
 use App\Entity\MatchPlayerAbility;
-use App\Entity\MatchPlayerBan;
-use App\Entity\MatchPlayerItem;
 use App\Entity\Player;
 use App\Entity\PlayerGod;
+use App\Mapper\MatchPlayerAbilityMapper;
+use App\Mapper\MatchPlayerBanMapper;
+use App\Mapper\MatchPlayerItemMapper;
 use App\Mapper\MatchPlayerMapper;
 use App\Mapper\PlayerMapper;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,6 +23,15 @@ class PlayerService
     /** @var MatchPlayerMapper */
     protected $matchPlayerMapper;
 
+    /** @var MatchPlayerAbilityMapper */
+    protected $matchPlayerAbilityMapper;
+
+    /** @var MatchPlayerBanMapper */
+    protected $matchPlayerBanMapper;
+
+    /** @var MatchPlayerItemMapper */
+    protected $matchPlayerItemMapper;
+
     /** @var PlayerMapper */
     protected $playerMapper;
 
@@ -31,11 +41,17 @@ class PlayerService
     public function __construct(
         EntityManagerInterface $entityManager,
         MatchPlayerMapper $matchPlayerMapper,
+        MatchPlayerAbilityMapper $matchPlayerAbilityMapper,
+        MatchPlayerBanMapper $matchPlayerBanMapper,
+        MatchPlayerItemMapper $matchPlayerItemMapper,
         PlayerMapper $playerMapper,
         SmiteService $smite
     ) {
         $this->entityManager = $entityManager;
         $this->matchPlayerMapper = $matchPlayerMapper;
+        $this->matchPlayerAbilityMapper = $matchPlayerAbilityMapper;
+        $this->matchPlayerBanMapper = $matchPlayerBanMapper;
+        $this->matchPlayerItemMapper = $matchPlayerItemMapper;
         $this->playerMapper = $playerMapper;
         $this->smite = $smite;
     }
@@ -85,9 +101,6 @@ class PlayerService
 
         $teams = [];
 
-        // TODO this is far too slow!!! if can't speed up, use a bus and crawled 0 by default and show a
-        // TODO 'getting match details' periodically until crawl has completed
-
         if (!empty($matchDetails)) {
             foreach ($matchDetails as $matchDetail) {
 
@@ -121,30 +134,24 @@ class PlayerService
                     $this->entityManager->flush();
 
                     for ($i = 1; $i <= 6; $i++) {
-                        $ability = new MatchPlayerAbility();
-                        $ability->setAbilityId($matchDetail["ItemId{$i}"] ?: null);
-                        $ability->setAbilityName($matchDetail["Item_Purch_{$i}"] ?: null);
-                        $ability->setAbilityNumber($i);
-                        $ability->setMatchPlayer($storedMatch);
-                        $this->entityManager->persist($ability);
+                        $matchPlayerAbility = $this->matchPlayerAbilityMapper->from($matchDetail, $i, $storedMatch);
+                        if (!is_null($matchPlayerAbility)) {
+                            $this->entityManager->persist($matchPlayerAbility);
+                        }
                     }
 
                     for ($i = 1; $i <= 4; $i++) {
-                        $item = new MatchPlayerItem();
-                        $item->setItemId($matchDetail["ActiveId{$i}"] ?: null);
-                        $item->setItemName($matchDetail["Item_Active_{$i}"] ?: null);
-                        $item->setItemNumber($i);
-                        $item->setMatchPlayer($storedMatch);
-                        $this->entityManager->persist($item);
+                        $matchPlayerItem = $this->matchPlayerItemMapper->from($matchDetail, $i, $storedMatch);
+                        if (!is_null($matchPlayerItem)) {
+                            $this->entityManager->persist($matchPlayerItem);
+                        }
                     }
 
                     for ($i = 1; $i <= 10; $i++) {
-                        $ban = new MatchPlayerBan();
-                        $ban->setBanId($matchDetail["Ban{$i}Id"] ?: null);
-                        $ban->setBanName($matchDetail["Ban{$i}"] ?: null);
-                        $ban->setBanNumber($i);
-                        $ban->setMatchPlayer($storedMatch);
-                        $this->entityManager->persist($ban);
+                        $matchPlayerBan = $this->matchPlayerBanMapper->from($matchDetail, $i, $storedMatch);
+                        if (!is_null($matchPlayerBan)) {
+                            $this->entityManager->persist($matchPlayerBan);
+                        }
                     }
 
                     $this->entityManager->flush();
