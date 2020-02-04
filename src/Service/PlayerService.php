@@ -98,7 +98,6 @@ class PlayerService
                     'taskForce' => $matchDetail['TaskForce']
                 ]);
 
-                // TODO send to message bus
                 if (is_null($storedMatch)) {
                     /** @var Player $existingPlayer */
                     $existingPlayer = $playerRepo->findOneBy([

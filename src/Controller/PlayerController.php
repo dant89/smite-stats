@@ -153,7 +153,6 @@ class PlayerController extends AbstractController
             'last_updated' => $playerUpdatedMins,
             'player' => $player,
             'player_god_info' => $playerGods,
-            'player_name_slug' => $playerNameSlug,
             'gods' => $gods,
             'matches' => $formattedMatches
         ]);
