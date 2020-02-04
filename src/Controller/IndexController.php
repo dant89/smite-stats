@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\ApiCall;
-use App\Service\Smite;
+use App\Service\SmiteService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,11 +18,11 @@ class IndexController extends AbstractController
     protected $entityManager;
 
     /**
-     * @var Smite
+     * @var SmiteService
      */
     protected $smite;
 
-    public function __construct(EntityManagerInterface $entityManager ,Smite $smite)
+    public function __construct(EntityManagerInterface $entityManager , SmiteService $smite)
     {
         $this->entityManager = $entityManager;
         $this->smite = $smite;

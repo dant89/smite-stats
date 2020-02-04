@@ -4,7 +4,7 @@ namespace App\Command;
 
 use App\Entity\Clan;
 use App\Entity\Player;
-use App\Service\Smite;
+use App\Service\SmiteService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,11 +20,11 @@ class ClanGetPlayersCommand extends Command
     protected $entityManager;
 
     /**
-     * @var Smite
+     * @var SmiteService
      */
     protected $smite;
 
-    public function __construct(EntityManagerInterface $entityManager, Smite $smite)
+    public function __construct(EntityManagerInterface $entityManager, SmiteService $smite)
     {
         $this->entityManager = $entityManager;
         $this->smite = $smite;
