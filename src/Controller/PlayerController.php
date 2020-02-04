@@ -212,7 +212,7 @@ class PlayerController extends AbstractController
         }
 
         // Get Player Matches
-        $formattedMatches = $this->playerService->getPlayerMatches($player);
+        $formattedMatches = $this->playerService->getPlayerMatches($player, 50);
 
         $playerUpdatedMins = $this->helperService->getMinutesLastUpdated($player->getDateUpdated());
 
