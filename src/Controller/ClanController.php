@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Clan;
-use App\Service\Smite;
+use App\Service\SmiteService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,11 +19,11 @@ class ClanController extends AbstractController
     protected $entityManager;
 
     /**
-     * @var Smite
+     * @var SmiteService
      */
     protected $smite;
 
-    public function __construct(EntityManagerInterface $entityManager, Smite $smite)
+    public function __construct(EntityManagerInterface $entityManager, SmiteService $smite)
     {
         $this->entityManager = $entityManager;
         $this->smite = $smite;
