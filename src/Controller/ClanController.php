@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Clan;
+use App\Service\GodService;
 use App\Service\SmiteService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,20 +14,23 @@ use Psr\Cache\InvalidArgumentException;
 
 class ClanController extends AbstractController
 {
-    /**
-     * @var EntityManagerInterface
-     */
+    /** @var EntityManagerInterface */
     protected $entityManager;
 
-    /**
-     * @var SmiteService
-     */
-    protected $smite;
+    /** @var GodService */
+    protected $godService;
 
-    public function __construct(EntityManagerInterface $entityManager, SmiteService $smite)
-    {
+    /** @var SmiteService */
+    protected $smiteService;
+
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        GodService $godService,
+        SmiteService $smiteService
+    ) {
         $this->entityManager = $entityManager;
-        $this->smite = $smite;
+        $this->godService = $godService;
+        $this->smiteService = $smiteService;
     }
 
     /**
@@ -44,7 +48,7 @@ class ClanController extends AbstractController
 
         // See if we can find this clan via the smite api
         if (is_null($clan) || ($clan->getCrawled() === 0)) {
-            $clanResult = $this->smite->searchTeams($name);
+            $clanResult = $this->smiteService->searchTeams($name);
             $clanId = $clanResult['TeamId'] ?? null;
             if (is_null($clanId)) {
                 throw new NotFoundHttpException();
@@ -61,7 +65,7 @@ class ClanController extends AbstractController
             $this->entityManager->persist($clan);
             $this->entityManager->flush();
 
-            $clanDetails = $this->smite->getTeamDetails($clanId);
+            $clanDetails = $this->smiteService->getTeamDetails($clanId);
             if (!empty($clanDetails) && $clanDetails['TeamId'] !== 0) {
                 $clan->setWins($clanDetails['Wins']);
                 $clan->setLosses($clanDetails['Losses']);
@@ -72,23 +76,23 @@ class ClanController extends AbstractController
             }
         }
 
-        $gods = $this->smite->getGodsByNameKey();
-        $teamPlayers = $this->smite->getTeamPlayers($clan->getSmiteClanId());
+        $gods = $this->godService->getGodsByNameKey();
+        $teamPlayers = $this->smiteService->getTeamPlayers($clan->getSmiteClanId());
 
         foreach ($teamPlayers as &$teamPlayer) {
             if (!empty($teamPlayer['Name'])) {
 
-                $playerDataByName = $this->smite->getPlayerIdByName($teamPlayer['Name']);
+                $playerDataByName = $this->smiteService->getPlayerIdByName($teamPlayer['Name']);
                 $playerId = $playerDataByName['player_id'] ?? null;
 
                 // TODO does this need get player by name AND details?
                 if (!is_null($playerId)) {
-                    $teamPlayer['Player_info'] = $this->smite->getPlayerDetailsByPortalId($playerId);
+                    $teamPlayer['Player_info'] = $this->smiteService->getPlayerDetailsByPortalId($playerId);
 
                     $teamPlayerId = $teamPlayer['Player_info']['Id'];
 
                     if (!is_null($teamPlayerId)) {
-                        $playerGods = $this->smite->getPlayerGodDetails($teamPlayer['Player_info']['Id']);
+                        $playerGods = $this->smiteService->getPlayerGodDetails($teamPlayer['Player_info']['Id']);
 
                         $playerStats = [
                             'Kills' => 0,
