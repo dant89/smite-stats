@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\ApiCall;
+use App\Service\GodService;
 use App\Service\SmiteService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\InvalidArgumentException;
@@ -12,20 +13,23 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class IndexController extends AbstractController
 {
-    /**
-     * @var EntityManagerInterface
-     */
+    /** @var EntityManagerInterface */
     protected $entityManager;
 
-    /**
-     * @var SmiteService
-     */
-    protected $smite;
+    /** @var GodService */
+    protected $godService;
 
-    public function __construct(EntityManagerInterface $entityManager , SmiteService $smite)
-    {
+    /** @var SmiteService */
+    protected $smiteService;
+
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        GodService $godService,
+        SmiteService $smiteService
+    ) {
         $this->entityManager = $entityManager;
-        $this->smite = $smite;
+        $this->godService = $godService;
+        $this->smiteService = $smiteService;
     }
 
     /**
@@ -35,12 +39,12 @@ class IndexController extends AbstractController
      */
     public function index(): Response
     {
-        $gods = $this->smite->getGodsByNameKey();
+        $gods = $this->godService->getGodsByNameKey();
         $gods = array_slice($gods, 1, 12, true);
 
-        $duelRankedLeaderboard = $this->smite->getLeagueLeaderboard(440, 27, 6);
-        $joustRankedLeaderboard = $this->smite->getLeagueLeaderboard(450, 27, 6);
-        $conquestRankedLeaderboard = $this->smite->getLeagueLeaderboard(451, 27, 6);
+        $duelRankedLeaderboard = $this->smiteService->getLeagueLeaderboard(440, 27, 6);
+        $joustRankedLeaderboard = $this->smiteService->getLeagueLeaderboard(450, 27, 6);
+        $conquestRankedLeaderboard = $this->smiteService->getLeagueLeaderboard(451, 27, 6);
 
         if (is_array($duelRankedLeaderboard)) {
             $duelRankedLeaderboard = array_slice($duelRankedLeaderboard, 0, 5, true);
