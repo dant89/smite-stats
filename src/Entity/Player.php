@@ -203,6 +203,13 @@ class Player
     private $godsDateUpdated;
 
     /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="matches_date_updated", type="datetime", nullable=true)
+     */
+    private $matchesDateUpdated;
+
+    /**
      * @var int|null
      *
      * @ORM\Column(name="crawled", type="integer", nullable=false, options={"default":0})
@@ -692,6 +699,24 @@ class Player
     public function setGodsDateUpdated(?\DateTime $godsDateUpdated): Player
     {
         $this->godsDateUpdated = $godsDateUpdated;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getMatchesDateUpdated(): ?\DateTime
+    {
+        return $this->matchesDateUpdated;
+    }
+
+    /**
+     * @param \DateTime|null $matchesDateUpdated
+     * @return Player
+     */
+    public function setMatchesDateUpdated(?\DateTime $matchesDateUpdated): Player
+    {
+        $this->matchesDateUpdated = $matchesDateUpdated;
         return $this;
     }
 
