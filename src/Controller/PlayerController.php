@@ -214,10 +214,7 @@ class PlayerController extends AbstractController
         // Get Player Matches
         $formattedMatches = $this->playerService->getPlayerMatches($player);
 
-        $playerUpdated = $player->getDateUpdated()->diff(new \DateTime());
-        $playerUpdatedMins = $playerUpdated->days * 24 * 60;
-        $playerUpdatedMins += $playerUpdated->h * 60;
-        $playerUpdatedMins += $playerUpdated->i;
+        $playerUpdatedMins = $this->helperService->getMinutesLastUpdated($player->getDateUpdated());
 
         return $this->render('player/matches.html.twig', [
             'player' => $player,
