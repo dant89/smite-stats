@@ -4,7 +4,7 @@ namespace App\Controller\Api;
 
 use App\Entity\MatchPlayer;
 use App\Entity\Player;
-use App\Service\Smite;
+use App\Service\SmiteService;
 use Doctrine\ORM\EntityManagerInterface;
 use Proxies\__CG__\App\Entity\Match;
 use Psr\Cache\InvalidArgumentException;
@@ -24,13 +24,13 @@ class PlayerController
      */
     protected $serializer;
 
-    /** @var Smite */
+    /** @var SmiteService */
     protected $smite;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         SerializerInterface $serializer,
-        Smite $smite
+        SmiteService $smite
     ) {
         $this->entityManager = $entityManager;
         $this->serializer = $serializer;

@@ -20,7 +20,7 @@ class PlayerMapper
         try {
             $player = new Player();
             $player->setSmitePlayerId($data['ActivePlayerId']);
-            $player->setAvatarUrl($data['Avatar_URL']);
+            $player->setAvatarUrl($data['Avatar_URL'] ?? null);
             $player->setDateRegistered(new \DateTime($data['Created_Datetime']));
             $player->setDateLastLogin(new \DateTime($data['Last_Login_Datetime']));
             $player->setHoursPlayed($data['HoursPlayed'] ?? 0);
@@ -28,14 +28,14 @@ class PlayerMapper
             $player->setLevel($data['Level'] ?? 0);
             $player->setLosses($data['Losses'] ?? 0);
             $player->setMasteryLevel($data['MasteryLevel'] ?? 0);
-            $player->setName($data['Name']);
-            $player->setPersonalStatusMessage($data['Personal_Status_Message']);
+            $player->setName($data['Name'] ?? null);
+            $player->setPersonalStatusMessage($data['Personal_Status_Message'] ?? null);
             $player->setRankStatConquest($data['Rank_Stat_Conquest'] ?? 0);
             $player->setRankStatDuel($data['Rank_Stat_Duel'] ?? 0);
             $player->setRankStatJoust($data['Rank_Stat_Joust'] ?? 0);
-            $player->setRegion($data['Region']);
-            $player->setTeamId($data['TeamId']);
-            $player->setTeamName($data['Team_Name']);
+            $player->setRegion($data['Region'] ?? null);
+            $player->setTeamId($data['TeamId'] ?? null);
+            $player->setTeamName($data['Team_Name'] ?? null);
             $player->setTierConquest($data['Tier_Conquest'] ?? 0);
             $player->setTierDuel($data['Tier_Duel'] ?? 0);
             $player->setTierJoust($data['Tier_Joust'] ?? 0);
@@ -58,7 +58,7 @@ class PlayerMapper
     public function fromExisting(Player $player, array $data): Player
     {
         try {
-            $player->setAvatarUrl($data['Avatar_URL']);
+            $player->setAvatarUrl($data['Avatar_URL'] ?? null);
             $player->setDateRegistered(new \DateTime($data['Created_Datetime']));
             $player->setDateLastLogin(new \DateTime($data['Last_Login_Datetime']));
             $player->setHoursPlayed($data['HoursPlayed'] ?? 0);
@@ -66,14 +66,14 @@ class PlayerMapper
             $player->setLevel($data['Level'] ?? 0);
             $player->setLosses($data['Losses'] ?? 0);
             $player->setMasteryLevel($data['MasteryLevel'] ?? 0);
-            $player->setName($data['Name']);
-            $player->setPersonalStatusMessage($data['Personal_Status_Message']);
+            $player->setName($data['Name'] ?? null);
+            $player->setPersonalStatusMessage($data['Personal_Status_Message'] ?? null);
             $player->setRankStatConquest($data['Rank_Stat_Conquest'] ?? 0);
             $player->setRankStatDuel($data['Rank_Stat_Duel'] ?? 0);
             $player->setRankStatJoust($data['Rank_Stat_Joust'] ?? 0);
-            $player->setRegion($data['Region']);
-            $player->setTeamId($data['TeamId']);
-            $player->setTeamName($data['Team_Name']);
+            $player->setRegion($data['Region'] ?? null);
+            $player->setTeamId($data['TeamId'] ?? null);
+            $player->setTeamName($data['Team_Name'] ?? null);
             $player->setTierConquest($data['Tier_Conquest'] ?? 0);
             $player->setTierDuel($data['Tier_Duel'] ?? 0);
             $player->setTierJoust($data['Tier_Joust'] ?? 0);

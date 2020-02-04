@@ -17,7 +17,7 @@ use Psr\Cache\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
-class Smite
+class SmiteService
 {
     /**
      * @var AdapterInterface
@@ -57,8 +57,12 @@ class Smite
      * @param LoggerInterface $logger
      * @throws InvalidArgumentException
      */
-    public function __construct(Client $client, AdapterInterface $cache, EntityManagerInterface $entityManager, LoggerInterface $logger)
-    {
+    public function __construct(
+        Client $client,
+        AdapterInterface $cache,
+        EntityManagerInterface $entityManager,
+        LoggerInterface $logger
+    ) {
         $this->smiteClient = $client;
         $this->cache = $cache;
         $this->entityManager = $entityManager;
@@ -153,24 +157,6 @@ class Smite
 
         $this->logApiCall($cache->getKey(), false, $response->getStatus());
         return $data;
-    }
-
-    /**
-     * @return array
-     */
-    public function getGodsByNameKey(): array
-    {
-        $repository = $this->entityManager->getRepository(God::class);
-        $gods = $repository->findAll();
-
-        $formattedGods = [];
-
-        /** @var God $god */
-        foreach ($gods as $god) {
-            $formattedGods[$god->getName()] = $god;
-        }
-
-        return $formattedGods;
     }
 
     /**
