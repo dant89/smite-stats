@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use App\Service\Smite;
+use App\Service\SmiteService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -12,11 +12,11 @@ class HirezUsageStatsCommand extends Command
     protected static $defaultName = 'smite:hirez:stats';
 
     /**
-     * @var Smite
+     * @var SmiteService
      */
     protected $smite;
 
-    public function __construct(Smite $smite)
+    public function __construct(SmiteService $smite)
     {
         $this->smite = $smite;
         parent::__construct();
