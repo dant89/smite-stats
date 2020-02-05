@@ -11,18 +11,16 @@ use Doctrine\ORM\Mapping as ORM;
 class MatchItem
 {
     /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false, options={"unsigned"=true})
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\OneToMany(targetEntity="MatchPlayerItem", mappedBy="item")
      */
-    private $id;
+    private $matchPlayerItems;
 
     /**
-     * @var int|null
+     * @var int
      *
-     * @ORM\Column(name="item_id", type="integer", nullable=true, options={"unsigned"=true})
+     * @ORM\Column(name="item_id", type="integer", nullable=false, options={"unsigned"=true})
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
      */
     private $itemId;
 
@@ -125,20 +123,20 @@ class MatchItem
     private $type;
 
     /**
-     * @return int
+     * @return mixed
      */
-    public function getId(): int
+    public function getMatchPlayerItems()
     {
-        return $this->id;
+        return $this->matchPlayerItems;
     }
 
     /**
-     * @param int $id
+     * @param mixed $matchPlayerItems
      * @return MatchItem
      */
-    public function setId(int $id): MatchItem
+    public function setMatchPlayerItems($matchPlayerItems)
     {
-        $this->id = $id;
+        $this->matchPlayerItems = $matchPlayerItems;
         return $this;
     }
 

@@ -2,22 +2,18 @@
 
 namespace App\Mapper;
 
+use App\Entity\MatchItem;
 use App\Entity\MatchPlayer;
 use App\Entity\MatchPlayerItem;
 
 class MatchPlayerItemMapper
 {
-    public function from(array $data, int $banCount, MatchPlayer $matchPlayer): ?MatchPlayerItem
+    public function from(int $itemCount, MatchPlayer $matchPlayer, MatchItem $matchItem): MatchPlayerItem
     {
         $matchPlayerItem = new MatchPlayerItem();
-        $matchPlayerItem->setItemId($data["ActiveId{$banCount}"] ?: null);
-        $matchPlayerItem->setItemName($data["Item_Active_{$banCount}"] ?: null);
-        $matchPlayerItem->setItemNumber($banCount);
+        $matchPlayerItem->setItem($matchItem);
+        $matchPlayerItem->setItemNumber($itemCount);
         $matchPlayerItem->setMatchPlayer($matchPlayer);
-
-        if (is_null($matchPlayerItem->getItemId()) && is_null($matchPlayerItem->getItemName())) {
-            return null;
-        }
 
         return $matchPlayerItem;
     }
