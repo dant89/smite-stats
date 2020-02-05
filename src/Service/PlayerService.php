@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\God;
+use App\Entity\MatchItem;
 use App\Entity\MatchPlayer;
 use App\Entity\MatchPlayerAbility;
 use App\Entity\Player;
@@ -65,6 +66,7 @@ class PlayerService
     public function getPlayerMatches(Player $player, $limit = 5): array
     {
         $matchPlayerRepo = $this->entityManager->getRepository(MatchPlayer::class);
+        $matchItemRepo = $this->entityManager->getRepository(MatchItem::class);
         $playerRepo = $this->entityManager->getRepository(Player::class);
 
         // Handle player matches
@@ -147,8 +149,10 @@ class PlayerService
                             }
 
                             for ($i = 1; $i <= 4; $i++) {
-                                $matchPlayerItem = $this->matchPlayerItemMapper->from($matchDetail, $i, $storedMatch);
-                                if (!is_null($matchPlayerItem)) {
+                                /** @var MatchItem $storedMatchItem */
+                                $storedMatchItem = $matchItemRepo->findOneBy(['itemId' => $matchDetail["ActiveId{$i}"]]);
+                                if (!is_null($storedMatchItem)) {
+                                    $matchPlayerItem = $this->matchPlayerItemMapper->from($i, $storedMatch, $storedMatchItem);
                                     $this->entityManager->persist($matchPlayerItem);
                                 }
                             }
