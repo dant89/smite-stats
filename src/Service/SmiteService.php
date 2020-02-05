@@ -6,6 +6,7 @@ use App\Entity\ApiCall;
 use App\Entity\God;
 use Dant89\SmiteApiClient\Client;
 use Dant89\SmiteApiClient\God\GodClient;
+use Dant89\SmiteApiClient\Item\ItemClient;
 use Dant89\SmiteApiClient\League\LeagueClient;
 use Dant89\SmiteApiClient\Match\MatchClient;
 use Dant89\SmiteApiClient\Player\PlayerClient;
@@ -435,6 +436,48 @@ class SmiteService
             $data = $data[0];
             $cache->set($data);
             $cache->expiresAfter(3600 / 2); // 30 minutes
+            $this->cache->save($cache);
+        } else {
+            $this->logger->error('API call failed.', [
+                'item' => $cacheKey,
+                'response' => $response
+            ]);
+        }
+
+        $this->logApiCall($cache->getKey(), false, $response->getStatus());
+        return $data;
+    }
+
+    /**
+     * @return array|null
+     * @throws InvalidArgumentException
+     */
+    public function getItems(): ?array
+    {
+        if (is_null($this->sessionId)) {
+            return null;
+        }
+
+        $cacheKey = $this->generateCacheKey('smite_itemsa');
+        $cache = $this->cache->getItem($cacheKey);
+        if ($cache->isHit()) {
+            $this->logApiCall($cache->getKey(), true);
+            return $cache->get();
+        }
+
+        /** @var $itemClient ItemClient */
+        $itemClient = $this->smiteClient->getHttpClient('item');
+        $response = $itemClient->getItems($this->sessionId, $this->timestamp);
+
+        $data = null;
+
+        if ($response->getStatus() === 200) {
+            $data = $response->getContent();
+            if (empty($data)) {
+                return null;
+            }
+            $cache->set($data);
+            $cache->expiresAfter(3600 * 24); // 24 hours
             $this->cache->save($cache);
         } else {
             $this->logger->error('API call failed.', [
