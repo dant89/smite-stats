@@ -2,22 +2,18 @@
 
 namespace App\Mapper;
 
+use App\Entity\MatchItem;
 use App\Entity\MatchPlayer;
 use App\Entity\MatchPlayerAbility;
 
 class MatchPlayerAbilityMapper
 {
-    public function from(array $data, int $banCount, MatchPlayer $matchPlayer): ?MatchPlayerAbility
+    public function from(int $itemCount, MatchPlayer $matchPlayer, MatchItem $matchItem): MatchPlayerAbility
     {
         $matchPlayerAbility = new MatchPlayerAbility();
-        $matchPlayerAbility->setAbilityId($data["ItemId{$banCount}"] ?: null);
-        $matchPlayerAbility->setAbilityName($data["Item_Purch_{$banCount}"] ?: null);
-        $matchPlayerAbility->setAbilityNumber($banCount);
+        $matchPlayerAbility->setAbility($matchItem);
+        $matchPlayerAbility->setAbilityNumber($itemCount);
         $matchPlayerAbility->setMatchPlayer($matchPlayer);
-
-        if (is_null($matchPlayerAbility->getAbilityId()) && is_null($matchPlayerAbility->getAbilityName())) {
-            return null;
-        }
 
         return $matchPlayerAbility;
     }
