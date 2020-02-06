@@ -17,6 +17,12 @@ class MatchPlayerAbility
     private $matchPlayer;
 
     /**
+     * @ORM\ManyToOne(targetEntity="MatchItem", inversedBy="matchPlayerAbilities")
+     * @ORM\JoinColumn(name="ability_id", referencedColumnName="item_id")
+     */
+    private $ability;
+
+    /**
      * @var int
      *
      * @ORM\Column(name="id", type="integer", nullable=false, options={"unsigned"=true})
@@ -24,20 +30,6 @@ class MatchPlayerAbility
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="ability_id", type="integer", nullable=true, options={"unsigned"=true})
-     */
-    private $abilityId;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="ability_name", type="string", length=255, nullable=true)
-     */
-    private $abilityName;
 
     /**
      * @var int
@@ -52,6 +44,24 @@ class MatchPlayerAbility
     public function getMatchPlayer()
     {
         return $this->matchPlayer;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAbility()
+    {
+        return $this->ability;
+    }
+
+    /**
+     * @param mixed $ability
+     * @return MatchPlayerAbility
+     */
+    public function setAbility($ability)
+    {
+        $this->ability = $ability;
+        return $this;
     }
 
     /**
@@ -79,42 +89,6 @@ class MatchPlayerAbility
     public function setId(int $id): MatchPlayerAbility
     {
         $this->id = $id;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getAbilityId(): ?int
-    {
-        return $this->abilityId;
-    }
-
-    /**
-     * @param int|null $abilityId
-     * @return MatchPlayerAbility
-     */
-    public function setAbilityId(?int $abilityId): MatchPlayerAbility
-    {
-        $this->abilityId = $abilityId;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getAbilityName(): ?string
-    {
-        return $this->abilityName;
-    }
-
-    /**
-     * @param string|null $abilityName
-     * @return MatchPlayerAbility
-     */
-    public function setAbilityName(?string $abilityName): MatchPlayerAbility
-    {
-        $this->abilityName = $abilityName;
         return $this;
     }
 

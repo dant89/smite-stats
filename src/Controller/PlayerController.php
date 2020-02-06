@@ -136,7 +136,7 @@ class PlayerController extends AbstractController
         $achievements = $this->smiteService->getPlayerAchievements($player->getSmitePlayerId()) ?? [];
 
         // Get Player Matches
-        $formattedMatches = $this->playerService->getPlayerMatches($player);
+        $formattedMatches = $this->playerService->getPlayerMatches($player, 5);
 
         // If the Players God details were updated in the last 24 hours, use database info
         if (is_null($player->getGodsDateUpdated()) ||
@@ -212,7 +212,7 @@ class PlayerController extends AbstractController
         }
 
         // Get Player Matches
-        $formattedMatches = $this->playerService->getPlayerMatches($player, 50);
+        $formattedMatches = $this->playerService->getPlayerMatches($player, 10);
 
         $playerUpdatedMins = $this->helperService->getMinutesLastUpdated($player->getDateUpdated());
 
