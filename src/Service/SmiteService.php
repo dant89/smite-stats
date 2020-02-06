@@ -4,8 +4,10 @@ namespace App\Service;
 
 use App\Entity\ApiCall;
 use App\Entity\God;
+use Dant89\SmiteApiClient\Authentication\AuthenticationClient;
 use Dant89\SmiteApiClient\Client;
 use Dant89\SmiteApiClient\God\GodClient;
+use Dant89\SmiteApiClient\Item\ItemClient;
 use Dant89\SmiteApiClient\League\LeagueClient;
 use Dant89\SmiteApiClient\Match\MatchClient;
 use Dant89\SmiteApiClient\Player\PlayerClient;
@@ -448,6 +450,48 @@ class SmiteService
     }
 
     /**
+     * @return array|null
+     * @throws InvalidArgumentException
+     */
+    public function getItems(): ?array
+    {
+        if (is_null($this->sessionId)) {
+            return null;
+        }
+
+        $cacheKey = $this->generateCacheKey('smite_itemsa');
+        $cache = $this->cache->getItem($cacheKey);
+        if ($cache->isHit()) {
+            $this->logApiCall($cache->getKey(), true);
+            return $cache->get();
+        }
+
+        /** @var $itemClient ItemClient */
+        $itemClient = $this->smiteClient->getHttpClient('item');
+        $response = $itemClient->getItems($this->sessionId, $this->timestamp);
+
+        $data = null;
+
+        if ($response->getStatus() === 200) {
+            $data = $response->getContent();
+            if (empty($data)) {
+                return null;
+            }
+            $cache->set($data);
+            $cache->expiresAfter(3600 * 24); // 24 hours
+            $this->cache->save($cache);
+        } else {
+            $this->logger->error('API call failed.', [
+                'item' => $cacheKey,
+                'response' => $response
+            ]);
+        }
+
+        $this->logApiCall($cache->getKey(), false, $response->getStatus());
+        return $data;
+    }
+
+    /**
      * @param string $name
      * @return array|null
      * @throws InvalidArgumentException
@@ -740,6 +784,19 @@ class SmiteService
         return $data;
     }
 
+    public function testHirezSession(): ?array
+    {
+        if (is_null($this->sessionId)) {
+            return null;
+        }
+
+        /** @var AuthenticationClient $authenticationClient */
+        $authenticationClient = $this->smiteClient->getHttpClient('auth');
+        $response = $authenticationClient->testSession($this->timestamp, $this->sessionId);
+
+        return $response->getContent();
+    }
+
     public function getUsage(): ?array
     {
         if (is_null($this->sessionId)) {
@@ -749,6 +806,19 @@ class SmiteService
         /** @var ToolClient $toolClient */
         $toolClient = $this->smiteClient->getHttpClient('tool');
         $response = $toolClient->getDataUsed($this->timestamp, $this->sessionId);
+
+        return $response->getContent();
+    }
+
+    public function getHirezServerStatus(): ?array
+    {
+        if (is_null($this->sessionId)) {
+            return null;
+        }
+
+        /** @var ToolClient $toolClient */
+        $toolClient = $this->smiteClient->getHttpClient('tool');
+        $response = $toolClient->getHirezServerStatus($this->timestamp, $this->sessionId);
 
         return $response->getContent();
     }

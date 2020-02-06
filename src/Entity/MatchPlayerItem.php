@@ -5,7 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(name="match_player_item", uniqueConstraints={@ORM\UniqueConstraint(name="unique_match_player_item", columns={"item_id", "item_name", "item_number", "match_player_id"})})
+ * @ORM\Table(name="match_player_item", uniqueConstraints={@ORM\UniqueConstraint(name="unique_match_player_item", columns={"item_id", "item_number", "match_player_id"})})
  * @ORM\Entity
  */
 class MatchPlayerItem
@@ -17,6 +17,12 @@ class MatchPlayerItem
     private $matchPlayer;
 
     /**
+     * @ORM\ManyToOne(targetEntity="MatchItem", inversedBy="matchPlayerItems")
+     * @ORM\JoinColumn(name="item_id", referencedColumnName="item_id")
+     */
+    private $item;
+
+    /**
      * @var int
      *
      * @ORM\Column(name="id", type="integer", nullable=false, options={"unsigned"=true})
@@ -24,20 +30,6 @@ class MatchPlayerItem
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="item_id", type="integer", nullable=true, options={"unsigned"=true})
-     */
-    private $itemId;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="item_name", type="string", length=255, nullable=true)
-     */
-    private $itemName;
 
     /**
      * @var int
@@ -65,6 +57,24 @@ class MatchPlayerItem
     }
 
     /**
+     * @return mixed
+     */
+    public function getItem()
+    {
+        return $this->item;
+    }
+
+    /**
+     * @param mixed $item
+     * @return MatchPlayerItem
+     */
+    public function setItem($item)
+    {
+        $this->item = $item;
+        return $this;
+    }
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -79,42 +89,6 @@ class MatchPlayerItem
     public function setId(int $id): MatchPlayerItem
     {
         $this->id = $id;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getItemId(): ?int
-    {
-        return $this->itemId;
-    }
-
-    /**
-     * @param int|null $itemId
-     * @return MatchPlayerItem
-     */
-    public function setItemId(?int $itemId): MatchPlayerItem
-    {
-        $this->itemId = $itemId;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getItemName(): ?string
-    {
-        return $this->itemName;
-    }
-
-    /**
-     * @param string|null $itemName
-     * @return MatchPlayerItem
-     */
-    public function setItemName(?string $itemName): MatchPlayerItem
-    {
-        $this->itemName = $itemName;
         return $this;
     }
 

@@ -39,6 +39,7 @@
         }
     });
 
+    {% if achievements %}
     var ctxKills = document.getElementById('killsChart');
     var killsChart = new Chart(ctxKills, {
         type: 'doughnut',
@@ -65,6 +66,7 @@
             responsive: true
         }
     });
+    {% endif %}
 
     </script>
 {% endblock %}
@@ -123,12 +125,14 @@
                                         <li></li>
                                         <li>Hours Played: {{ player.hoursPlayed }}</li>
                                         <li>Achievements: {{ player.totalAchievements }}</li>
-                                        {% if achievements.Deaths %}
-                                            <li>K/D: {{ (achievements.PlayerKills / achievements.Deaths)|round(2) }}</li>
-                                            <li>K/D/A: {{ ((achievements.PlayerKills + achievements.AssistedKills) / achievements.Deaths)|round(2) }}</li>
-                                        {% else %}
-                                            <li>K/D: {{ achievements.PlayerKills|round(2) }}</li>
-                                            <li>K/D/A: {{ (achievements.PlayerKills + achievements.AssistedKills)|round(2) }}</li>
+                                        {% if achievements %}
+                                            {% if achievements.Deaths %}
+                                                <li>K/D: {{ (achievements.PlayerKills / achievements.Deaths)|round(2) }}</li>
+                                                <li>K/D/A: {{ ((achievements.PlayerKills + achievements.AssistedKills) / achievements.Deaths)|round(2) }}</li>
+                                            {% else %}
+                                                <li>K/D: {{ achievements.PlayerKills|round(2) }}</li>
+                                                <li>K/D/A: {{ (achievements.PlayerKills + achievements.AssistedKills)|round(2) }}</li>
+                                            {% endif %}
                                         {% endif %}
                                     </ul>
 
@@ -136,9 +140,12 @@
                                 <div class="col col-sm-6 col-md-3">
                                     <canvas id="winPercentChart" width="400" height="350"></canvas>
                                 </div>
+
+                                {% if achievements %}
                                 <div class="col col-sm-6 col-md-3">
                                     <canvas id="killsChart" width="400" height="350"></canvas>
                                 </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -456,22 +463,16 @@
                     {% endif %}
 
                     {% if matches %}
-                    <div class="card mb-4 box-shadow">
-                        <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
 
-                            <div class="row">
-                                <div class="col-12">
+                            <h3 class="d-inline-block">Latest Matches</h3>
+                            <a class="btn btn-sm btn-primary float-right" href="{{ path('player_matches_view', {
+                                gamertag: player.name|clan_remove|slug,
+                                id: player.smitePlayerId
+                            }) }}">View all Matches</a>
 
-                                    <h3 class="d-inline-block">Latest Matches</h3>
-                                    <a class="btn btn-sm btn-primary float-right" href="{{ path('player_matches_view', {
-                                        gamertag: player.name|clan_remove|slug,
-                                        id: player.smitePlayerId
-                                    }) }}">View all Matches</a>
-
-                                    {% include 'player/templates/matches.html.twig' %}
-
-                                </div>
-                            </div>
+                            {% include 'player/templates/matches.html.twig' %}
 
                         </div>
                     </div>
