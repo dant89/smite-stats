@@ -16,6 +16,11 @@ class MatchItem
     private $matchPlayerItems;
 
     /**
+     * @ORM\OneToMany(targetEntity="MatchPlayerAbility", mappedBy="ability")
+     */
+    private $matchPlayerAbilities;
+
+    /**
      * @var int
      *
      * @ORM\Column(name="item_id", type="integer", nullable=false, options={"unsigned"=true})
@@ -137,6 +142,24 @@ class MatchItem
     public function setMatchPlayerItems($matchPlayerItems)
     {
         $this->matchPlayerItems = $matchPlayerItems;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMatchPlayerAbilities()
+    {
+        return $this->matchPlayerAbilities;
+    }
+
+    /**
+     * @param mixed $matchPlayerAbilities
+     * @return MatchItem
+     */
+    public function setMatchPlayerAbilities($matchPlayerAbilities)
+    {
+        $this->matchPlayerAbilities = $matchPlayerAbilities;
         return $this;
     }
 

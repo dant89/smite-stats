@@ -84,11 +84,19 @@ main a {
     border: 1px solid gold;
     height:125px;
     margin-bottom: 10px;
-    max-width:125px;
     overflow: hidden;
     position: relative;
+    width:125px;
 }
 
+.player-smite-god-small {
+    background-position: center center;
+    display: inline-block;
+    height:40px;
+    margin-bottom: 0;
+    vertical-align: middle;
+    width:40px;
+}
 
 .smite-god {
     background-position:  top center;
@@ -116,6 +124,11 @@ main a {
 
 .smite-god a h1 {
     font-size: 14px;
+}
+
+.match-report-items img {
+    height: 50px;
+    width: 50px;
 }
 
 footer .social a i {
