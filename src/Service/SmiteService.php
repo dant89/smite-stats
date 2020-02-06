@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\ApiCall;
 use App\Entity\God;
+use Dant89\SmiteApiClient\Authentication\AuthenticationClient;
 use Dant89\SmiteApiClient\Client;
 use Dant89\SmiteApiClient\God\GodClient;
 use Dant89\SmiteApiClient\Item\ItemClient;
@@ -783,6 +784,19 @@ class SmiteService
         return $data;
     }
 
+    public function testHirezSession(): ?array
+    {
+        if (is_null($this->sessionId)) {
+            return null;
+        }
+
+        /** @var AuthenticationClient $authenticationClient */
+        $authenticationClient = $this->smiteClient->getHttpClient('auth');
+        $response = $authenticationClient->testSession($this->timestamp, $this->sessionId);
+
+        return $response->getContent();
+    }
+
     public function getUsage(): ?array
     {
         if (is_null($this->sessionId)) {
@@ -792,6 +806,19 @@ class SmiteService
         /** @var ToolClient $toolClient */
         $toolClient = $this->smiteClient->getHttpClient('tool');
         $response = $toolClient->getDataUsed($this->timestamp, $this->sessionId);
+
+        return $response->getContent();
+    }
+
+    public function getHirezServerStatus(): ?array
+    {
+        if (is_null($this->sessionId)) {
+            return null;
+        }
+
+        /** @var ToolClient $toolClient */
+        $toolClient = $this->smiteClient->getHttpClient('tool');
+        $response = $toolClient->getHirezServerStatus($this->timestamp, $this->sessionId);
 
         return $response->getContent();
     }
