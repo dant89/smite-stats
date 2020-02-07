@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1f004167561f0557ef9a0846a3281c2a",
+    "content-hash": "fa7c7dbd58856daec3827d0fbd47e745",
     "packages": [
         {
             "name": "dant89/smite-api-php-client",
@@ -6315,9 +6315,9 @@
         "php": "^7.1.3",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "ext-igbinary": "^2.0",
-        "ext-redis": "^4.2",
-        "ext-xml": "^7.2"
+        "ext-igbinary": "*",
+        "ext-redis": "*",
+        "ext-xml": "*"
     },
     "platform-dev": []
 }
