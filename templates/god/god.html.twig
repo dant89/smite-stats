@@ -114,6 +114,45 @@
 
             </div>
 
+            <div class="row">
+            {% for key, players in leaderboards %}
+                {% if players %}
+                    <div class="col-md-4">
+                        <div class="card mb-4 box-shadow">
+                            <div class="card-header">
+                                <h4>Top {{ god.Name }} {{ key }} Players</h4>
+                            </div>
+                            <div class="card-body">
+                                {% for player in players %}
+                                    {% if player.player_name|clan_remove|slug %}
+                                        <a href="{{ path('player_view', {
+                                            gamertag: player.player_name|clan_remove|slug,
+                                            id: player.player_id
+                                        }) }}" title="Smite Player {{ player.player_name }}">{{ player.player_name }}</a>
+                                    {% else %}
+                                        <strong>Unknown</strong>
+                                    {% endif %}
+                                    <br />
+
+                                    <span>Wins<strong>: {{ player.wins }}</strong></span><br />
+                                    <span>Losses<strong>: {{ player.losses }}</strong></span><br />
+
+                                    {% if player.losses and player.wins %}
+                                        <span>Win Percent<strong>: {{ ((player.wins / (player.wins + player.losses)) * 100)|round(2) }}%</strong></span>
+                                    {% elseif player.wins %}
+                                        <span>Win Percent<strong>: {{ 100|round(2) }}%</strong></span>
+                                    {% else %}
+                                        <span>Win Percent<strong>: {{ 0|round(2) }}%</strong></span>
+                                    {% endif %}
+                                    <hr />
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            </div>
+
         </div>
     </div>
 
