@@ -216,9 +216,9 @@ class PlayerService
         for ($i = 1; $i <= 4; $i++) {
             if (isset($matchPlayerData["ActiveId{$i}"])) {
                 /** @var MatchItem $storedMatchItem */
-                $storedMatchItem = $matchItemRepo->findOneBy(
-                    ['itemId' => $matchPlayerData["ActiveId{$i}"]]
-                );
+                $storedMatchItem = $matchItemRepo->findOneBy([
+                    'itemId' => $matchPlayerData["ActiveId{$i}"]
+                ]);
                 if (!is_null($storedMatchItem)) {
                     $matchPlayerAbility = $this->matchPlayerAbilityMapper->from(
                         $i,
@@ -231,7 +231,7 @@ class PlayerService
         }
 
         for ($i = 1; $i <= 6; $i++) {
-            if (isset($matchDetail["ItemId{$i}"])) {
+            if (isset($matchPlayerData["ItemId{$i}"])) {
                 /** @var MatchItem $storedMatchItem */
                 $storedMatchItem = $matchItemRepo->findOneBy([
                     'itemId' => $matchPlayerData["ItemId{$i}"]
