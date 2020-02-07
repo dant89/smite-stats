@@ -39,13 +39,17 @@
                                         <div class="col-xs-12 col-sm-8">
                                             <div class="match-report-items mb-1">
                                                 {% for match_player_item in match_player.abilities %}
-                                                    <img title="{{ match_player_item.ability.itemName }}" src="{{ match_player_item.ability.iconUrl }}" />
+                                                    <a href="{{ path('relic_view', {'name': match_player_item.ability.itemName|slug}) }}" rel="nofollow">
+                                                        <img title="{{ match_player_item.ability.itemName }}" src="{{ match_player_item.ability.iconUrl }}" />
+                                                    </a>
                                                 {% endfor %}
                                             </div>
 
                                             <div class="match-report-items">
                                                 {% for match_player_item in match_player.items %}
-                                                    <img title="{{ match_player_item.item.itemName }}" src="{{ match_player_item.item.iconUrl }}" />
+                                                    <a href="{{ path('item_view', {'name': match_player_item.item.itemName|slug}) }}" rel="nofollow">
+                                                        <img title="{{ match_player_item.item.itemName }}" src="{{ match_player_item.item.iconUrl }}" />
+                                                    </a>
                                                 {% endfor %}
                                             </div>
                                         </div>

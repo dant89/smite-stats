@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Smite Items - Unofficial SMITE{% endblock %}
+
+{% block header_meta %}
+    <link rel="canonical" href="https://smitestats.com/items/" />
+{% endblock %}
+
+{% block body %}
+    <div class="bg-light pt-3 pb-5">
+        <div class="container">
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Home</a></li>
+                    <li class="breadcrumb-item active">Items</li>
+                </ol>
+            </nav>
+
+            <h1>Smite Items</h1>
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <h2>Items</h2>
+                    <div class="row">
+                        {% for item in items %}
+                        <div class="col-sm-3 mb-1">
+                            <a href="{{ path('item_view', {'name': item.itemName|slug}) }}">
+                                <img style="max-height: 128px;max-width: 128px;" title="{{ item.itemName }}" src="{{ item.iconUrl }}" /><br />
+                                {{ item.itemName }}
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <hr />
+
+                    <h2>Relics</h2>
+                    <div class="row">
+                        {% for item in relics %}
+                            <div class="col-sm-3">
+                                <a href="{{ path('relic_view', {'name': item.itemName|slug}) }}">
+                                    <img style="max-height: 128px;max-width: 128px;" title="{{ item.itemName }}" src="{{ item.iconUrl }}" /><br />
+                                    {{ item.itemName }}
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <hr />
+
+                    <h2>Consumables</h2>
+                    <div class="row">
+                        {% for item in consumables %}
+                            <div class="col-sm-3">
+                                <a href="{{ path('consumable_view', {'name': item.itemName|slug}) }}">
+                                    <img style="max-height: 128px;max-width: 128px;" title="{{ item.itemName }}" src="{{ item.iconUrl }}" /><br />
+                                    {{ item.itemName }}
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
