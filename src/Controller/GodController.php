@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\God;
 use App\Service\SmiteService;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -86,6 +87,7 @@ class GodController extends AbstractController
      * @Route("/gods/{name}", name="god_view")
      * @param string $name
      * @return Response
+     * @throws InvalidArgumentException
      */
     public function view(string $name): Response
     {
@@ -98,8 +100,29 @@ class GodController extends AbstractController
             throw new NotFoundHttpException();
         }
 
+        $godDuelLeaderboard = $this->smite->getTopGods(440, $god->getSmiteId());
+        $godJoustLeaderboard = $this->smite->getTopGods(450, $god->getSmiteId());
+        $godConquestLeaderboard = $this->smite->getTopGods(451, $god->getSmiteId());
+
+        if (is_array($godDuelLeaderboard)) {
+            $godDuelLeaderboard = array_slice($godDuelLeaderboard, 0, 5, true);
+        }
+        if (is_array($godJoustLeaderboard)) {
+            $godJoustLeaderboard = array_slice($godJoustLeaderboard,  0, 5, true);
+        }
+        if (is_array($godConquestLeaderboard)) {
+            $godConquestLeaderboard = array_slice($godConquestLeaderboard,  0, 5, true);
+        }
+
+        $leaderboardTypes = [
+            'Conquest' => $godConquestLeaderboard,
+            'Duel' => $godDuelLeaderboard,
+            'Joust' => $godJoustLeaderboard
+        ];
+
         return $this->render('god/god.html.twig', [
             'god' => $god,
+            'leaderboards' => $leaderboardTypes
         ]);
     }
 }

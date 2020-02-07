@@ -186,7 +186,7 @@
                                                                         <ul class="list-unstyled">
                                                                             <li>Rank: {{ god.rank }}</li>
                                                                             {% if god.losses and god.wins %}
-                                                                                <li>Win %: {{ ((god.wins / (god.Wins + god.losses)) * 100)|round(2) }}%</li>
+                                                                                <li>Win Percent: {{ ((god.wins / (god.wins + god.losses)) * 100)|round(2) }}%</li>
                                                                             {% elseif god.wins %}
                                                                                 <li>Win Percent: {{ 100|round(2) }}%</li>
                                                                             {% else %}
