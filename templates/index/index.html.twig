@@ -9,7 +9,7 @@
 
 {% block body %}
 
-<div class="bg-light pt-3 pb-3">
+<div class="bg-light pt-3 pb-5">
     <div class="container">
 
         <div class="row">
@@ -43,30 +43,32 @@
                         <div class="row">
 
                             {% for key, players in leaderboards %}
-                            <div class="col-4">
-                                <h4>Top 5 Ranked {{ key }} Players</h4>
+                                {% if players %}
+                                <div class="col-4">
+                                    <h4>Top 5 Ranked {{ key }} Players</h4>
 
-                                {% for player in players %}
-                                <div class="col-12">
+                                    {% for player in players %}
+                                    <div class="col-12">
 
-                                    {% if player.Name|clan_remove|slug %}
-                                        <a href="{{ path('player_view', {
-                                            gamertag: player.Name|clan_remove|slug,
-                                            id: player.player_id
-                                        }) }}" title="Smite Player {{ player.Name }}">{{ player.Name }}</a>
-                                    {% else %}
-                                        <strong>Unknown</strong>
-                                    {% endif %}
-                                    <br />
+                                        {% if player.Name|clan_remove|slug %}
+                                            <a href="{{ path('player_view', {
+                                                gamertag: player.Name|clan_remove|slug,
+                                                id: player.player_id
+                                            }) }}" title="Smite Player {{ player.Name }}">{{ player.Name }}</a>
+                                        {% else %}
+                                            <strong>Unknown</strong>
+                                        {% endif %}
+                                        <br />
 
-                                    Rank: {{ player.Rank }}<br />
-                                    Points: {{ player.Points }}
-                                    Wins: {{ player.Wins }}<br />
-                                    Losses: {{ player.Losses }}
+                                        Rank: {{ player.Rank }}<br />
+                                        Points: {{ player.Points }}
+                                        Wins: {{ player.Wins }}<br />
+                                        Losses: {{ player.Losses }}
 
+                                    </div>
+                                    {% endfor %}
                                 </div>
-                                {% endfor %}
-                            </div>
+                                {% endif %}
                             {% endfor %}
 
                         </div>
