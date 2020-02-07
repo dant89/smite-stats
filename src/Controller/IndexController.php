@@ -42,9 +42,9 @@ class IndexController extends AbstractController
         $gods = $this->godService->getGodsByNameKey();
         $gods = array_slice($gods, 1, 12, true);
 
-        $duelRankedLeaderboard = $this->smiteService->getLeagueLeaderboard(440, 27, 6);
-        $joustRankedLeaderboard = $this->smiteService->getLeagueLeaderboard(450, 27, 6);
-        $conquestRankedLeaderboard = $this->smiteService->getLeagueLeaderboard(451, 27, 6);
+        $duelRankedLeaderboard = $this->smiteService->getLeagueLeaderboard(440, 27, 7);
+        $joustRankedLeaderboard = $this->smiteService->getLeagueLeaderboard(450, 27, 7);
+        $conquestRankedLeaderboard = $this->smiteService->getLeagueLeaderboard(451, 27, 7);
 
         if (is_array($duelRankedLeaderboard)) {
             $duelRankedLeaderboard = array_slice($duelRankedLeaderboard, 0, 5, true);
