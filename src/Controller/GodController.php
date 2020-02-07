@@ -3,14 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\God;
-use App\Entity\GodAbility;
 use App\Service\SmiteService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Psr\Cache\InvalidArgumentException;
 
 class GodController extends AbstractController
 {
