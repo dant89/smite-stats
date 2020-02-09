@@ -130,6 +130,7 @@ class PlayerService
                             $teams[$storedMatchPlayer->getSmiteMatchId()][$storedMatchPlayer->getTaskForce()][] = $storedMatchPlayer;
                             $formattedMatches[$storedMatchPlayer->getSmiteMatchId()] = [
                                 'Entry_Datetime' => $storedMatchPlayer->getEntryDatetime(),
+                                'Match_Id' => $storedMatchPlayer->getSmiteMatchId(),
                                 'Map_Game' => $storedMatchPlayer->getMapGame(),
                                 'Minutes' => $storedMatchPlayer->getMinutes(),
                                 'Teams' => $teams[$storedMatchPlayer->getSmiteMatchId()]
@@ -148,7 +149,7 @@ class PlayerService
         return $this->formatMatches($player->getSmitePlayerId(), $formattedMatches);
     }
 
-    protected function formatMatches(int $playerId, array $formattedMatches): array
+    private function formatMatches(int $playerId, array $formattedMatches): array
     {
         if (!empty($formattedMatches)) {
             foreach ($formattedMatches as &$formattedMatch) {
@@ -179,6 +180,34 @@ class PlayerService
                 }
             }
             unset($formattedMatch);
+        }
+
+        return $formattedMatches;
+    }
+
+    public function formatStoredMatches(array $matchPlayers): array
+    {
+        $teams = [];
+        $formattedMatches = [];
+
+        /** @var MatchPlayer $matchPlayer */
+        foreach ($matchPlayers as $matchPlayer) {
+
+            $teams[$matchPlayer->getSmiteMatchId()][$matchPlayer->getTaskForce()][] = $matchPlayer;
+
+            $formattedMatches[$matchPlayer->getSmiteMatchId()] = [
+                'Entry_Datetime' => $matchPlayer->getEntryDatetime(),
+                'Map_Game' => $matchPlayer->getMapGame(),
+                'Match_Id' => $matchPlayer->getSmiteMatchId(),
+                'Minutes' => $matchPlayer->getMinutes(),
+                'Teams' => $teams[$matchPlayer->getSmiteMatchId()]
+            ];
+
+            if (!empty($formattedMatches)) {
+                foreach ($formattedMatches as &$formattedMatch) {
+                    $formattedMatch['Winning_TaskForce'] = $matchPlayer->getWinningTaskForce();
+                }
+            }
         }
 
         return $formattedMatches;
