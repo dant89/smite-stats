@@ -1,6 +1,6 @@
 <div class="row">
     {% for match in matches %}
-        <div class="col-sm-12">
+        <div class="col-sm-12 mb-3">
 
             <div class="card mb-2 box-shadow">
                 <div class="card-header bg-{{ match.Player_Won ? 'success' : 'danger' }}">
@@ -58,26 +58,6 @@
                                 {% endif %}
                             {% endfor %}
                         {% endfor %}
-
-                        {% for key, players in match.Teams %}
-                            {% for match_player in players %}
-                                {% if match_player.smitePlayer and match_player.smitePlayer.smitePlayerId == player.smitePlayerId %}
-
-                                    <!--
-                                    <ul class="list-unstyled">
-                                        <li>Damage Mitigated: {{ match_player.DamageMitigated }}</li>
-                                        <li>Damage Mitigated: {{ match_player.DamageMitigated }}</li>
-                                        <li>Damage Taken: {{ match_player.DamageTaken }}</li>
-                                        <li>Gold Earned: {{ match_player.GoldEarned }}</li>
-                                        <li>Gold per Minute: {{ match_player.GoldPerMinute }}</li>
-                                        <li>Healing: {{ match_player.Healing }}</li>
-                                    </ul>
-                                    -->
-
-                                {% endif %}
-                            {% endfor %}
-                        {% endfor %}
-
                         </div>
 
                         <div class="col-md-12 col-lg-6">
@@ -108,6 +88,9 @@
 
                     </div>
 
+                </div>
+                <div class="card-footer">
+                    <a class="btn btn-sm btn-primary float-right" href="{{ path('match_view', {id: match.Match_Id}) }}">View full match report</a>
                 </div>
             </div>
 
