@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Smite Match - Smite Stats - Unofficial SMITE{% endblock %}
+{% block title %}{{ match.Map_Game }} Match Report - Smite Stats - Unofficial SMITE{% endblock %}
 
 {% block header_meta %}
     <link rel="canonical" href="https://smitestats.com/matches/{{ match.Match_Id }}" />
@@ -148,14 +148,20 @@
                                             <td>{{ match_player.damageMitigated|number_format }}</td>
                                             <td class="text-left">
                                                 {% for match_player_item in match_player.abilities %}
-                                                    <a href="{{ path('relic_view', {'name': match_player_item.ability.itemName|slug}) }}" rel="nofollow">
+                                                    <a href="{{ path('relic_view', {
+                                                        'name': match_player_item.ability.itemName|slug,
+                                                        'id': match_player_item.ability.itemId
+                                                    }) }}" rel="nofollow">
                                                         <img height="25px" width="25px" title="{{ match_player_item.ability.itemName }}" src="{{ match_player_item.ability.iconUrl }}" />
                                                     </a>
                                                 {% endfor %}
                                             </td>
                                             <td class="text-left">
                                                 {% for match_player_item in match_player.items %}
-                                                    <a href="{{ path('item_view', {'name': match_player_item.item.itemName|slug}) }}" rel="nofollow">
+                                                    <a href="{{ path('item_view', {
+                                                        'name': match_player_item.item.itemName|slug,
+                                                        'id': match_player_item.item.itemId
+                                                    }) }}" rel="nofollow">
                                                         <img {% if loop.index <= 3 %}class="mb-1" {% endif %}height="25px" width="25px" title="{{ match_player_item.item.itemName }}" src="{{ match_player_item.item.iconUrl }}" />
                                                     </a>
                                                     {% if loop.index == 3 %}

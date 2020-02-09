@@ -48,18 +48,18 @@ class ItemController extends AbstractController
     }
 
     /**
-     * @Route("/consumables/{name}", name="consumable_view")
+     * @Route("/consumables/{name}-{id}", name="consumable_view", requirements={"name": "[-\w]+"})
      * @param string $name
+     * @param int $id
      * @return Response
      */
-    public function consumableView(string $name): Response
+    public function consumableView(string $name, int $id): Response
     {
-        $name = ucwords(str_replace('-', ' ', $name));
         $repository = $this->entityManager->getRepository(MatchItem::class);
 
         /** @var MatchItem $item */
         $item = $repository->findOneBy([
-            'itemName' => $name,
+            'itemId' => $id,
             'type' => 'consumable',
             'active' => 1
         ]);
@@ -76,18 +76,18 @@ class ItemController extends AbstractController
     }
 
     /**
-     * @Route("/items/{name}", name="item_view")
+     * @Route("/items/{name}-{id}", name="item_view", requirements={"name": "[-\w]+"})
      * @param string $name
+     * @param int $id
      * @return Response
      */
-    public function itemView(string $name): Response
+    public function itemView(string $name, int $id): Response
     {
-        $name = ucwords(str_replace('-', ' ', $name));
         $repository = $this->entityManager->getRepository(MatchItem::class);
 
         /** @var MatchItem $item */
         $item = $repository->findOneBy([
-            'itemName' => $name,
+            'itemId' => $id,
             'type' => 'item',
             'active' => 1
         ]);
@@ -104,18 +104,18 @@ class ItemController extends AbstractController
     }
 
     /**
-     * @Route("/relics/{name}", name="relic_view")
+     * @Route("/relics/{name}-{id}", name="relic_view", requirements={"name": "[-\w]+"})
      * @param string $name
+     * @param int $id
      * @return Response
      */
-    public function relicView(string $name): Response
+    public function relicView(string $name, int $id): Response
     {
-        $name = ucwords(str_replace('-', ' ', $name));
         $repository = $this->entityManager->getRepository(MatchItem::class);
 
         /** @var MatchItem $item */
         $item = $repository->findOneBy([
-            'itemName' => $name,
+            'itemId' => $id,
             'type' => 'active',
             'active' => 1
         ]);
