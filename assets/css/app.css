@@ -145,10 +145,6 @@ main a {
     width: 50px;
 }
 
-.match-stats table {
-    table-layout: fixed;
-}
-
 .match-stats td {
     vertical-align: middle;
 }
