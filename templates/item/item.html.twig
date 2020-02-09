@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ item.itemName }} {{ type }} - Smite Items - Unofficial SMITE{% endblock %}
+{% block title %}{{ item.itemName }} {{ type }} - Smite Stats - Unofficial SMITE{% endblock %}
 
 {% block header_meta %}
-    <link rel="canonical" href="https://smitestats.com/{{ type_uri }}/{{ item.itemName|slug }}" />
+    <link rel="canonical" href="https://smitestats.com/{{ type_uri }}/{{ item.itemName|slug }}-{{ item.itemId }}" />
 {% endblock %}
 
 {% block body %}
