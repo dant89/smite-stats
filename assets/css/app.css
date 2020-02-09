@@ -1,5 +1,6 @@
 @import "~bootstrap";
 @import "~@fortawesome/fontawesome-free/css/all.min.css";
+@import "~datatables.net-bs4/css/dataTables.bootstrap4.min.css";
 
 body {
     background-color: #000;
@@ -20,6 +21,10 @@ main {
 
 main a {
     color: #9e6700;
+}
+
+.font14 {
+    font-size: 14px;
 }
 
 .bg-dark-opaque {
@@ -81,6 +86,7 @@ main a {
 .player-smite-god {
     background-position: top center;
     background-repeat: no-repeat;
+    background-size: 100%;
     border: 1px solid gold;
     height:125px;
     margin-bottom: 10px;
@@ -89,8 +95,15 @@ main a {
     width:125px;
 }
 
+.player-smite-god-medium {
+    display: inline-block;
+    height:80px;
+    margin-bottom: 0;
+    vertical-align: middle;
+    width:80px;
+}
+
 .player-smite-god-small {
-    background-position: center center;
     display: inline-block;
     height:40px;
     margin-bottom: 0;
@@ -101,6 +114,7 @@ main a {
 .smite-god {
     background-position:  top center;
     background-repeat: no-repeat;
+    background-size: 100%;
     border: 1px solid gold;
     height:200px;
     margin-bottom: 10px;
@@ -129,6 +143,14 @@ main a {
 .match-report-items img {
     height: 50px;
     width: 50px;
+}
+
+.match-stats table {
+    table-layout: fixed;
+}
+
+.match-stats td {
+    vertical-align: middle;
 }
 
 footer .social a i {
