@@ -41,22 +41,10 @@
             <div class="row">
                 <div class="col-12">
 
-                    <div class="card mb-4 box-shadow">
-                        <div class="card-body">
-
-                            <div class="row">
-                                <div class="col-12">
-
-                                    <h3 class="d-inline-block">Latest Matches</h3>
-                                    {% if matches %}
-                                        {% include 'player/templates/matches.html.twig' %}
-                                    {% endif %}
-
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
+                    <h3 class="d-inline-block">Latest Matches</h3>
+                    {% if matches %}
+                        {% include 'player/templates/matches.html.twig' %}
+                    {% endif %}
 
                 </div>
             </div>
