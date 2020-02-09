@@ -2,11 +2,9 @@
 
 namespace App\Controller\Api;
 
-use App\Entity\MatchPlayer;
 use App\Entity\Player;
 use App\Service\SmiteService;
 use Doctrine\ORM\EntityManagerInterface;
-use Proxies\__CG__\App\Entity\Match;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
