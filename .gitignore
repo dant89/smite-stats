@@ -2,6 +2,7 @@
 bin/*
 !bin/console
 public/images/SMITE_Logo_2016_BlackTagline_300dpi.png
+src/Command/Crawlers/*
 sample/*
 
 ***REMOVED******REMOVED******REMOVED***> symfony/framework-bundle ***REMOVED******REMOVED******REMOVED***
