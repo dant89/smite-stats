@@ -14,6 +14,42 @@ class MatchPlayerRepository extends ServiceEntityRepository
         parent::__construct($registry, MatchPlayer::class);
     }
 
+    public function getLatestMatchIds(int $limit = 10, int $offset = 0)
+    {
+        $qb = $this->createQueryBuilder('mp');
+        $qb->select('mp.smiteMatchId')
+            ->groupBy('mp.smiteMatchId')
+            ->orderBy('mp.smiteMatchId', 'DESC')
+            ->setMaxResults($limit)
+            ->setFirstResult($offset);
+
+        $query = $qb->getQuery();
+        return $query->execute();
+    }
+
+    public function getMatchPlayersByIds(array $matchIds)
+    {
+        $qb = $this->createQueryBuilder('mp');
+        $qb->where('mp.smiteMatchId IN (:matchIds)')
+            ->orderBy('mp.smiteMatchId', 'DESC')
+            ->setParameter('matchIds', $matchIds);
+
+        $query = $qb->getQuery();
+        return $query->execute();
+    }
+
+    public function getLatestMatches(int $limit = 10, int $offset = 0)
+    {
+        $qb = $this->createQueryBuilder('mp');
+        $qb->groupBy('p.smiteMatchId')
+            ->orderBy('p.smiteMatchId', 'DESC')
+            ->setMaxResults($limit)
+            ->setFirstResult($offset);
+
+        $query = $qb->getQuery();
+        return $query->execute();
+    }
+
     public function getUniqueMatchIds(Player $player)
     {
         $qb = $this->createQueryBuilder('m');
@@ -23,6 +59,6 @@ class MatchPlayerRepository extends ServiceEntityRepository
             ->setParameter('player', $player)
             ->getQuery();
 
-        return $query->getScalarResult();
+        return $query->getResult();
     }
 }

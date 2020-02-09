@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Latest Matches - Smite Stats - Unofficial SMITE{% endblock %}
+
+{% block header_meta %}
+    <link rel="canonical" href="https://smitestats.com/matches/" />
+{% endblock %}
+
+{% block body %}
+
+    <div class="bg-light pt-3 pb-5">
+        <div class="container">
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Home</a></li>
+                    <li class="breadcrumb-item active">Matches</li>
+                </ol>
+            </nav>
+
+            <div class="row">
+
+                <div class="col-12">
+                    <h1>Latest Smite Matches</h1>
+
+                    {% for matchId, match in matches %}
+                        <a href="{{ path('match_view', {'id': matchId}) }}">{{ match.Map_Game }}</a><br />
+                    {% endfor %}
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

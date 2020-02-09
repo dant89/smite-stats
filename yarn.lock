@@ -1963,6 +1963,21 @@ d@1, d@^1.0.1:
     es5-ext "^0.10.50"
     type "^1.0.1"
 
+datatables.net-bs4@^1.10.20:
+  version "1.10.20"
+  resolved "https://registry.yarnpkg.com/datatables.net-bs4/-/datatables.net-bs4-1.10.20.tgz***REMOVED***beff1c8d3510826c0678eaa055270607c0e53882"
+  integrity sha512-kQmMUMsHMOlAW96ztdoFqjSbLnlGZQ63iIM82kHbmldsfYdzuyhbb4hTx6YNBi481WCO3iPSvI6YodNec46ZAw==
+  dependencies:
+    datatables.net "1.10.20"
+    jquery ">=1.7"
+
+datatables.net@1.10.20:
+  version "1.10.20"
+  resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.10.20.tgz***REMOVED***9d65ecc3c83cbe7baa4fa5a053405c8fe42c1350"
+  integrity sha512-4E4S7tTU607N3h0fZPkGmAtr9mwy462u+VJ6gxYZ8MxcRIjZqHy3Dv1GNry7i3zQCktTdWbULVKBbkAJkuHEnQ==
+  dependencies:
+    jquery ">=1.7"
+
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz***REMOVED***5d128515df134ff327e90a4c93f4e077a536341f"
@@ -3427,7 +3442,7 @@ isobject@^3.0.0, isobject@^3.0.1:
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz***REMOVED***4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha1-TkMekrEalzFjaqH5yNHMvP2reN8=
 
-jquery@^3.4.1:
+jquery@>=1.7, jquery@^3.4.1:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.4.1.tgz***REMOVED***714f1f8d9dde4bdfa55764ba37ef214630d80ef2"
   integrity sha512-36+AdBzCL+y6qjw5Tx7HgzeGCzC81MDDgaUP8ld2zhx58HdqXGoBd+tHdrBMiyjGQs0Hxs/MLZTu/eHNJJuWPw==
