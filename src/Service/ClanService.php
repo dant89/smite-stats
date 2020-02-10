@@ -36,7 +36,8 @@ class ClanService
             }
         }
 
-        $matchPlayers = $matchPlayerRepo->getMatchPlayersByIds($matchIds, 10, 0);
+        // We need to get all the players, the limit on the matchs sets the amount else players are missing
+        $matchPlayers = $matchPlayerRepo->getMatchPlayersByIds($matchIds, null, 0);
         $matches = $this->matchMapper->to($matchPlayers);
 
         return $matches;
