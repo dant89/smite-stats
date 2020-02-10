@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Clan;
+use App\Service\ClanService;
 use App\Service\GodService;
 use App\Service\SmiteService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,6 +18,9 @@ class ClanController extends AbstractController
     /** @var EntityManagerInterface */
     protected $entityManager;
 
+    /** @var ClanService */
+    protected $clanService;
+
     /** @var GodService */
     protected $godService;
 
@@ -25,10 +29,12 @@ class ClanController extends AbstractController
 
     public function __construct(
         EntityManagerInterface $entityManager,
+        ClanService $clanService,
         GodService $godService,
         SmiteService $smiteService
     ) {
         $this->entityManager = $entityManager;
+        $this->clanService = $clanService;
         $this->godService = $godService;
         $this->smiteService = $smiteService;
     }
@@ -79,6 +85,7 @@ class ClanController extends AbstractController
         $gods = $this->godService->getGodsByNameKey();
         $teamPlayers = $this->smiteService->getTeamPlayers($clan->getSmiteClanId());
 
+        // TODO tidy this logic
         foreach ($teamPlayers as &$teamPlayer) {
             if (!empty($teamPlayer['Name'])) {
 
@@ -113,10 +120,13 @@ class ClanController extends AbstractController
             }
         }
 
+        $matches = $this->clanService->getLatestClanMatches($clan->getSmiteClanId());
+
         return $this->render('clan/clan.html.twig', [
             'clan' => $clan,
             'clan_players' => $teamPlayers,
             'gods' => $gods,
+            'matches' => $matches
         ]);
     }
 }

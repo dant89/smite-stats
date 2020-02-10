@@ -134,6 +134,76 @@
                 {% endfor %}
             </div>
 
+            {% if matches %}
+            <div class="row">
+                <div class="col-12">
+
+                    <h3 class="d-inline-block">Latest Clan Matches</h3>
+
+                    <div class="row">
+
+                        {% for match in matches %}
+                        <div class="col-sm-12 mb-3">
+                            <div class="card mb-2 box-shadow">
+
+                                <div class="card-header">
+                                    <div class="float-left">
+
+                                    </div>
+                                    <div class="float-right">
+                                        <strong>{{ match.matchType }}</strong> |
+                                        {{ match.date|date }} |
+                                        <strong>{{ match.minutes }}</strong> minutes
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="row mt-1">
+
+                                        {% for taskforceId, matchPlayers in match.playersByTeamIndex %}
+                                        <div class="col-6">
+                                            <ul class="list-unstyled mb-0 mb-1 mb-sm-0 mb-md-0 mb-lg-0 p-1 border rounded {% if taskforceId == match.winningTaskforce %}border-success{% else %}border-danger{% endif %}">
+                                                {% for matchPlayer in matchPlayers %}
+                                                <li class="pb-1">
+
+                                                    <div class="row">
+                                                        <div class="col-6">
+                                                            <div class="player-smite-god player-smite-god-small" style="background-image: url('https://web2.hirez.com/smite/god-cards/{{ matchPlayer.ReferenceName|slug }}.jpg')"></div>
+                                                            {% if matchPlayer.smitePlayer and matchPlayer.smitePlayer.name|clan_remove|slug %}
+                                                                <a class="d-inline-block" href="{{ path('player_view', {
+                                                                    gamertag: matchPlayer.smitePlayer.name|clan_remove|slug,
+                                                                    id: matchPlayer.smitePlayer.smitePlayerId
+                                                                }) }}" title="Smite Player {{ matchPlayer.smitePlayer.name }}">{{ matchPlayer.smitePlayer.name }}</a>
+                                                            {% else %}
+                                                                <span class="d-inline-block">Unknown</span>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="col-6">
+                                                            {{ matchPlayer.killsPlayer }} / {{ matchPlayer.deaths }} / {{ matchPlayer.assists }}
+                                                        </div>
+                                                    </div>
+
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                        {% endfor %}
+
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <a class="btn btn-sm btn-primary float-right" href="{{ path('match_view', {id: match.smiteMatchId}) }}">View full match report</a>
+                                </div>
+
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                </div>
+            </div>
+            {% endif %}
+
         </div>
     </div>
 
