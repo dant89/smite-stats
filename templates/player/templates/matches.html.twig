@@ -78,7 +78,7 @@
                                 <ul class="list-unstyled mb-0 mb-1 mb-sm-0 mb-md-0 mb-lg-0 p-1 border rounded {% if taskforceId == match.winningTaskforce %}border-success{% else %}border-danger{% endif %}">
                                     {% for matchPlayer in matchPlayers %}
                                     <li class="pb-1">
-                                        <div class="player-smite-god player-smite-god-small" style="background-image: url('https://web2.hirez.com/smite/god-cards/{{ match_player.ReferenceName|slug }}.jpg')"></div>
+                                        <div class="player-smite-god player-smite-god-small" style="background-image: url('https://web2.hirez.com/smite/god-cards/{{ matchPlayer.ReferenceName|slug }}.jpg')"></div>
                                         {% if matchPlayer.smitePlayer and matchPlayer.smitePlayer.name|clan_remove|slug %}
                                             <a class="d-inline-block" href="{{ path('player_view', {
                                                 gamertag: matchPlayer.smitePlayer.name|clan_remove|slug,
