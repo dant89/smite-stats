@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ match.Map_Game }} Match Report - Smite Stats - Unofficial SMITE{% endblock %}
+{% block title %}{{ match.matchType }} Match Report - Smite Stats - Unofficial SMITE{% endblock %}
 
 {% block header_meta %}
-    <link rel="canonical" href="https://smitestats.com/matches/{{ match.Match_Id }}" />
+    <link rel="canonical" href="https://smitestats.com/matches/{{ match.smiteMatchId }}" />
 {% endblock %}
 
 {% block javascripts %}
@@ -45,7 +45,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Home</a></li>
                     <li class="breadcrumb-item"><a href="{{ path('matches') }}">Matches</a></li>
-                    <li class="breadcrumb-item active">{{ match.Map_Game }}</li>
+                    <li class="breadcrumb-item active">{{ match.matchType }}</li>
                 </ol>
             </nav>
 
@@ -53,38 +53,38 @@
 
                 <div class="col-12">
                     <h1>Smite Match Report</h1>
-                    <h6>{{ match.Map_Game }}</h6>
-                    <h6>{{ match.Entry_Datetime|date }} lasting {{ match.Minutes }} minutes</h6>
+                    <h6>{{ match.matchType }}</h6>
+                    <h6>{{ match.date|date }} lasting {{ match.minutes }} minutes</h6>
 
                     <br />
 
                     <div class="row mb-5">
 
-                        {% for taskforceId, players in match.Teams %}
+                        {% for taskforceId, teamPlayers in match.playersByTeamIndex %}
                         <div class="col-sm-12 col-md-6">
                             <div class="card mb-2 box-shadow">
-                                <div class="card-header bg-{{ match.Winning_TaskForce == taskforceId ? 'success' : 'danger' }}">
-                                    <strong>{{ match.Winning_TaskForce == taskforceId ? 'Winning' : 'Losing' }} Team</strong>
+                                <div class="card-header bg-{{ match.winningTaskforce == taskforceId ? 'success' : 'danger' }}">
+                                    <strong>{{ match.winningTaskforce == taskforceId ? 'Winning' : 'Losing' }} Team</strong>
                                 </div>
                                 <div class="card-body">
-                                {% for match_player in players %}
+                                {% for matchPlayer in teamPlayers %}
 
                                     <div class="row mb-3">
                                         <div class="col-5 col-md-4 col-lg-3">
-                                            <div class="player-smite-god player-smite-god-medium" style="background-image: url('https://web2.hirez.com/smite/god-cards/{{ match_player.ReferenceName|slug }}.jpg')"></div>
+                                            <div class="player-smite-god player-smite-god-medium" style="background-image: url('https://web2.hirez.com/smite/god-cards/{{ matchPlayer.ReferenceName|slug }}.jpg')"></div>
                                         </div>
                                         <div class="col-7 col-md-8 col-lg-9">
-                                            {% if match_player.smitePlayer and match_player.smitePlayer.name|clan_remove|slug %}
+                                            {% if matchPlayer.smitePlayer and matchPlayer.smitePlayer.name|clan_remove|slug %}
                                                 <a href="{{ path('player_view', {
-                                                    gamertag: match_player.smitePlayer.name|clan_remove|slug,
-                                                    id: match_player.smitePlayer.smitePlayerId
-                                                }) }}" title="Smite Player {{ match_player.smitePlayer.name }}">{{ match_player.smitePlayer.name }}</a>
+                                                    gamertag: matchPlayer.smitePlayer.name|clan_remove|slug,
+                                                    id: matchPlayer.smitePlayer.smitePlayerId
+                                                }) }}" title="Smite Player {{ matchPlayer.smitePlayer.name }}">{{ matchPlayer.smitePlayer.name }}</a>
                                             {% else %}
                                                 <span>&nbsp;</span>
                                             {% endif %}
                                             <br />
-                                            <span>{{ match_player.referenceName }}</span><br />
-                                            <span>Level <strong>{{ match_player.accountLevel }}</strong></span>
+                                            <span>{{ matchPlayer.referenceName }}</span><br />
+                                            <span>Level <strong>{{ matchPlayer.accountLevel }}</strong></span>
                                         </div>
                                     </div>
 
@@ -93,7 +93,6 @@
                             </div>
                         </div>
                         {% endfor %}
-
                     </div>
 
                     <div class="row mb-5">
@@ -102,9 +101,9 @@
                             <h2>Team Stats</h2>
 
                             <div class="table-responsive">
-                                {% for taskforceId, players in match.Teams %}
+                                {% for taskforceId, teamPlayers in match.playersByTeamIndex %}
                                 <table id="taskforceStats{{ taskforceId }}" class="table table-sm table-striped font14 text-center">
-                                    <thead class="bg-{{ match.Winning_TaskForce == taskforceId ? 'success' : 'danger' }}">
+                                    <thead class="bg-{{ match.winningTaskforce == taskforceId ? 'success' : 'danger' }}">
                                         <tr>
                                             <th scope="col" class="text-left"></th>
                                             <th scope="col" class="text-left">Player</th>
@@ -120,34 +119,34 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for match_player in players %}
+                                        {% for matchPlayer in teamPlayers %}
                                         <tr>
                                             <td>
-                                                <div class="player-smite-god player-smite-god-small" style="background-image: url('https://web2.hirez.com/smite/god-cards/{{ match_player.ReferenceName|slug }}.jpg')"></div>
+                                                <div class="player-smite-god player-smite-god-small" style="background-image: url('https://web2.hirez.com/smite/god-cards/{{ matchPlayer.ReferenceName|slug }}.jpg')"></div>
                                             </td>
                                             <td class="text-left">
-                                                {% if match_player.smitePlayer and match_player.smitePlayer.name|clan_remove|slug %}
+                                                {% if matchPlayer.smitePlayer and matchPlayer.smitePlayer.name|clan_remove|slug %}
                                                     <a href="{{ path('player_view', {
-                                                        gamertag: match_player.smitePlayer.name|clan_remove|slug,
-                                                        id: match_player.smitePlayer.smitePlayerId
-                                                    }) }}" title="Smite Player {{ match_player.smitePlayer.name }}">{{ match_player.smitePlayer.name }}</a>
+                                                        gamertag: matchPlayer.smitePlayer.name|clan_remove|slug,
+                                                        id: matchPlayer.smitePlayer.smitePlayerId
+                                                    }) }}" title="Smite Player {{ matchPlayer.smitePlayer.name }}">{{ matchPlayer.smitePlayer.name }}</a>
                                                 {% else %}
                                                     <span>&nbsp;</span>
                                                 {% endif %}
                                                 <br />
-                                                <span>{{ match_player.referenceName }}</span>
+                                                <span>{{ matchPlayer.referenceName }}</span>
                                             </td>
-                                            <td>{{ match_player.accountLevel }}</td>
+                                            <td>{{ matchPlayer.accountLevel }}</td>
                                             <td>
-                                                {{ match_player.killsPlayer }}/{{ match_player.deaths }}/{{ match_player.assists }}
+                                                {{ matchPlayer.killsPlayer }}/{{ matchPlayer.deaths }}/{{ matchPlayer.assists }}
                                             </td>
-                                            <td>{{ match_player.goldEarned|number_format }}</td>
-                                            <td>{{ match_player.goldPerMinute|number_format }}</td>
-                                            <td>{{ match_player.damagePlayer|number_format }}</td>
-                                            <td>{{ match_player.damageTaken|number_format }}</td>
-                                            <td>{{ match_player.damageMitigated|number_format }}</td>
+                                            <td>{{ matchPlayer.goldEarned|number_format }}</td>
+                                            <td>{{ matchPlayer.goldPerMinute|number_format }}</td>
+                                            <td>{{ matchPlayer.damagePlayer|number_format }}</td>
+                                            <td>{{ matchPlayer.damageTaken|number_format }}</td>
+                                            <td>{{ matchPlayer.damageMitigated|number_format }}</td>
                                             <td class="text-left">
-                                                {% for match_player_item in match_player.abilities %}
+                                                {% for match_player_item in matchPlayer.abilities %}
                                                     <a href="{{ path('relic_view', {
                                                         'name': match_player_item.ability.itemName|slug,
                                                         'id': match_player_item.ability.itemId
@@ -157,7 +156,7 @@
                                                 {% endfor %}
                                             </td>
                                             <td class="text-left">
-                                                {% for match_player_item in match_player.items %}
+                                                {% for match_player_item in matchPlayer.items %}
                                                     <a href="{{ path('item_view', {
                                                         'name': match_player_item.item.itemName|slug,
                                                         'id': match_player_item.item.itemId
@@ -206,42 +205,42 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    {% for taskforceId, players in match.Teams %}
-                                        {% for match_player in players %}
+                                    {% for taskforceId, teamPlayers in match.playersByTeamIndex %}
+                                        {% for matchPlayer in teamPlayers %}
                                         <tr>
                                             <td>
-                                                {% if match.Winning_TaskForce == taskforceId %}
+                                                {% if match.winningTaskforce == taskforceId %}
                                                     <span class="p-1 rounded bg-success"><strong>W</strong></span>
                                                 {% else %}
                                                     <span class="p-1 rounded bg-danger"><strong>L</strong></span>
                                                 {% endif %}
                                             </td>
                                             <td class="text-left">
-                                                {% if match_player.smitePlayer and match_player.smitePlayer.name|clan_remove|slug %}
+                                                {% if matchPlayer.smitePlayer and matchPlayer.smitePlayer.name|clan_remove|slug %}
                                                     <a href="{{ path('player_view', {
-                                                        gamertag: match_player.smitePlayer.name|clan_remove|slug,
-                                                        id: match_player.smitePlayer.smitePlayerId
-                                                    }) }}" title="Smite Player {{ match_player.smitePlayer.name }}">{{ match_player.smitePlayer.name }}</a>
+                                                        gamertag: matchPlayer.smitePlayer.name|clan_remove|slug,
+                                                        id: matchPlayer.smitePlayer.smitePlayerId
+                                                    }) }}" title="Smite Player {{ matchPlayer.smitePlayer.name }}">{{ matchPlayer.smitePlayer.name }}</a>
                                                 {% else %}
                                                     <span>&nbsp;</span>
                                                 {% endif %}
                                                 <br />
-                                                <span>{{ match_player.referenceName }}</span>
+                                                <span>{{ matchPlayer.referenceName }}</span>
                                             </td>
                                             <td>
-                                                {{ match_player.killsPlayer }}/{{ match_player.deaths }}/{{ match_player.assists }}
+                                                {{ matchPlayer.killsPlayer }}/{{ matchPlayer.deaths }}/{{ matchPlayer.assists }}
                                             </td>
-                                            <td>{{ match_player.damagePlayer|number_format }}</td>
-                                            <td>{{ match_player.damageDoneInHand|number_format }}</td>
-                                            <td>{{ match_player.healing|number_format }}</td>
-                                            <td>{{ match_player.healingPlayerSelf|number_format }}</td>
-                                            <td>{{ match_player.damageTaken|number_format }}</td>
-                                            <td>{{ match_player.damageMitigated|number_format }}</td>
-                                            <td>{{ match_player.structureDamage|number_format }}</td>
-                                            <td>{{ match_player.damageTakenMagical|number_format }}</td>
-                                            <td>{{ match_player.damageTakenPhysical|number_format }}</td>
-                                            <td>{{ match_player.damageDoneMagical|number_format }}</td>
-                                            <td>{{ match_player.damageDonePhysical|number_format }}</td>
+                                            <td>{{ matchPlayer.damagePlayer|number_format }}</td>
+                                            <td>{{ matchPlayer.damageDoneInHand|number_format }}</td>
+                                            <td>{{ matchPlayer.healing|number_format }}</td>
+                                            <td>{{ matchPlayer.healingPlayerSelf|number_format }}</td>
+                                            <td>{{ matchPlayer.damageTaken|number_format }}</td>
+                                            <td>{{ matchPlayer.damageMitigated|number_format }}</td>
+                                            <td>{{ matchPlayer.structureDamage|number_format }}</td>
+                                            <td>{{ matchPlayer.damageTakenMagical|number_format }}</td>
+                                            <td>{{ matchPlayer.damageTakenPhysical|number_format }}</td>
+                                            <td>{{ matchPlayer.damageDoneMagical|number_format }}</td>
+                                            <td>{{ matchPlayer.damageDonePhysical|number_format }}</td>
                                         </tr>
                                         {% endfor %}
                                     {% endfor %}
@@ -274,42 +273,42 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    {% for taskforceId, players in match.Teams %}
-                                        {% for match_player in players %}
+                                    {% for taskforceId, teamPlayers in match.playersByTeamIndex %}
+                                        {% for matchPlayer in teamPlayers %}
                                         <tr>
                                             <td>
-                                                {% if match.Winning_TaskForce == taskforceId %}
+                                                {% if match.winningTaskforce == taskforceId %}
                                                     <span class="p-1 rounded bg-success"><strong>W</strong></span>
                                                 {% else %}
                                                     <span class="p-1 rounded bg-danger"><strong>L</strong></span>
                                                 {% endif %}
                                             </td>
                                             <td class="text-left">
-                                                {% if match_player.smitePlayer and match_player.smitePlayer.name|clan_remove|slug %}
+                                                {% if matchPlayer.smitePlayer and matchPlayer.smitePlayer.name|clan_remove|slug %}
                                                     <a href="{{ path('player_view', {
-                                                        gamertag: match_player.smitePlayer.name|clan_remove|slug,
-                                                        id: match_player.smitePlayer.smitePlayerId
-                                                    }) }}" title="Smite Player {{ match_player.smitePlayer.name }}">{{ match_player.smitePlayer.name }}</a>
+                                                        gamertag: matchPlayer.smitePlayer.name|clan_remove|slug,
+                                                        id: matchPlayer.smitePlayer.smitePlayerId
+                                                    }) }}" title="Smite Player {{ matchPlayer.smitePlayer.name }}">{{ matchPlayer.smitePlayer.name }}</a>
                                                 {% else %}
                                                     <span>&nbsp;</span>
                                                 {% endif %}
                                                 <br />
-                                                <span>{{ match_player.referenceName }}</span>
+                                                <span>{{ matchPlayer.referenceName }}</span>
                                             </td>
-                                            <td>{{ match_player.goldEarned|number_format }}</td>
-                                            <td>{{ match_player.goldPerMinute|number_format }}</td>
-                                            <td>{{ match_player.killsBot|number_format }}</td>
+                                            <td>{{ matchPlayer.goldEarned|number_format }}</td>
+                                            <td>{{ matchPlayer.goldPerMinute|number_format }}</td>
+                                            <td>{{ matchPlayer.killsBot|number_format }}</td>
                                             <td>
-                                                {% if match_player.killsBot > 0 %}
-                                                    {{ (match_player.killsBot / match_player.minutes)|number_format }}
+                                                {% if matchPlayer.killsBot > 0 %}
+                                                    {{ (matchPlayer.killsBot / matchPlayer.minutes)|number_format }}
                                                 {% else %}
                                                     0
                                                 {% endif %}
                                             </td>
-                                            <td>{{ match_player.campsCleared|number_format }}</td>
-                                            <td>{{ match_player.distanceTraveled|number_format }}</td>
-                                            <td>{{ match_player.wardsPlaced|number_format }}</td>
-                                            <td>{{ match_player.towersDestroyed|number_format }}</td>
+                                            <td>{{ matchPlayer.campsCleared|number_format }}</td>
+                                            <td>{{ matchPlayer.distanceTraveled|number_format }}</td>
+                                            <td>{{ matchPlayer.wardsPlaced|number_format }}</td>
+                                            <td>{{ matchPlayer.towersDestroyed|number_format }}</td>
                                         </tr>
                                         {% endfor %}
                                     {% endfor %}
