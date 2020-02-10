@@ -13,7 +13,7 @@ class MatchPlayerRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, MatchPlayer::class);
     }
-    
+
     public function getLatestClanMatchIds(int $clanId, int $limit = 10, int $offset = 0)
     {
         $qb = $this->createQueryBuilder('mp');
@@ -42,7 +42,7 @@ class MatchPlayerRepository extends ServiceEntityRepository
         return $query->execute();
     }
 
-    public function getMatchPlayersByIds(array $matchIds, int $limit = 10, int $offset = 0)
+    public function getMatchPlayersByIds(array $matchIds, int $limit = null, int $offset = 0)
     {
         $qb = $this->createQueryBuilder('mp');
         $qb->where('mp.smiteMatchId IN (:matchIds)')
