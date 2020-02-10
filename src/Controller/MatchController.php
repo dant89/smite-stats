@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\MatchPlayer;
+use App\Mapper\MatchMapper;
 use App\Repository\MatchPlayerRepository;
 use App\Service\PlayerService;
 use App\Service\SmiteService;
@@ -21,6 +22,9 @@ class MatchController extends AbstractController
     /** @var LoggerInterface */
     protected $logger;
 
+    /** @var MatchMapper */
+    protected $matchMapper;
+
     /** @var PlayerService */
     protected $playerService;
 
@@ -30,11 +34,13 @@ class MatchController extends AbstractController
     public function __construct(
         EntityManagerInterface $entityManager,
         LoggerInterface $logger,
+        MatchMapper $matchMapper,
         PlayerService $playerService,
         SmiteService $smiteService
     ) {
         $this->entityManager = $entityManager;
         $this->logger = $logger;
+        $this->matchMapper = $matchMapper;
         $this->playerService = $playerService;
         $this->smiteService = $smiteService;
     }
@@ -52,11 +58,11 @@ class MatchController extends AbstractController
         $latestMatchIdsArray = $matchPlayerRepo->getLatestMatchIds(10);
         $latestMatchIds = array_column($latestMatchIdsArray, 'smiteMatchId');
 
-        $matches = $matchPlayerRepo->getMatchPlayersByIds($latestMatchIds);
-        $formattedMatches = $this->playerService->formatStoredMatches($matches);
+        $matchPlayers = $matchPlayerRepo->getMatchPlayersByIds($latestMatchIds);
+        $matches = $this->matchMapper->to($matchPlayers);
 
         return $this->render('matches/index.html.twig', [
-            'matches' => $formattedMatches
+            'matches' => $matches
         ]);
     }
 
@@ -73,11 +79,11 @@ class MatchController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        $matchPlayers = $this->playerService->formatStoredMatches($matchPlayers);
-        $formattedMatch = reset($matchPlayers);
+        $matches = $this->matchMapper->to($matchPlayers);
+        $match = reset($matches);
 
         return $this->render('matches/match.html.twig', [
-            'match' => $formattedMatch
+            'match' => $match
         ]);
     }
 }

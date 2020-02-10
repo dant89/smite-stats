@@ -1,105 +1,109 @@
 <div class="row">
+
     {% for match in matches %}
-        <div class="col-sm-12 mb-3">
+    <div class="col-sm-12 mb-3">
+        <div class="card mb-2 box-shadow">
 
-            <div class="card mb-2 box-shadow">
-                <div class="card-header bg-{{ match.Player_Won ? 'success' : 'danger' }}">
+            {% for match_player in match.matchPlayers %}
+                {% if match_player.smitePlayer and match_player.smitePlayer.smitePlayerId == player.smitePlayerId %}
+                <div class="card-header bg-{{ match_player.winStatus == 'Winner' ? 'success' : 'danger' }}">
                     <div class="float-left">
-                        <span><strong>{{ match.Player_Stats.kills }}</strong></span> Kills /
-                        <span><strong>{{ match.Player_Stats.deaths }}</strong></span> Deaths /
-                        <span><strong>{{ match.Player_Stats.assists }}</strong></span> Assists |
+                        <span><strong>{{ match_player.killsPlayer }}</strong></span> Kills /
+                        <span><strong>{{ match_player.deaths }}</strong></span> Deaths /
+                        <span><strong>{{ match_player.assists }}</strong></span> Assists |
 
-                        {% if match.Player_Stats.deaths %}
-                            <span><strong>K/D</strong>: {{ (match.Player_Stats.kills / match.Player_Stats.deaths)|round(2) }}</span> |
-                            <span><strong>K/D/A</strong>: {{ ((match.Player_Stats.kills + match.Player_Stats.assists) / match.Player_Stats.deaths)|round(2) }}</span>
+                        {% if match_player.deaths %}
+                            <span><strong>K/D</strong>: {{ (match_player.killsPlayer / match_player.deaths)|round(2) }}</span> |
+                            <span><strong>K/D/A</strong>: {{ ((match_player.killsPlayer + match_player.assists) / match_player.deaths)|round(2) }}</span>
                         {% else %}
-                            <span><strong>K/D</strong>: {{ match.Player_Stats.kills|round(2) }}</span> |
-                            <span><strong>K/D/A</strong>: {{ (match.Player_Stats.kills + match.Player_Stats.assists)|round(2) }}</span>
+                            <span><strong>K/D</strong>: {{ match_player.killsPlayer|round(2) }}</span> |
+                            <span><strong>K/D/A</strong>: {{ (match_player.killsPlayer + match_player.assists)|round(2) }}</span>
                         {% endif %}
 
                     </div>
                     <div class="float-right">
-                        <strong>{{ match.Map_Game }}</strong> |
-                        {{ match.Entry_Datetime|date }} |
-                        <strong>{{ match.Minutes }}</strong> minutes
+                        <strong>{{ match.matchType }}</strong> |
+                        {{ match.date|date }} |
+                        <strong>{{ match.minutes }}</strong> minutes
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class="row mt-1">
+                {% endif %}
+            {% endfor %}
 
-                        <div class="col-md-12 col-lg-6">
-                        {% for key, players in match.Teams %}
-                            {% for match_player in players %}
-                                {% if match_player.smitePlayer and match_player.smitePlayer.smitePlayerId == player.smitePlayerId %}
+            <div class="card-body">
+                <div class="row mt-1">
 
-                                    <div class="row">
-                                        <div class="col-xs-12 col-sm-4">
-                                            <div class="player-smite-god" style="background-image: url('https://web2.hirez.com/smite/god-cards/{{ match_player.ReferenceName|slug }}.jpg')"></div>
-                                        </div>
-                                        <div class="col-xs-12 col-sm-8">
-                                            <div class="match-report-items mb-1">
-                                                {% for match_player_item in match_player.abilities %}
-                                                    <a href="{{ path('relic_view', {
-                                                        'name': match_player_item.ability.itemName|slug,
-                                                        'id': match_player_item.ability.itemId
-                                                    }) }}" rel="nofollow">
-                                                        <img title="{{ match_player_item.ability.itemName }}" src="{{ match_player_item.ability.iconUrl }}" />
-                                                    </a>
-                                                {% endfor %}
-                                            </div>
+                    <div class="col-md-12 col-lg-6">
+                    {% for match_player in match.matchPlayers %}
+                        {% if match_player.smitePlayer and match_player.smitePlayer.smitePlayerId == player.smitePlayerId %}
 
-                                            <div class="match-report-items">
-                                                {% for match_player_item in match_player.items %}
-                                                    <a href="{{ path('item_view', {
-                                                        'name': match_player_item.item.itemName|slug,
-                                                        'id': match_player_item.item.itemId
-                                                    }) }}" rel="nofollow">
-                                                        <img title="{{ match_player_item.item.itemName }}" src="{{ match_player_item.item.iconUrl }}" />
-                                                    </a>
-                                                {% endfor %}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                {% endif %}
-                            {% endfor %}
-                        {% endfor %}
-                        </div>
-
-                        <div class="col-md-12 col-lg-6">
-                            <div class="row">
-                                {% for key, players in match.Teams %}
-                                <div class="col-xs-12 col-sm-6">
-                                    <ul class="list-unstyled mb-0 mb-1 mb-sm-0 mb-md-0 mb-lg-0 p-1 border rounded {% if key == match.Winning_TaskForce %}border-success{% else %}border-danger{% endif %}">
-                                        {% for match_player in players %}
-                                        <li class="pb-1">
-                                            <div class="player-smite-god player-smite-god-small" style="background-image: url('https://web2.hirez.com/smite/god-cards/{{ match_player.ReferenceName|slug }}.jpg')"></div>
-
-                                            {% if match_player.smitePlayer and match_player.smitePlayer.name|clan_remove|slug %}
-                                                <a class="d-inline-block" href="{{ path('player_view', {
-                                                    gamertag: match_player.smitePlayer.name|clan_remove|slug,
-                                                    id: match_player.smitePlayer.smitePlayerId
-                                                }) }}" title="Smite Player {{ match_player.smitePlayer.name }}">{{ match_player.smitePlayer.name }}</a>
-                                            {% else %}
-                                                <span class="d-inline-block">Unknown</span>
-                                            {% endif %}
-                                        </li>
-                                        {% endfor %}
-                                    </ul>
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-4">
+                                <div class="player-smite-god" style="background-image: url('https://web2.hirez.com/smite/god-cards/{{ match_player.ReferenceName|slug }}.jpg')"></div>
+                            </div>
+                            <div class="col-xs-12 col-sm-8">
+                                <div class="match-report-items mb-1">
+                                    {% for match_player_item in match_player.abilities %}
+                                        <a href="{{ path('relic_view', {
+                                            'name': match_player_item.ability.itemName|slug,
+                                            'id': match_player_item.ability.itemId
+                                        }) }}" rel="nofollow">
+                                            <img title="{{ match_player_item.ability.itemName }}" src="{{ match_player_item.ability.iconUrl }}" />
+                                        </a>
+                                    {% endfor %}
                                 </div>
-                                {% endfor %}
+
+                                <div class="match-report-items">
+                                    {% for match_player_item in match_player.items %}
+                                        <a href="{{ path('item_view', {
+                                            'name': match_player_item.item.itemName|slug,
+                                            'id': match_player_item.item.itemId
+                                        }) }}" rel="nofollow">
+                                            <img title="{{ match_player_item.item.itemName }}" src="{{ match_player_item.item.iconUrl }}" />
+                                        </a>
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
 
+                        {% endif %}
+                    {% endfor %}
+                    </div>
 
+                    <div class="col-md-12 col-lg-6">
+                        <div class="row">
+
+                            {% for taskforceId, matchPlayers in match.playersByTeamIndex %}
+                            <div class="col-xs-12 col-sm-6">
+                                <ul class="list-unstyled mb-0 mb-1 mb-sm-0 mb-md-0 mb-lg-0 p-1 border rounded {% if taskforceId == match.winningTaskforce %}border-success{% else %}border-danger{% endif %}">
+                                    {% for matchPlayer in matchPlayers %}
+                                    <li class="pb-1">
+                                        <div class="player-smite-god player-smite-god-small" style="background-image: url('https://web2.hirez.com/smite/god-cards/{{ match_player.ReferenceName|slug }}.jpg')"></div>
+                                        {% if matchPlayer.smitePlayer and matchPlayer.smitePlayer.name|clan_remove|slug %}
+                                            <a class="d-inline-block" href="{{ path('player_view', {
+                                                gamertag: matchPlayer.smitePlayer.name|clan_remove|slug,
+                                                id: matchPlayer.smitePlayer.smitePlayerId
+                                            }) }}" title="Smite Player {{ matchPlayer.smitePlayer.name }}">{{ matchPlayer.smitePlayer.name }}</a>
+                                        {% else %}
+                                        <span class="d-inline-block">Unknown</span>
+                                    {% endif %}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endfor %}
+
+                        </div>
                     </div>
 
                 </div>
-                <div class="card-footer">
-                    <a class="btn btn-sm btn-primary float-right" href="{{ path('match_view', {id: match.Match_Id}) }}">View full match report</a>
-                </div>
+
+            </div>
+            <div class="card-footer">
+                <a class="btn btn-sm btn-primary float-right" href="{{ path('match_view', {id: match.smiteMatchId}) }}">View full match report</a>
             </div>
 
         </div>
+    </div>
     {% endfor %}
 </div>
