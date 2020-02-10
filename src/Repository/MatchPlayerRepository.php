@@ -13,6 +13,21 @@ class MatchPlayerRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, MatchPlayer::class);
     }
+    
+    public function getLatestClanMatchIds(int $clanId, int $limit = 10, int $offset = 0)
+    {
+        $qb = $this->createQueryBuilder('mp');
+        $qb->select('mp.smiteMatchId, COUNT(mp.smiteMatchId) AS total')
+            ->where('mp.teamId = :teamId')
+            ->groupBy('mp.smiteMatchId')
+            ->orderBy('mp.smiteMatchId', 'DESC')
+            ->setMaxResults($limit)
+            ->setFirstResult($offset)
+            ->setParameter('teamId', $clanId);
+
+        $query = $qb->getQuery();
+        return $query->execute();
+    }
 
     public function getLatestMatchIds(int $limit = 10, int $offset = 0)
     {
@@ -27,11 +42,13 @@ class MatchPlayerRepository extends ServiceEntityRepository
         return $query->execute();
     }
 
-    public function getMatchPlayersByIds(array $matchIds)
+    public function getMatchPlayersByIds(array $matchIds, int $limit = 10, int $offset = 0)
     {
         $qb = $this->createQueryBuilder('mp');
         $qb->where('mp.smiteMatchId IN (:matchIds)')
             ->orderBy('mp.smiteMatchId', 'DESC')
+            ->setMaxResults($limit)
+            ->setFirstResult($offset)
             ->setParameter('matchIds', $matchIds);
 
         $query = $qb->getQuery();
