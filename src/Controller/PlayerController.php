@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Player;
 use App\Entity\PlayerGod;
 use App\Entity\PlayerSearch;
-use App\Mapper\MatchPlayerMapper;
 use App\Mapper\PlayerMapper;
 use App\Service\GodService;
 use App\Service\HelperService;
@@ -28,9 +27,6 @@ class PlayerController extends AbstractController
     /** @var LoggerInterface */
     protected $logger;
 
-    /** @var MatchPlayerMapper */
-    protected $matchPlayerMapper;
-
     /** @var PlayerMapper */
     protected $playerMapper;
 
@@ -49,7 +45,6 @@ class PlayerController extends AbstractController
     public function __construct(
         EntityManagerInterface $entityManager,
         LoggerInterface $logger,
-        MatchPlayerMapper $matchPlayerMapper,
         PlayerMapper $playerMapper,
         GodService $godService,
         HelperService $helperService,
@@ -58,7 +53,6 @@ class PlayerController extends AbstractController
     ) {
         $this->entityManager = $entityManager;
         $this->logger = $logger;
-        $this->matchPlayerMapper = $matchPlayerMapper;
         $this->playerMapper = $playerMapper;
         $this->godService = $godService;
         $this->helperService = $helperService;
@@ -202,7 +196,6 @@ class PlayerController extends AbstractController
      */
     public function playerMatches(string $gamertag, int $id): Response
     {
-        // Check to see if we have this player stored in the database
         $playerRepo = $this->entityManager->getRepository(Player::class);
 
         /** @var Player $player */
@@ -211,7 +204,6 @@ class PlayerController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        // Get Player Matches
         $formattedMatches = $this->playerService->getPlayerMatches($player, 10);
 
         $playerUpdatedMins = $this->helperService->getMinutesLastUpdated($player->getDateUpdated());
