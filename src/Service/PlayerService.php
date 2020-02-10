@@ -7,6 +7,7 @@ use App\Entity\MatchItem;
 use App\Entity\MatchPlayer;
 use App\Entity\Player;
 use App\Entity\PlayerGod;
+use App\Mapper\MatchMapper;
 use App\Mapper\MatchPlayerAbilityMapper;
 use App\Mapper\MatchPlayerBanMapper;
 use App\Mapper\MatchPlayerItemMapper;
@@ -21,6 +22,9 @@ class PlayerService
     /** @var EntityManagerInterface */
     protected $entityManager;
 
+    /** @var MatchMapper */
+    protected $matchMapper;
+    
     /** @var MatchPlayerMapper */
     protected $matchPlayerMapper;
 
@@ -41,6 +45,7 @@ class PlayerService
 
     public function __construct(
         EntityManagerInterface $entityManager,
+        MatchMapper $matchMapper,
         MatchPlayerMapper $matchPlayerMapper,
         MatchPlayerAbilityMapper $matchPlayerAbilityMapper,
         MatchPlayerBanMapper $matchPlayerBanMapper,
@@ -49,6 +54,7 @@ class PlayerService
         SmiteService $smite
     ) {
         $this->entityManager = $entityManager;
+        $this->matchMapper = $matchMapper;
         $this->matchPlayerMapper = $matchPlayerMapper;
         $this->matchPlayerAbilityMapper = $matchPlayerAbilityMapper;
         $this->matchPlayerBanMapper = $matchPlayerBanMapper;
@@ -92,14 +98,13 @@ class PlayerService
         // Need a function here to check which of the latest 50 match IDs are not stored in the database
         // We can then just batch those IDs and return the data for a smaller subset rather than
         // 5x 10 match queries which is very slow!!
-        $formattedMatches = [];
+        $matchPlayersArray = [];
 
         // TODO Can check if we need to get match details of if they are already stored
         // TODO Check if in array of returned matches, if not crawl then reorder on match ID desc
 
         // TODO store the latest matches, then query the database for matches by id for user - simple solution!
 
-        $teams = [];
         $recentMatchIdsLimited = array_slice($recentMatchIds, 0, $limit, true);
 
         $matchIdsChunks = array_chunk($recentMatchIdsLimited, 5);
@@ -127,14 +132,7 @@ class PlayerService
                         }
 
                         if ($storedMatchPlayer instanceof MatchPlayer) {
-                            $teams[$storedMatchPlayer->getSmiteMatchId()][$storedMatchPlayer->getTaskForce()][] = $storedMatchPlayer;
-                            $formattedMatches[$storedMatchPlayer->getSmiteMatchId()] = [
-                                'Entry_Datetime' => $storedMatchPlayer->getEntryDatetime(),
-                                'Match_Id' => $storedMatchPlayer->getSmiteMatchId(),
-                                'Map_Game' => $storedMatchPlayer->getMapGame(),
-                                'Minutes' => $storedMatchPlayer->getMinutes(),
-                                'Teams' => $teams[$storedMatchPlayer->getSmiteMatchId()]
-                            ];
+                            $matchPlayersArray[] = $storedMatchPlayer;
                         }
                     }
                 }
@@ -143,74 +141,10 @@ class PlayerService
             unset($matchIdsChunks);
             unset($matchesData);
             unset($storedMatchPlayer);
-            unset($teams);
         }
 
-        return $this->formatMatches($player->getSmitePlayerId(), $formattedMatches);
-    }
-
-    private function formatMatches(int $playerId, array $formattedMatches): array
-    {
-        if (!empty($formattedMatches)) {
-            foreach ($formattedMatches as &$formattedMatch) {
-
-                $formattedMatch['Winning_TaskForce'] = $formattedMatch['Teams'][1][0]->getWinningTaskForce();
-                $formattedMatch['Player_Won'] = false;
-
-                foreach ($formattedMatch['Teams'] as $teamPlayers) {
-                    /** @var MatchPlayer $matchPlayer */
-                    foreach ($teamPlayers as $matchPlayer) {
-                        /** @var Player $smitePlayer */
-                        $smitePlayer = $matchPlayer->getSmitePlayer();
-                        if (!is_null($smitePlayer)) {
-                            $smitePlayerId = (int) $smitePlayer->getSmitePlayerId();
-
-                            if ($smitePlayerId === $playerId) {
-                                $formattedMatch['Player_Stats'] = [
-                                    'kills' => $matchPlayer->getKillsPlayer(),
-                                    'deaths' => $matchPlayer->getDeaths(),
-                                    'assists' => $matchPlayer->getAssists(),
-                                ];
-                                if ($formattedMatch['Winning_TaskForce'] === $matchPlayer->getTaskForce()) {
-                                    $formattedMatch['Player_Won'] = true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            unset($formattedMatch);
-        }
-
-        return $formattedMatches;
-    }
-
-    public function formatStoredMatches(array $matchPlayers): array
-    {
-        $teams = [];
-        $formattedMatches = [];
-
-        /** @var MatchPlayer $matchPlayer */
-        foreach ($matchPlayers as $matchPlayer) {
-
-            $teams[$matchPlayer->getSmiteMatchId()][$matchPlayer->getTaskForce()][] = $matchPlayer;
-
-            $formattedMatches[$matchPlayer->getSmiteMatchId()] = [
-                'Entry_Datetime' => $matchPlayer->getEntryDatetime(),
-                'Map_Game' => $matchPlayer->getMapGame(),
-                'Match_Id' => $matchPlayer->getSmiteMatchId(),
-                'Minutes' => $matchPlayer->getMinutes(),
-                'Teams' => $teams[$matchPlayer->getSmiteMatchId()]
-            ];
-
-            if (!empty($formattedMatches)) {
-                foreach ($formattedMatches as &$formattedMatch) {
-                    $formattedMatch['Winning_TaskForce'] = $matchPlayer->getWinningTaskForce();
-                }
-            }
-        }
-
-        return $formattedMatches;
+        $matches = $this->matchMapper->to($matchPlayersArray);
+        return $matches;
     }
 
     /**

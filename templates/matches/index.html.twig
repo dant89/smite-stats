@@ -24,7 +24,7 @@
                     <h1>Latest Smite Matches</h1>
 
                     {% for matchId, match in matches %}
-                        <a href="{{ path('match_view', {'id': matchId}) }}">{{ match.Map_Game }}</a><br />
+                        <a href="{{ path('match_view', {'id': matchId}) }}">{{ match.matchType }}</a><br />
                     {% endfor %}
                 </div>
 
