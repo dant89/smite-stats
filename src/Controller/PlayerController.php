@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Player;
+use App\Entity\PlayerAchievement;
 use App\Entity\PlayerGod;
 use App\Entity\PlayerSearch;
 use App\Mapper\PlayerMapper;
@@ -87,6 +88,7 @@ class PlayerController extends AbstractController
     public function player(string $gamertag, int $id): Response
     {
         $playerRepo = $this->entityManager->getRepository(Player::class);
+        $playerAchievementsRepo = $this->entityManager->getRepository(PlayerAchievement::class);
         $playerGodRepo = $this->entityManager->getRepository(PlayerGod::class);
 
         /** @var Player $player */
@@ -126,11 +128,17 @@ class PlayerController extends AbstractController
             throw new NotFoundHttpException('An error occurred fetching a player name.');
         }
 
-        ***REMOVED*** TODO uses an api request, store?
-        $achievements = $this->smiteService->getPlayerAchievements($player->getSmitePlayerId()) ?? [];
+        /** @var PlayerAchievement $playerAchievements */
+        $playerAchievements = $playerAchievementsRepo->findOneBy(['smitePlayer' => $player]);
+        if (is_null($playerAchievements) ||
+            $this->helperService->getMinutesLastUpdated($playerAchievements->getDateUpdated()) > 30
+        ) {
+            $this->playerService->updatePlayerAchievements($player);
+            $playerAchievements = $playerAchievementsRepo->findOneBy(['smitePlayer' => $player]);
+        }
 
         // Get Player Matches
-        $formattedMatches = $this->playerService->getPlayerMatches($player, 5);
+        $playerMatches = $this->playerService->getPlayerMatches($player, 5);
 
         // If the Players God details were updated in the last 24 hours, use database info
         if (is_null($player->getGodsDateUpdated()) ||
@@ -143,12 +151,12 @@ class PlayerController extends AbstractController
         $gods = $this->godService->getGodsByNameKey();
 
         return $this->render('player/player.html.twig', [
-            'achievements' => $achievements,
+            'achievements' => $playerAchievements,
             'last_updated' => $playerUpdatedMins,
             'player' => $player,
             'player_god_info' => $playerGods,
             'gods' => $gods,
-            'matches' => $formattedMatches
+            'matches' => $playerMatches
         ]);
     }
 
