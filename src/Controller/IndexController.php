@@ -39,8 +39,7 @@ class IndexController extends AbstractController
      */
     public function index(): Response
     {
-        $gods = $this->godService->getGodsByNameKey();
-        $gods = array_slice($gods, 1, 12, true);
+        $gods = $this->godService->getFeaturedGods(12);
 
         $duelRankedLeaderboard = $this->smiteService->getLeagueLeaderboard(440, 27, 7);
         $joustRankedLeaderboard = $this->smiteService->getLeagueLeaderboard(450, 27, 7);
