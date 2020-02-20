@@ -51,9 +51,9 @@
             ],
             datasets: [{
                 data: [
-                    {{ achievements.PlayerKills }},
-                    {{ achievements.AssistedKills }},
-                    {{ achievements.Deaths }}
+                    {{ achievements.playerKills }},
+                    {{ achievements.assistedKills }},
+                    {{ achievements.deaths }}
                 ],
                 backgroundColor: [
                     "rgb(40, 167, 69)",
@@ -126,12 +126,12 @@
                                         <li>Hours Played: {{ player.hoursPlayed }}</li>
                                         <li>Achievements: {{ player.totalAchievements }}</li>
                                         {% if achievements %}
-                                            {% if achievements.Deaths %}
-                                                <li>K/D: {{ (achievements.PlayerKills / achievements.Deaths)|round(2) }}</li>
-                                                <li>K/D/A: {{ ((achievements.PlayerKills + achievements.AssistedKills) / achievements.Deaths)|round(2) }}</li>
+                                            {% if achievements.deaths %}
+                                                <li>K/D: {{ (achievements.playerKills / achievements.deaths)|round(2) }}</li>
+                                                <li>K/D/A: {{ ((achievements.playerKills + achievements.assistedKills) / achievements.deaths)|round(2) }}</li>
                                             {% else %}
-                                                <li>K/D: {{ achievements.PlayerKills|round(2) }}</li>
-                                                <li>K/D/A: {{ (achievements.PlayerKills + achievements.AssistedKills)|round(2) }}</li>
+                                                <li>K/D: {{ achievements.playerKills|round(2) }}</li>
+                                                <li>K/D/A: {{ (achievements.playerKills + achievements.assistedKills)|round(2) }}</li>
                                             {% endif %}
                                         {% endif %}
                                     </ul>
@@ -256,7 +256,7 @@
                                                 <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
                                                     <i class="fas fa-skull fa-fw"></i>
                                                 </span>
-                                                {{ achievements.PlayerKills|number_format }} Kills
+                                                {{ achievements.playerKills|number_format }} Kills
                                             </span>
                                         </li>
                                         <li>
@@ -265,7 +265,7 @@
                                                     <i class="fas fa-skull fa-fw"></i>
                                                     <i class="fas fa-skull fa-fw"></i>
                                                 </span>
-                                                {{ achievements.DoubleKills ?? 0 |number_format }} Double Kills
+                                                {{ achievements.doubleKills ?? 0 |number_format }} Double Kills
                                             </span>
                                         </li>
                                         <li>
@@ -275,7 +275,7 @@
                                                     <i class="fas fa-skull fa-fw"></i>
                                                     <i class="fas fa-skull fa-fw"></i>
                                                 </span>
-                                                {{ achievements.TripleKills|number_format }} Triple Kills
+                                                {{ achievements.tripleKills|number_format }} Triple Kills
                                             </span>
                                         </li>
                                         <li>
@@ -286,7 +286,7 @@
                                                     <i class="fas fa-skull fa-fw"></i>
                                                     <i class="fas fa-skull fa-fw"></i>
                                                 </span>
-                                                {{ achievements.QuadraKills|number_format }} Quadra Kills
+                                                {{ achievements.quadraKills|number_format }} Quadra Kills
                                             </span>
                                         </li>
                                         <li>
@@ -298,7 +298,7 @@
                                                     <i class="fas fa-skull fa-fw"></i>
                                                     <i class="fas fa-skull fa-fw"></i>
                                                 </span>
-                                                {{ achievements.PentaKills|number_format }} Penta Kills
+                                                {{ achievements.pentaKills|number_format }} Penta Kills
                                             </span>
                                         </li>
                                     </ul>
@@ -322,7 +322,7 @@
                                                 <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
                                                     <i class="fas fa-stop-circle fa-fw"></i>
                                                 </span>
-                                                {{ achievements.ShutdownSpree|number_format}} Shutdown Sprees
+                                                {{ achievements.shutdownSpree|number_format}} Shutdown Sprees
                                             </span>
                                         </li>
                                         <li>
@@ -330,7 +330,7 @@
                                                 <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
                                                     <i class="fas fa-skull-crossbones fa-fw"></i>
                                                 </span>
-                                                {{ achievements.KillingSpree|number_format }} Killing Sprees (x3)
+                                                {{ achievements.killingSpree|number_format }} Killing Sprees (x3)
                                             </span>
                                         </li>
                                         <li>
@@ -338,7 +338,7 @@
                                                 <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
                                                     <i class="fas fa-skull-crossbones fa-fw"></i>
                                                 </span>
-                                                {{ achievements.RampageSpree|number_format }} Rampage Sprees (x5)
+                                                {{ achievements.rampageSpree|number_format }} Rampage Sprees (x5)
                                             </span>
                                         </li>
                                         <li>
@@ -346,7 +346,7 @@
                                                 <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
                                                     <i class="fas fa-skull-crossbones fa-fw"></i>
                                                 </span>
-                                                {{ achievements.UnstoppableSpree|number_format }} Unstoppable Sprees (x7)
+                                                {{ achievements.unstoppableSpree|number_format }} Unstoppable Sprees (x7)
                                             </span>
                                         </li>
                                         <li>
@@ -354,7 +354,7 @@
                                                 <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
                                                     <i class="fas fa-skull-crossbones fa-fw"></i>
                                                 </span>
-                                                {{ achievements.DivineSpree|number_format }} Divine Sprees (x9)
+                                                {{ achievements.divineSpree|number_format }} Divine Sprees (x9)
                                             </span>
                                         </li>
                                         <li>
@@ -362,7 +362,7 @@
                                                 <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
                                                     <i class="fas fa-skull-crossbones fa-fw"></i>
                                                 </span>
-                                                {{ achievements.ImmortalSpree|number_format }} Immortal Sprees (x11)
+                                                {{ achievements.immortalSpree|number_format }} Immortal Sprees (x11)
                                             </span>
                                         </li>
                                         <li>
@@ -370,7 +370,7 @@
                                                 <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
                                                     <i class="fas fa-skull-crossbones fa-fw"></i>
                                                 </span>
-                                                {{ achievements.GodLikeSpree|number_format }} God Like Sprees (x13)
+                                                {{ achievements.godLikeSpree|number_format }} God Like Sprees (x13)
                                             </span>
                                         </li>
                                     </ul>
@@ -394,7 +394,7 @@
                                                 <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
                                                     <i class="fas fa-campground fa-fw"></i>
                                                 </span>
-                                                {{ achievements.CampsCleared|number_format }} Camps Cleared
+                                                {{ achievements.campsCleared|number_format }} Camps Cleared
                                             </span>
                                         </li>
                                         <li>
@@ -402,7 +402,7 @@
                                                 <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
                                                     <i class="fab fa-freebsd fa-fw"></i>
                                                 </span>
-                                                {{ achievements.FireGiantKills|number_format }} Fire Giant Kills
+                                                {{ achievements.fireGiantKills|number_format }} Fire Giant Kills
                                             </span>
                                         </li>
                                         <li>
@@ -410,7 +410,7 @@
                                                 <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
                                                     <i class="fas fa-user-alt fa-fw"></i>
                                                 </span>
-                                                {{ achievements.GoldFuryKills|number_format }} Gold Fury Kills
+                                                {{ achievements.goldFuryKills|number_format }} Gold Fury Kills
                                             </span>
                                         </li>
                                         <li>
@@ -418,7 +418,7 @@
                                                 <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
                                                     <i class="fas fa-users fa-fw"></i>
                                                 </span>
-                                                {{ achievements.MinionKills|number_format }} Minion Kills
+                                                {{ achievements.minionKills|number_format }} Minion Kills
                                             </span>
                                         </li>
                                         <li>
@@ -426,7 +426,7 @@
                                                 <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
                                                     <i class="fab fa-phoenix-framework fa-fw"></i>
                                                 </span>
-                                                {{ achievements.PhoenixKills|number_format }} Phoenix Kills
+                                                {{ achievements.phoenixKills|number_format }} Phoenix Kills
                                             </span>
                                         </li>
                                         <li>
@@ -434,7 +434,7 @@
                                                 <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
                                                     <i class="fas fa-angry fa-fw"></i>
                                                 </span>
-                                                {{ achievements.SiegeJuggernautKills|number_format }} Siege Juggernaut Kills
+                                                {{ achievements.siegeJuggernautKills|number_format }} Siege Juggernaut Kills
                                             </span>
                                         </li>
                                         <li>
@@ -442,7 +442,7 @@
                                                 <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
                                                     <i class="fas fa-tired fa-fw"></i>
                                                 </span>
-                                                {{ achievements.WildJuggernautKills|number_format }} Wild Juggernaut Kills
+                                                {{ achievements.wildJuggernautKills|number_format }} Wild Juggernaut Kills
                                             </span>
                                         </li>
                                         <li>
@@ -450,7 +450,7 @@
                                                 <span class="d-inline-block p-2 mr-3 fa-1x font-weight-bold bg-dark-opaque">
                                                     <i class="fas fa-gopuram fa-fw"></i>
                                                 </span>
-                                                {{ achievements.TowerKills|number_format }} Tower Kills
+                                                {{ achievements.towerKills|number_format }} Tower Kills
                                             </span>
                                         </li>
                                     </ul>

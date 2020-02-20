@@ -24,15 +24,9 @@ class PlayerAchievement
 
     /**
      * @ORM\ManyToOne(targetEntity="Player", inversedBy="matches")
-     * @ORM\JoinColumn(name="smite_player_id", referencedColumnName="smite_player_id", nullable=true)
+     * @ORM\JoinColumn(name="smite_player_id", referencedColumnName="smite_player_id", nullable=false)
      */
     private $smitePlayer;
-
-    /**
-     * @var int
-     * @ORM\Column(name="assists", type="integer", nullable=false, options={"unsigned"=true})
-     */
-    private $assists;
 
     /**
     * @var int
@@ -173,6 +167,13 @@ class PlayerAchievement
     private $wildJuggernautKills;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_updated", type="datetime", nullable=false)
+     */
+    private $dateUpdated;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -205,24 +206,6 @@ class PlayerAchievement
     public function setSmitePlayer($smitePlayer)
     {
         $this->smitePlayer = $smitePlayer;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAssists(): int
-    {
-        return $this->assists;
-    }
-
-    /**
-     * @param int $assists
-     * @return PlayerAchievement
-     */
-    public function setAssists(int $assists): PlayerAchievement
-    {
-        $this->assists = $assists;
         return $this;
     }
 
@@ -637,6 +620,24 @@ class PlayerAchievement
     public function setWildJuggernautKills(int $wildJuggernautKills): PlayerAchievement
     {
         $this->wildJuggernautKills = $wildJuggernautKills;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateUpdated(): \DateTime
+    {
+        return $this->dateUpdated;
+    }
+
+    /**
+     * @param \DateTime $dateUpdated
+     * @return PlayerAchievement
+     */
+    public function setDateUpdated(\DateTime $dateUpdated): PlayerAchievement
+    {
+        $this->dateUpdated = $dateUpdated;
         return $this;
     }
 }
