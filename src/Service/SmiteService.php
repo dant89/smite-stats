@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\Entity\ApiCall;
-use App\Entity\God;
 use Dant89\SmiteApiClient\Authentication\AuthenticationClient;
 use Dant89\SmiteApiClient\Client;
 use Dant89\SmiteApiClient\God\GodClient;
