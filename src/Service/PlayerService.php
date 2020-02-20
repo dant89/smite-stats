@@ -6,12 +6,14 @@ use App\Entity\God;
 use App\Entity\MatchItem;
 use App\Entity\MatchPlayer;
 use App\Entity\Player;
+use App\Entity\PlayerAchievement;
 use App\Entity\PlayerGod;
 use App\Mapper\MatchMapper;
 use App\Mapper\MatchPlayerAbilityMapper;
 use App\Mapper\MatchPlayerBanMapper;
 use App\Mapper\MatchPlayerItemMapper;
 use App\Mapper\MatchPlayerMapper;
+use App\Mapper\PlayerAchievementMapper;
 use App\Mapper\PlayerMapper;
 use App\Repository\MatchPlayerRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,6 +42,9 @@ class PlayerService
     /** @var PlayerMapper */
     protected $playerMapper;
 
+    /** @var PlayerAchievementMapper */
+    protected $playerAchievementMapper;
+
     /** @var SmiteService */
     protected $smite;
 
@@ -51,6 +56,7 @@ class PlayerService
         MatchPlayerBanMapper $matchPlayerBanMapper,
         MatchPlayerItemMapper $matchPlayerItemMapper,
         PlayerMapper $playerMapper,
+        PlayerAchievementMapper $playerAchievementMapper,
         SmiteService $smite
     ) {
         $this->entityManager = $entityManager;
@@ -60,7 +66,40 @@ class PlayerService
         $this->matchPlayerBanMapper = $matchPlayerBanMapper;
         $this->matchPlayerItemMapper = $matchPlayerItemMapper;
         $this->playerMapper = $playerMapper;
+        $this->playerAchievementMapper = $playerAchievementMapper;
         $this->smite = $smite;
+    }
+
+    /**
+     * @param Player $player
+     * @return PlayerAchievement
+     * @throws InvalidArgumentException
+     */
+    public function updatePlayerAchievements(Player $player): PlayerAchievement
+    {
+        $playerAchievement = null;
+
+        $achievements = $this->smite->getPlayerAchievements($player->getSmitePlayerId()) ?? [];
+
+        if (!empty($achievements)) {
+            $playerAchievementRepo = $this->entityManager->getRepository(PlayerAchievement::class);
+            /** @var PlayerAchievement $existingPlayerAchievement */
+            $existingPlayerAchievement = $playerAchievementRepo->findOneBy(['smitePlayer' => $player]);
+
+            if (is_null($existingPlayerAchievement)) {
+                $playerAchievement = $this->playerAchievementMapper->from($player, $achievements);
+            } else {
+                $playerAchievement = $this->playerAchievementMapper->fromExisting(
+                    $existingPlayerAchievement,
+                    $achievements
+                );
+            }
+
+            $this->entityManager->persist($playerAchievement);
+            $this->entityManager->flush();
+        }
+
+        return $playerAchievement;
     }
 
     /**
