@@ -74,6 +74,17 @@
                                             <div class="player-smite-god player-smite-god-medium" style="background-image: url('https://web2.hirez.com/smite/god-cards/{{ matchPlayer.ReferenceName|slug }}.jpg')"></div>
                                         </div>
                                         <div class="col-7 col-md-8 col-lg-9">
+
+                                            <div class="float-right">
+                                                {% if matchPlayer.killsPenta > 0 %}
+                                                    <strong>{{ matchPlayer.killsPenta }}x Penta Kills</strong>
+                                                {% elseif matchPlayer.killsQuadra > 0 %}
+                                                    <strong>{{ matchPlayer.killsQuadra }}x Quadra Kills</strong>
+                                                {% elseif matchPlayer.killsTriple > 0 %}
+                                                    <strong>{{ matchPlayer.killsTriple }}x Triple Kills</strong>
+                                                {% endif %}
+                                            </div>
+
                                             {% if matchPlayer.smitePlayer and matchPlayer.smitePlayer.name|clan_remove|slug %}
                                                 <a href="{{ path('player_view', {
                                                     gamertag: matchPlayer.smitePlayer.name|clan_remove|slug,

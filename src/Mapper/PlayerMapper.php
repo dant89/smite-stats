@@ -92,6 +92,4 @@ class PlayerMapper
 
         return $player;
     }
-
-
 }
