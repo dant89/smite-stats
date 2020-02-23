@@ -1,5 +1,5 @@
 security:
-    ***REMOVED*** https://symfony.com/doc/current/security.html***REMOVED***where-do-users-come-from-user-providers
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
         in_memory: { memory: null }
     firewalls:
@@ -9,14 +9,14 @@ security:
         main:
             anonymous: lazy
 
-            ***REMOVED*** activate different ways to authenticate
-            ***REMOVED*** https://symfony.com/doc/current/security.html***REMOVED***firewalls-authentication
+            # activate different ways to authenticate
+            # https://symfony.com/doc/current/security.html#firewalls-authentication
 
-            ***REMOVED*** https://symfony.com/doc/current/security/impersonating_user.html
-            ***REMOVED*** switch_user: true
+            # https://symfony.com/doc/current/security/impersonating_user.html
+            # switch_user: true
 
-    ***REMOVED*** Easy way to control access for large sections of your site
-    ***REMOVED*** Note: Only the *first* access control that matches will be used
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
     access_control:
-        ***REMOVED*** - { path: ^/admin, roles: ROLE_ADMIN }
-        ***REMOVED*** - { path: ^/profile, roles: ROLE_USER }
+        # - { path: ^/admin, roles: ROLE_ADMIN }
+        # - { path: ^/profile, roles: ROLE_USER }

@@ -9,7 +9,7 @@ The [PHP Smite API client](https://github.com/dant89/smite-api-php-client) is us
 
 [Symfony 5](https://symfony.com/doc/current/setup.html) website-skeleton has been used for the base of the project.
 
-***REMOVED******REMOVED*** Installation
+## Installation
 
 1. `git clone git@github.com:dant89/smite-stats.git`
 2. `composer install`
@@ -19,9 +19,9 @@ The [PHP Smite API client](https://github.com/dant89/smite-api-php-client) is us
 6. Update `SMITE_DEV_ID` and `SMITE_AUTH_KEY` to reference your developer key.
 6. Create a database and setup the config for the variable `DATABASE_URL`.
 
-***REMOVED******REMOVED*** Live Website
+## Live Website
 You can view this project running in production by visiting: [Smite Stats](https://smitestats.com/)
 
-***REMOVED******REMOVED*** Smite API Access
+## Smite API Access
 
 To request permission from Hi-Rez for access keys to use the Smite API, you must complete [this form](https://fs12.formsite.com/HiRez/form48/secure_index.html).

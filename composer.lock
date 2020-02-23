@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md***REMOVED***installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
     "content-hash": "e2b0fb9bcee820b740354a37e2f53fd1",
@@ -1397,8 +1397,8 @@
                 "nikic/php-parser": "^3.1.1",
                 "padraic/phpunit-accelerator": "dev-master@DEV",
                 "phpbench/phpbench": "^0.12.2",
-                "phpstan/phpstan": "dev-master***REMOVED***856eb10a81c1d27c701a83f167dc870fd8f4236a as 0.9.999",
-                "phpstan/phpstan-phpunit": "dev-master***REMOVED***5629c0a1f4a9c417cb1077cf6693ad9753895761",
+                "phpstan/phpstan": "dev-master#856eb10a81c1d27c701a83f167dc870fd8f4236a as 0.9.999",
+                "phpstan/phpstan-phpunit": "dev-master#5629c0a1f4a9c417cb1077cf6693ad9753895761",
                 "phpunit/phpunit": "^6.4.3",
                 "squizlabs/php_codesniffer": "^2.9.1"
             },

@@ -14,27 +14,27 @@ RUN curl -sSk https://getcomposer.org/installer | php -- --disable-tls && \
 
 USER root
 
-***REMOVED*** Install Opcache
+# Install Opcache
 RUN docker-php-ext-install opcache
-***REMOVED*** Copy opcache configration
+# Copy opcache configration
 COPY ./opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
-***REMOVED*** Install APCu
+# Install APCu
 RUN pecl install apcu;
 RUN docker-php-ext-enable apcu
 
-***REMOVED*** Install igbinary
+# Install igbinary
 RUN pecl install -o igbinary \
 &&  docker-php-ext-enable igbinary
 
-***REMOVED*** Install Php Redis Extension
+# Install Php Redis Extension
 RUN printf "\n" | pecl install -o -f redis \
 &&  rm -rf /tmp/pear \
 &&  docker-php-ext-enable redis
 
 COPY ./php.custom.ini /usr/local/etc/php/conf.d
 
-***REMOVED*** Clean up
+# Clean up
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     rm /var/log/lastlog /var/log/faillog

@@ -1,7 +1,7 @@
 $(function() {
 
     // player god carousel config
-    $('***REMOVED***godCarousel').carousel({
+    $('#godCarousel').carousel({
         interval: false,
         wrap: false
     });
@@ -25,13 +25,13 @@ $(function() {
     });
 
     // Update a player via the player API
-    $(document).on('click', '***REMOVED***player-refresh', function () {
+    $(document).on('click', '#player-refresh', function () {
         $(this).attr("disabled", true);
         $(this).html('<div class="spinner-border spinner-border-sm" role="status"></div>');
         $.get("/api/player/update/" + smitePlayerId, function() {
             location.reload();
         }).fail(function() {
-            $("***REMOVED***player-refresh").html('Refresh Player').removeAttr("disabled");
+            $("#player-refresh").html('Refresh Player').removeAttr("disabled");
         });
     })
 

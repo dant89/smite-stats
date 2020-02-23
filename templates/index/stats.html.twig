@@ -19,7 +19,7 @@
                     {% endfor %}
                 ],
                 datasets: [{
-                    label: '***REMOVED*** of API calls',
+                    label: '# of API calls',
                     data: [
                         {% for usage_stat in usage_stats %}
                         {{ usage_stat.total_calls }},

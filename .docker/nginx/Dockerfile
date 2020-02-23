@@ -4,11 +4,11 @@ LABEL maintainer="Mahmoud Zalt <mahmoud@zalt.me>"
 
 COPY nginx.conf /etc/nginx/
 
-***REMOVED*** If you're in China, or you need to change sources, will be set CHANGE_SOURCE to true in .env.
+# If you're in China, or you need to change sources, will be set CHANGE_SOURCE to true in .env.
 
 ARG CHANGE_SOURCE=false
 RUN if [ ${CHANGE_SOURCE} = true ]; then \
-    ***REMOVED*** Change application source from dl-cdn.alpinelinux.org to aliyun source
+    # Change application source from dl-cdn.alpinelinux.org to aliyun source
     sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories \
 ;fi
 
@@ -25,13 +25,13 @@ RUN set -x ; \
 ARG PHP_UPSTREAM_CONTAINER=php-fpm
 ARG PHP_UPSTREAM_PORT=9000
 
-***REMOVED*** Create 'messages' file used from 'logrotate'
+# Create 'messages' file used from 'logrotate'
 RUN touch /var/log/messages
 
-***REMOVED*** Copy 'logrotate' config file
+# Copy 'logrotate' config file
 COPY logrotate/nginx /etc/logrotate.d/
 
-***REMOVED*** Set upstream conf and remove the default conf
+# Set upstream conf and remove the default conf
 RUN echo "upstream php-upstream { server ${PHP_UPSTREAM_CONTAINER}:${PHP_UPSTREAM_PORT}; }" > /etc/nginx/conf.d/upstream.conf \
     && rm /etc/nginx/conf.d/default.conf
 

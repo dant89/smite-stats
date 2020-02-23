@@ -38,7 +38,7 @@ Encore
      *
      * Enable & configure other features below. For a full
      * list of features, see:
-     * https://symfony.com/doc/current/frontend.html***REMOVED***adding-more-features
+     * https://symfony.com/doc/current/frontend.html#adding-more-features
      */
     .cleanupOutputBeforeBuild()
     .enableBuildNotifications()

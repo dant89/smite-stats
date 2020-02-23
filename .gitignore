@@ -5,7 +5,7 @@ public/images/SMITE_Logo_2016_BlackTagline_300dpi.png
 src/Command/Crawlers/*
 sample/*
 
-***REMOVED******REMOVED******REMOVED***> symfony/framework-bundle ***REMOVED******REMOVED******REMOVED***
+###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
 /.env.*.local
@@ -13,19 +13,19 @@ sample/*
 /public/bundles/
 /var/
 /vendor/
-***REMOVED******REMOVED******REMOVED***< symfony/framework-bundle ***REMOVED******REMOVED******REMOVED***
+###< symfony/framework-bundle ###
 
-***REMOVED******REMOVED******REMOVED***> symfony/phpunit-bridge ***REMOVED******REMOVED******REMOVED***
+###> symfony/phpunit-bridge ###
 .phpunit
 .phpunit.result.cache
 /phpunit.xml
-***REMOVED******REMOVED******REMOVED***< symfony/phpunit-bridge ***REMOVED******REMOVED******REMOVED***
-***REMOVED******REMOVED******REMOVED***> symfony/webpack-encore-bundle ***REMOVED******REMOVED******REMOVED***
+###< symfony/phpunit-bridge ###
+###> symfony/webpack-encore-bundle ###
 /node_modules/
 /public/build/
 npm-debug.log
 yarn-error.log
-***REMOVED******REMOVED******REMOVED***< symfony/webpack-encore-bundle ***REMOVED******REMOVED******REMOVED***
+###< symfony/webpack-encore-bundle ###
 
 .docker/logs/*
 .docker/mysql/data/*
