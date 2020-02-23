@@ -16,25 +16,25 @@
         "ext-xml": "*",
         "dant89/smite-api-php-client": "^1.1.0",
         "sensio/framework-extra-bundle": "^5.5",
-        "symfony/asset": "^5.0",
-        "symfony/cache": "^5.0",
-        "symfony/console": "^5.0",
-        "symfony/dotenv": "^5.0",
-        "symfony/error-handler": "5.0",
+        "symfony/asset": "^5.0.0",
+        "symfony/cache": "^5.0.0",
+        "symfony/console": "^5.0.0",
+        "symfony/dotenv": "^5.0.0",
+        "symfony/error-handler": "^5.0.0",
         "symfony/flex": "^1.3.1",
-        "symfony/form": "^5.0",
-        "symfony/framework-bundle": "^5.0",
-        "symfony/http-client": "^5.0",
+        "symfony/form": "^5.0.0",
+        "symfony/framework-bundle": "^5.0.0",
+        "symfony/http-client": "^5.0.0",
         "symfony/monolog-bundle": "^3.5",
         "symfony/orm-pack": "^1.0",
-        "symfony/process": "^5.0",
-        "symfony/security-bundle": "^5.0",
+        "symfony/process": "^5.0.0",
+        "symfony/security-bundle": "^5.0.0",
         "symfony/serializer-pack": "*",
-        "symfony/twig-bundle": "5.0",
-        "symfony/validator": "^5.0",
-        "symfony/web-link": "^5.0",
+        "symfony/twig-bundle": "^5.0.0",
+        "symfony/validator": "^5.0.0",
+        "symfony/web-link": "^5.0.0",
         "symfony/webpack-encore-bundle": "^1.6",
-        "symfony/yaml": "^5.0"
+        "symfony/yaml": "^5.0.0"
     },
     "require-dev": {
         "symfony/debug-pack": "*",
@@ -84,7 +84,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "5.0"
+            "require": "^5.0.0"
         }
     }
 }
