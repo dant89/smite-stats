@@ -26,3 +26,7 @@ sample/*
 npm-debug.log
 yarn-error.log
 ***REMOVED******REMOVED******REMOVED***< symfony/webpack-encore-bundle ***REMOVED******REMOVED******REMOVED***
+
+.docker/logs/*
+.docker/mysql/data/*
+.docker/redis/data/*

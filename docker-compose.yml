@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+    mysql:
+        image: mysql:5.7
+        container_name: smite_stats_mysql
+        ports:
+            - 3306:3306
+        volumes:
+            - .docker/mysql/data:/var/lib/mysql
+        command:
+            - "--default-authentication-plugin=mysql_native_password"
+            - "--lower_case_table_names=1"
+            - "--innodb_file_per_table=1"
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: smite_stats
+            MYSQL_USER: user
+            MYSQL_PASSWORD: pass
+
+    nginx:
+        build: .docker/nginx
+        container_name: smite_stats_nginx
+        ports:
+            - 80:80
+        volumes:
+            - .docker/logs/nginx:/var/log/nginx
+            - .docker/nginx/sites:/etc/nginx/sites-available
+            - .:/var/www/smite-stats
+        depends_on:
+            - php-fpm
+
+    php-fpm:
+        build: .docker/php-fpm
+        container_name: smite_stats_php
+        volumes:
+            - .:/var/www/smite-stats
+        depends_on:
+            - mysql
+            - redis
+
+    redis:
+        build: .docker/redis
+        container_name: smite_stats_redis
+        volumes:
+            - .docker/redis/data:/data
+        ports:
+            - 6379:6379
