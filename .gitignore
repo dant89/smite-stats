@@ -29,3 +29,4 @@ yarn-error.log
 
 .docker/logs/*
 .docker/mysql/data/*
+.docker/redis/data/*

@@ -37,3 +37,12 @@ services:
             - .:/var/www/smite-stats
         depends_on:
             - mysql
+            - redis
+
+    redis:
+        build: .docker/redis
+        container_name: smite_stats_redis
+        volumes:
+            - .docker/redis/data:/data
+        ports:
+            - 6379:6379
