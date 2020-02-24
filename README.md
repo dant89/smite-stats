@@ -7,17 +7,24 @@ This project is an unofficial open source [Smite](https://www.smitegame.com/) st
 
 The [PHP Smite API client](https://github.com/dant89/smite-api-php-client) is used for all calls to the Hi-Rez Smite API. 
 
-[Symfony 5](https://symfony.com/doc/current/setup.html) website-skeleton has been used for the base of the project.
+[Symfony 5](https://symfony.com/doc/current/setup.html) framework has been used for the base of this project.
 
 ## Installation
 
+There is a Docker compose script ready to run, this builds containers for `php-fpm`, `nginx`, `mysql` and `redis`.
+
 1. `git clone git@github.com:dant89/smite-stats.git`
-2. `composer install`
-3. `yarn install`
-4. `yarn encore prod`
-5. `cp .env .env.local`
-6. Update `SMITE_DEV_ID` and `SMITE_AUTH_KEY` to reference your developer key.
-6. Create a database and setup the config for the variable `DATABASE_URL`.
+2. `cd smite-stats`
+3. `sudo cp .env .env.local`
+4. Update `SMITE_DEV_ID` and `SMITE_AUTH_KEY` in `.env.local` to reference your Smite API developer key.
+5. Add a new line to your `/etc/hosts` file containing `127.0.0.1       smitestats.devvm`
+6. `docker-compose build`
+7. `docker-compose up -d`
+8. `docker-compose exec php-fpm composer install`
+9. `docker-compose exec php-fpm php bin/console doctrine:migrations:migrate`
+10. `docker-compose exec php-fpm yarn install`
+11. `docker-compose exec php-fpm yarn encore prod`
+12. Browse to http://smitestats.devvm
 
 ## Live Website
 You can view this project running in production by visiting: [Smite Stats](https://smitestats.com/)
