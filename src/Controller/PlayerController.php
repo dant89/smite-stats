@@ -102,7 +102,7 @@ class PlayerController extends AbstractController
         // Check to see if we have this player stored in the database
         if (is_null($player)) {
             $playerDetails = $this->smiteService->getPlayerDetailsByPortalId($id);
-            if (empty($playerDetails) || $playerDetails['ActivePlayerId'] === "0") {
+            if (empty($playerDetails) || ((int) $playerDetails['ActivePlayerId'] === 0)) {
                 // Player not in database an no details returned
                 throw new NotFoundHttpException();
             } else {
@@ -113,7 +113,7 @@ class PlayerController extends AbstractController
             }
         } elseif ($player->getCrawled() === 0 || $playerUpdatedMins > (60 * 24)) {
             $playerDetails = $this->smiteService->getPlayerDetailsByPortalId($id);
-            if (!empty($playerDetails) && $playerDetails['ActivePlayerId'] !== "0") {
+            if (!empty($playerDetails) && ((int) $playerDetails['ActivePlayerId'] !== 0)) {
                 // Update player
                 $player = $this->playerMapper->fromExisting($player, $playerDetails);
                 $this->entityManager->persist($player);
