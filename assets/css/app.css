@@ -149,6 +149,10 @@ main a {
     vertical-align: middle;
 }
 
+.stats-table td {
+    white-space: nowrap;
+}
+
 footer .social a i {
     font-size: 24px;
 }
