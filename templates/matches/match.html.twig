@@ -94,7 +94,7 @@
                                                 <span>&nbsp;</span>
                                             {% endif %}
                                             <br />
-                                            <span>{{ matchPlayer.referenceName }}</span><br />
+                                            <span>KDA <strong>{{ matchPlayer.killsPlayer }}/{{ matchPlayer.deaths }}/{{ matchPlayer.assists }}</strong></span><br />
                                             <span>Level <strong>{{ matchPlayer.accountLevel }}</strong></span>
                                         </div>
                                     </div>
@@ -113,7 +113,7 @@
 
                             <div class="table-responsive">
                                 {% for taskforceId, teamPlayers in match.playersByTeamIndex %}
-                                <table id="taskforceStats{{ taskforceId }}" class="table table-sm table-striped font14 text-center">
+                                <table id="taskforceStats{{ taskforceId }}" class="stats-table table table-sm table-striped bg-white font14 text-center">
                                     <thead class="bg-{{ match.winningTaskforce == taskforceId ? 'success' : 'danger' }}">
                                         <tr>
                                             <th scope="col" class="text-left"></th>
@@ -172,11 +172,8 @@
                                                         'name': match_player_item.item.itemName|slug,
                                                         'id': match_player_item.item.itemId
                                                     }) }}" rel="nofollow">
-                                                        <img {% if loop.index <= 3 %}class="mb-1" {% endif %}height="25px" width="25px" title="{{ match_player_item.item.itemName }}" src="{{ match_player_item.item.iconUrl }}" />
+                                                        <img height="25px" width="25px" title="{{ match_player_item.item.itemName }}" src="{{ match_player_item.item.iconUrl }}" />
                                                     </a>
-                                                    {% if loop.index == 3 %}
-                                                        <br />
-                                                    {% endif %}
                                                 {% endfor %}
                                             </td>
                                         </tr>
@@ -196,7 +193,7 @@
                             <h2>Match Stats</h2>
 
                             <div class="table-responsive">
-                                <table id="matchStats" class="table table-sm table-striped font14 text-center">
+                                <table id="matchStats" class="stats-table table table-sm table-striped bg-white font14 text-center">
                                     <thead>
                                         <tr>
                                             <th scope="col">Result</th>
@@ -268,7 +265,7 @@
                             <h2>Minion Stats</h2>
 
                             <div class="table-responsive">
-                                <table id="minionStats" class="table table-sm table-striped font14 text-center">
+                                <table id="minionStats" class="stats-table table table-sm table-striped bg-white font14 text-center">
                                     <thead>
                                         <tr>
                                             <th scope="col">Result</th>
