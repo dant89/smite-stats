@@ -86,7 +86,7 @@ main a {
 .player-smite-god {
     background-position: top center;
     background-repeat: no-repeat;
-    background-size: 100%;
+    background-size: cover;
     border: 1px solid gold;
     height:125px;
     margin-bottom: 10px;
@@ -114,7 +114,7 @@ main a {
 .smite-god {
     background-position:  top center;
     background-repeat: no-repeat;
-    background-size: 100%;
+    background-size: cover;
     border: 1px solid gold;
     height:200px;
     margin-bottom: 10px;
@@ -150,6 +150,7 @@ main a {
 }
 
 .stats-table td {
+    vertical-align: middle;
     white-space: nowrap;
 }
 
@@ -160,6 +161,10 @@ footer .social a i {
 @media (max-width: 768px) {
     .header-box nav {
         position: relative;
+    }
+    .match-report-items img {
+        height: 30px;
+        width: 30px;
     }
     .carousel-inner .carousel-item > div {
         display: none;
