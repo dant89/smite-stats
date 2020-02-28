@@ -29,8 +29,6 @@
                                 <div>
                                     <span><strong>KDA</strong> {{ match_player.killsPlayer }}/{{ match_player.deaths }}/{{ match_player.assists }}</span>
                                 </div>
-                                <br />
-
                                 <div class="match-report-items mb-1">
                                     {% for match_player_item in match_player.abilities %}
                                         <a href="{{ path('relic_view', {
@@ -64,7 +62,7 @@
 
                             {% for taskforceId, matchPlayers in match.playersByTeamIndex %}
                             <div class="col-xs-12 col-sm-6">
-                                <table class="stats-table table table-sm table-striped {% if taskforceId == match.winningTaskforce %}border-success{% else %}border-danger{% endif %}">
+                                <table class="stats-table table table-sm table-striped mb-0 {% if taskforceId == match.winningTaskforce %}border-success{% else %}border-danger{% endif %}">
                                     <tbody>
                                     {% for matchPlayer in matchPlayers %}
                                         <tr>
