@@ -116,7 +116,7 @@
                         <div class="card-body">
 
                             <div class="row">
-                                <div class="col-12 col-md-6 text-center text-md-center">
+                                <div class="col-12 col-md-6 text-center text-md-left">
                                     {% if player.teamName %}
                                     <h5>
                                         Clan: <a href="{{ path('clan_view', {
@@ -471,7 +471,7 @@
                         <div class="col-12">
 
                             <h3 class="d-inline-block">Latest Matches</h3>
-                            <a class="d-inline-block btn btn-sm btn-primary" href="{{ path('player_matches_view', {
+                            <a class="btn btn-sm btn-primary float-right" href="{{ path('player_matches_view', {
                                 gamertag: player.name|clan_remove|slug,
                                 id: player.smitePlayerId
                             }) }}">View all Matches</a>
