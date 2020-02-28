@@ -86,33 +86,37 @@
 
             <div class="row">
                 <div class="col-sm-6">
-                    {% if player.name %}
-                    <h1><a href="{{ path('player_view', {
-                            gamertag: player.name|clan_remove|slug,
-                            id: player.smitePlayerId
-                        }) }}" title="Smite Player {{ player.name }}">{{ player.name }} Smite Player</a></h1>
-                    {% endif %}
+
                 </div>
 
-                <div class="col-sm-6 text-right">
-                {% if last_updated >= 15 %}
-                    <span class="text-muted d-inline-block">Last Updated: {{ player.dateUpdated|date('H:i:s Y/m/d') }}</span>
-                    <button class="btn btn-sm btn-primary d-inline-block" id="player-refresh" type="button">Refresh player</button>
-                {% endif %}
-                </div>
+
             </div>
 
             <div class="row">
                 <div class="col-12">
 
                     <div class="card mb-4 box-shadow">
+                        <div class="card-header">
+                            <img class="rounded d-inline-block" src="{{ player.avatarUrl }}" width="50px" />
+
+                            {% if player.name %}
+                                <h1 class="d-inline-block"><a href="{{ path('player_view', {
+                                        gamertag: player.name|clan_remove|slug,
+                                        id: player.smitePlayerId
+                                    }) }}" title="Smite Player {{ player.name }}">{{ player.name }} Smite Player</a></h1>
+                            {% endif %}
+
+                            <div class="col-sm-6 text-right">
+                                {% if last_updated >= 15 %}
+                                    <span class="text-muted d-inline-block">Last Updated: {{ player.dateUpdated|date('H:i:s Y/m/d') }}</span>
+                                    <button class="btn btn-sm btn-primary d-inline-block" id="player-refresh" type="button">Refresh player</button>
+                                {% endif %}
+                            </div>
+                        </div>
                         <div class="card-body">
 
                             <div class="row">
-                                <div class="col col-sm-12 col-md-6">
-
-                                    <h2><img class="rounded" src="{{ player.avatarUrl }}" width="50px" /> {{ player.name }} (<span class="text-primary">{{ player.level }}</span>)</h2>
-
+                                <div class="col-12 col-md-6 text-center text-md-center">
                                     {% if player.teamName %}
                                     <h5>
                                         Clan: <a href="{{ path('clan_view', {
@@ -122,27 +126,27 @@
                                     {% endif %}
 
                                     <ul class="list-unstyled">
-                                        <li></li>
-                                        <li>Hours Played: {{ player.hoursPlayed }}</li>
-                                        <li>Achievements: {{ player.totalAchievements }}</li>
+                                        <li><strong>Level:</strong> {{ player.level }}</li>
+                                        <li><strong>Hours Played:</strong> {{ player.hoursPlayed }}</li>
+                                        <li><strong>Achievements:</strong> {{ player.totalAchievements }}</li>
                                         {% if achievements %}
                                             {% if achievements.deaths %}
-                                                <li>K/D: {{ (achievements.playerKills / achievements.deaths)|round(2) }}</li>
-                                                <li>K/D/A: {{ ((achievements.playerKills + achievements.assistedKills) / achievements.deaths)|round(2) }}</li>
+                                                <li><strong>K/D:</strong> {{ (achievements.playerKills / achievements.deaths)|round(2) }}</li>
+                                                <li><strong>K/D/A:</strong> {{ ((achievements.playerKills + achievements.assistedKills) / achievements.deaths)|round(2) }}</li>
                                             {% else %}
-                                                <li>K/D: {{ achievements.playerKills|round(2) }}</li>
-                                                <li>K/D/A: {{ (achievements.playerKills + achievements.assistedKills)|round(2) }}</li>
+                                                <li><strong>K/D:</strong> {{ achievements.playerKills|round(2) }}</li>
+                                                <li><strong>K/D/A:</strong> {{ (achievements.playerKills + achievements.assistedKills)|round(2) }}</li>
                                             {% endif %}
                                         {% endif %}
                                     </ul>
 
                                 </div>
-                                <div class="col col-sm-6 col-md-3">
+                                <div class="col-6 col-md-3">
                                     <canvas id="winPercentChart" width="400" height="350"></canvas>
                                 </div>
 
                                 {% if achievements %}
-                                <div class="col col-sm-6 col-md-3">
+                                <div class="col-6 col-md-3">
                                     <canvas id="killsChart" width="400" height="350"></canvas>
                                 </div>
                                 {% endif %}
@@ -467,7 +471,7 @@
                         <div class="col-12">
 
                             <h3 class="d-inline-block">Latest Matches</h3>
-                            <a class="btn btn-sm btn-primary float-right" href="{{ path('player_matches_view', {
+                            <a class="d-inline-block btn btn-sm btn-primary" href="{{ path('player_matches_view', {
                                 gamertag: player.name|clan_remove|slug,
                                 id: player.smitePlayerId
                             }) }}">View all Matches</a>
