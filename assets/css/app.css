@@ -37,7 +37,7 @@ main a {
 
 .header-box {
     height: 300px;
-    background-image: url('/images/smite_bg_compressed.jpg');
+    background-image: url('/images/smite_bg_540.jpg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -155,6 +155,36 @@ footer .social a i {
     font-size: 24px;
 }
 
+@media (max-width: 7680px) {
+    .header-box {
+        background-image: url('/images/smite_bg_7680.jpg');
+    }
+}
+
+@media (max-width: 3840px) {
+    .header-box {
+        background-image: url('/images/smite_bg_3840.jpg');
+    }
+}
+
+@media (max-width: 1920px) {
+    .header-box {
+        background-image: url('/images/smite_bg_1920.jpg');
+    }
+}
+
+@media (max-width: 1140px) {
+    .header-box {
+        background-image: url('/images/smite_bg_1140.jpg');
+    }
+}
+
+@media (max-width: 960px) {
+    .header-box {
+        background-image: url('/images/smite_bg_960.jpg');
+    }
+}
+
 @media (max-width: 767px) {
     .header-box {
         height: 240px;
@@ -185,6 +215,18 @@ footer .social a i {
 .carousel-inner .carousel-item-next,
 .carousel-inner .carousel-item-prev {
     display: flex;
+}
+
+@media (max-width: 720px) {
+    .header-box {
+        background-image: url('/images/smite_bg_720.jpg');
+    }
+}
+
+@media (max-width: 540px) {
+    .header-box {
+        background-image: url('/images/smite_bg_540.jpg');
+    }
 }
 
 /* display 3 */
