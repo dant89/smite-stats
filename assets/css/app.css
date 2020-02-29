@@ -31,10 +31,23 @@ main a {
     background-color: rgba(0, 0, 0, 0.2);
 }
 
+.bg-light-opaque {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
 .header-box {
+    background-image: url('/images/smite_bg_compressed.jpg');
+    background-position: center;
+    background-size: cover;
+    height: 300px;
     position: relative;
-    text-align: center;
-    width: 100%;
+}
+
+.header-box nav {
+    bottom: 20px;
+    left: 0;
+    position: absolute;
+    right: 0;
 }
 
 .header-box .slogan {
@@ -59,22 +72,6 @@ main a {
 
 .header-box .slogan span {
     font-size: 16px;
-}
-
-.header-box img.smite-bg {
-    margin-top: -20px;
-    position: relative;
-    width: 100%;
-}
-
-.header-box nav {
-    background: rgba(255, 255, 255, 0.8);
-    bottom: 20px;
-    display: block;
-    left: 0;
-    padding: 10px;
-    position: absolute;
-    right: 0;
 }
 
 .header-box nav a {
@@ -157,9 +154,19 @@ footer .social a i {
     font-size: 24px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
+    .header-box {
+        height: 240px;
+    }
+    .header-box .slogan {
+        bottom: 20px;
+        top: auto;
+    }
     .header-box nav {
-        position: relative;
+        bottom: auto;
+        left: auto;
+        position: inherit;
+        right: auto;
     }
     .match-report-items img {
         height: 30px;
