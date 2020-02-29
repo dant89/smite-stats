@@ -19,7 +19,7 @@ class GodRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()
             ->getConnection();
 
-        $stmt = $conn->prepare('SELECT g.`name`, mp.kills_player
+        $stmt = $conn->prepare('SELECT g.`name`, g.roles, mp.kills_player
             FROM (
                 SELECT god_id, SUM(kills_player) AS kills_player
                 FROM match_player 
@@ -41,7 +41,7 @@ class GodRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()
             ->getConnection();
 
-        $stmt = $conn->prepare('SELECT g.`name`, mp.kd
+        $stmt = $conn->prepare('SELECT g.`name`, g.roles, mp.kd
             FROM (
                 SELECT god_id, (SUM(kills_player) / SUM(deaths)) AS kd
                 FROM match_player 
@@ -64,7 +64,7 @@ class GodRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()
             ->getConnection();
 
-        $stmt = $conn->prepare('SELECT g.`name`, mp.kda
+        $stmt = $conn->prepare('SELECT g.`name`, g.roles, mp.kda
             FROM (
                 SELECT god_id, (SUM(kills_player) + SUM(assists)) / SUM(deaths) AS kda
                 FROM match_player 
