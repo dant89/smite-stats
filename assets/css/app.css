@@ -36,10 +36,11 @@ main a {
 }
 
 .header-box {
+    height: 300px;
     background-image: url('/images/smite_bg_compressed.jpg');
+    background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    height: 300px;
     position: relative;
 }
 
