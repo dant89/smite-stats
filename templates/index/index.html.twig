@@ -63,15 +63,15 @@
         </div>
     </div>
 </div>
-
+.
 <div class="bg-white pt-2 pb-2">
     <div class="container">
 
         <div class="row">
-            <div class="col-8">
+            <div class="col-12 col-lg-8">
 
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-12 col-sm-4 mb-3 mb-0">
                         <h3>Top Kill Gods</h3>
                         <table class="stats-table table table-sm table-striped mb-0 text-left">
                             {% for god in top_kills_gods %}
@@ -84,7 +84,7 @@
                             {% endfor %}
                         </table>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-12 col-sm-4 mb-3 mb-0">
                         <h3>Top KD Gods</h3>
                         <table class="stats-table table table-sm table-striped mb-0 text-left">
                             {% for god in top_kd_gods %}
@@ -97,7 +97,7 @@
                             {% endfor %}
                         </table>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-12 col-sm-4">
                         <h3>Top KDA Gods</h3>
                         <table class="stats-table table table-sm table-striped mb-0 text-left">
                             {% for god in top_kda_gods %}
@@ -118,7 +118,8 @@
     </div>
 </div>
 
-<div class="bg-dark pt-2 pb-2">
+{% if leaderboards %}
+<div class="bg-light pt-2 pb-2">
     <div class="row">
 
         <div class="col-12">
@@ -158,5 +159,6 @@
 
     </div>
 </div>
+{% endif %}
 
 {% endblock %}

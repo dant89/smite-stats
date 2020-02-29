@@ -19,11 +19,15 @@ class GodRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()
             ->getConnection();
 
-        $stmt = $conn->prepare('SELECT g.name, mp.kills_player
-            FROM god g
-            INNER JOIN match_player mp ON g.smite_id = mp.god_id
-            ORDER BY mp.kills_player DESC
-            LIMIT :offset, :limit');
+        $stmt = $conn->prepare('SELECT g.`name`, mp.kills_player
+            FROM (
+                SELECT god_id, SUM(kills_player) AS kills_player
+                FROM match_player 
+                GROUP BY god_id
+                ORDER BY kills_player DESC
+                LIMIT :offset, :limit
+            ) AS mp
+            INNER JOIN god g ON mp.god_id = g.smite_id');
 
         $stmt->bindParam(':limit', $limit, ParameterType::INTEGER);
         $stmt->bindParam(':offset', $offset, ParameterType::INTEGER);
@@ -37,12 +41,16 @@ class GodRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()
             ->getConnection();
 
-        $stmt = $conn->prepare('SELECT g.name, (mp.kills_player / mp.deaths) AS kd
-            FROM god g
-            INNER JOIN match_player mp ON g.smite_id = mp.god_id
-            WHERE mp.kills_player > 0 AND mp.deaths > 0
-            ORDER BY kd DESC
-            LIMIT :offset, :limit');
+        $stmt = $conn->prepare('SELECT g.`name`, mp.kd
+            FROM (
+                SELECT god_id, (SUM(kills_player) / SUM(deaths)) AS kd
+                FROM match_player 
+                WHERE kills_player > 0 AND deaths > 0
+                GROUP BY god_id
+                ORDER BY kd DESC
+                LIMIT :offset, :limit
+            ) AS mp
+            INNER JOIN god g ON mp.god_id = g.smite_id ');
 
         $stmt->bindParam(':limit', $limit, ParameterType::INTEGER);
         $stmt->bindParam(':offset', $offset, ParameterType::INTEGER);
@@ -56,12 +64,16 @@ class GodRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()
             ->getConnection();
 
-        $stmt = $conn->prepare('SELECT g.name, ((mp.kills_player + mp.assists) / mp.deaths) AS kda
-            FROM god g
-            INNER JOIN match_player mp ON g.smite_id = mp.god_id
-            WHERE mp.kills_player > 0 AND mp.deaths > 0
-            ORDER BY kda DESC
-            LIMIT :offset, :limit');
+        $stmt = $conn->prepare('SELECT g.`name`, mp.kda
+            FROM (
+                SELECT god_id, (SUM(kills_player) + SUM(assists)) / SUM(deaths) AS kda
+                FROM match_player 
+                WHERE kills_player > 0 AND deaths > 0
+                GROUP BY god_id
+                ORDER BY kda DESC
+                LIMIT :offset, :limit
+            ) AS mp
+            INNER JOIN god g ON mp.god_id = g.smite_id ');
 
         $stmt->bindParam(':limit', $limit, ParameterType::INTEGER);
         $stmt->bindParam(':offset', $offset, ParameterType::INTEGER);

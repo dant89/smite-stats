@@ -50,21 +50,17 @@ class IndexController extends AbstractController
         $joustRankedLeaderboard = $this->smiteService->getLeagueLeaderboard(450, 27, 7);
         $conquestRankedLeaderboard = $this->smiteService->getLeagueLeaderboard(451, 27, 7);
 
+        $leaderboardTypes = [];
+
         if (is_array($duelRankedLeaderboard)) {
-            $duelRankedLeaderboard = array_slice($duelRankedLeaderboard, 0, 5, true);
+            $leaderboardTypes['Duel'] = array_slice($duelRankedLeaderboard, 0, 5, true);
         }
         if (is_array($joustRankedLeaderboard)) {
-            $joustRankedLeaderboard = array_slice($joustRankedLeaderboard,  0, 5, true);
+            $leaderboardTypes['Joust'] = array_slice($joustRankedLeaderboard,  0, 5, true);
         }
         if (is_array($conquestRankedLeaderboard)) {
-            $conquestRankedLeaderboard = array_slice($conquestRankedLeaderboard,  0, 5, true);
+            $leaderboardTypes['Conquest'] = array_slice($conquestRankedLeaderboard,  0, 5, true);
         }
-
-        $leaderboardTypes = [
-            'Conquest' => $conquestRankedLeaderboard,
-            'Duel' => $duelRankedLeaderboard,
-            'Joust' => $joustRankedLeaderboard
-        ];
 
         return $this->render('index/index.html.twig', [
             'gods' => $gods,
