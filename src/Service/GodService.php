@@ -49,9 +49,6 @@ class GodService
         return $gods;
     }
 
-    /**
-     * @return array
-     */
     public function getGodsByNameKey(): array
     {
         $repository = $this->entityManager->getRepository(God::class);
@@ -65,5 +62,56 @@ class GodService
         }
 
         return $formattedGods;
+    }
+
+    public function getTopKillGods(int $limit = 10, int $offset = 0): array
+    {
+        $cache = $this->cache->getItem('gods_top_kills');
+        if ($cache->isHit()) {
+            return $cache->get();
+        }
+
+        $repository = $this->entityManager->getRepository(God::class);
+        $gods = $repository->findTopKillGods($limit, $offset);
+
+        $cache->set($gods);
+        $cache->expiresAfter(3600 * 6); // 6 hours
+        $this->cache->save($cache);
+
+        return $gods;
+    }
+
+    public function getTopKdGods(int $limit = 10, int $offset = 0): array
+    {
+        $cache = $this->cache->getItem('gods_top_kd');
+        if ($cache->isHit()) {
+            return $cache->get();
+        }
+
+        $repository = $this->entityManager->getRepository(God::class);
+        $gods = $repository->findTopKdGods($limit, $offset);
+
+        $cache->set($gods);
+        $cache->expiresAfter(3600 * 6); // 6 hours
+        $this->cache->save($cache);
+
+        return $gods;
+    }
+
+    public function getTopKdaGods(int $limit = 10, int $offset = 0): array
+    {
+        $cache = $this->cache->getItem('gods_top_kda');
+        if ($cache->isHit()) {
+            return $cache->get();
+        }
+
+        $repository = $this->entityManager->getRepository(God::class);
+        $gods = $repository->findTopKdaGods($limit, $offset);
+
+        $cache->set($gods);
+        $cache->expiresAfter(3600 * 6); // 6 hours
+        $this->cache->save($cache);
+
+        return $gods;
     }
 }

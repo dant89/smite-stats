@@ -9,13 +9,17 @@
 
 {% block body %}
 
-<div class="bg-light pt-3 pb-5">
+<div class="bg-light pt-2 pb-2">
     <div class="container">
 
         <div class="row">
+            <div class="col">
+                <h1><a href="{{ path('homepage') }}" rel="nofollow">Smite Stats</a></h1>
+            </div>
+        </div>
+        <div class="row">
 
             <div class="col-lg-8">
-                <h1><a href="{{ path('homepage') }}" rel="nofollow">Smite Stats</a></h1>
 
                 <div class="row">
                     <div class="col-12 mb-2">
@@ -24,53 +28,12 @@
 
                         <div class="row">
                         {% for god in gods %}
-                            <div class="col-6 col-sm-4">
+                            <div class="col-6 col-sm-4 col-md-3">
                                 <div class="rounded smite-god" rel="nofollow" style="background-image: url({{ god.cardUrl }})">
                                     <a href="{{ path('god_view', {name: god.name|slug}) }}" title="Smite God {{ god.name }}">{{ god.name }}</a>
                                 </div>
                             </div>
                         {% endfor %}
-                        </div>
-
-                    </div>
-                </div>
-
-                <hr />
-
-                <div class="row">
-                    <div class="col-12">
-
-                        <div class="row">
-
-                            {% for key, players in leaderboards %}
-                                {% if players %}
-                                <div class="col-4">
-                                    <h4>Top 5 Ranked {{ key }} Players</h4>
-
-                                    {% for player in players %}
-                                    <div class="col-12">
-
-                                        {% if player.Name|clan_remove|slug %}
-                                            <a href="{{ path('player_view', {
-                                                gamertag: player.Name|clan_remove|slug,
-                                                id: player.player_id
-                                            }) }}" title="Smite Player {{ player.Name }}">{{ player.Name }}</a>
-                                        {% else %}
-                                            <strong>Unknown</strong>
-                                        {% endif %}
-                                        <br />
-
-                                        Rank: {{ player.Rank }}<br />
-                                        Points: {{ player.Points }}
-                                        Wins: {{ player.Wins }}<br />
-                                        Losses: {{ player.Losses }}
-
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                                {% endif %}
-                            {% endfor %}
-
                         </div>
 
                     </div>
@@ -97,6 +60,100 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+</div>
+
+<div class="bg-white pt-2 pb-2">
+    <div class="container">
+
+        <div class="row">
+            <div class="col-8">
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <h3>Top Kill Gods</h3>
+                        <table class="stats-table table table-sm table-striped mb-0 text-left">
+                            {% for god in top_kills_gods %}
+                                <tr>
+                                    <th>{{ god.kills_player|number_format }}</th>
+                                    <td>
+                                        <a href="{{ path('god_view', {name: god.name|slug}) }}" title="Smite God {{ god.name }}">{{ god.name }}</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    <div class="col-md-4">
+                        <h3>Top KD Gods</h3>
+                        <table class="stats-table table table-sm table-striped mb-0 text-left">
+                            {% for god in top_kd_gods %}
+                                <tr>
+                                    <th>{{ god.kd|round(2) }}</th>
+                                    <td>
+                                        <a href="{{ path('god_view', {name: god.name|slug}) }}" title="Smite God {{ god.name }}">{{ god.name }}</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    <div class="col-md-4">
+                        <h3>Top KDA Gods</h3>
+                        <table class="stats-table table table-sm table-striped mb-0 text-left">
+                            {% for god in top_kda_gods %}
+                                <tr>
+                                    <th>{{ god.kda|round(2) }}</th>
+                                    <td>
+                                        <a href="{{ path('god_view', {name: god.name|slug}) }}" title="Smite God {{ god.name }}">{{ god.name }}</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="bg-dark pt-2 pb-2">
+    <div class="row">
+
+        <div class="col-12">
+            <div class="row">
+
+                {% for key, players in leaderboards %}
+                    {% if players %}
+                    <div class="col-4">
+                        <h4>Top 5 Ranked {{ key }} Players</h4>
+
+                        {% for player in players %}
+                        <div class="col-12">
+
+                            {% if player.Name|clan_remove|slug %}
+                                <a href="{{ path('player_view', {
+                                    gamertag: player.Name|clan_remove|slug,
+                                    id: player.player_id
+                                }) }}" title="Smite Player {{ player.Name }}">{{ player.Name }}</a>
+                            {% else %}
+                                <strong>Unknown</strong>
+                            {% endif %}
+                            <br />
+
+                            Rank: {{ player.Rank }}<br />
+                            Points: {{ player.Points }}
+                            Wins: {{ player.Wins }}<br />
+                            Losses: {{ player.Losses }}
+
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+
+            </div>
         </div>
 
     </div>

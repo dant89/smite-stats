@@ -41,6 +41,11 @@ class IndexController extends AbstractController
     {
         $gods = $this->godService->getFeaturedGods(12);
 
+        $topKillGods = $this->godService->getTopKillGods();
+        $topKdGods = $this->godService->getTopKdGods();
+        $topKdaGods = $this->godService->getTopKdaGods();
+
+        # TODO replace with database store of top players
         $duelRankedLeaderboard = $this->smiteService->getLeagueLeaderboard(440, 27, 7);
         $joustRankedLeaderboard = $this->smiteService->getLeagueLeaderboard(450, 27, 7);
         $conquestRankedLeaderboard = $this->smiteService->getLeagueLeaderboard(451, 27, 7);
@@ -63,6 +68,9 @@ class IndexController extends AbstractController
 
         return $this->render('index/index.html.twig', [
             'gods' => $gods,
+            'top_kills_gods' => $topKillGods,
+            'top_kd_gods' => $topKdGods,
+            'top_kda_gods' => $topKdaGods,
             'leaderboards' => $leaderboardTypes
         ]);
     }

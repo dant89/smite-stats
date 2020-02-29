@@ -36,7 +36,7 @@ class GodController extends AbstractController
     public function index(): Response
     {
         $repository = $this->entityManager->getRepository(God::class);
-        $gods = $repository->findAll();
+        $gods = $repository->findBy([], ['name' => 'ASC']);
 
         return $this->render('god/index.html.twig', [
             'gods' => $gods
@@ -51,7 +51,7 @@ class GodController extends AbstractController
     public function godsByPantheon(string $pantheon): Response
     {
         $repository = $this->entityManager->getRepository(God::class);
-        $gods = $repository->findBy(['pantheon' => $pantheon]);
+        $gods = $repository->findBy(['pantheon' => $pantheon], ['name' => 'ASC']);
 
         if (empty($gods)) {
             throw new NotFoundHttpException();
@@ -71,7 +71,7 @@ class GodController extends AbstractController
     public function godsByRole(string $role): Response
     {
         $repository = $this->entityManager->getRepository(God::class);
-        $gods = $repository->findBy(['roles' => $role]);
+        $gods = $repository->findBy(['roles' => $role], ['name' => 'ASC']);
 
         if (empty($gods)) {
             throw new NotFoundHttpException();
