@@ -6,132 +6,111 @@
     <link rel="canonical" href="https://smitestats.com/clan/{{ clan.name|lower }}" />
 {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $('#clanStats').DataTable({
+            "paging": true,
+            "info": false,
+            "searching": true,
+            "order": [[ 2, "desc" ]]
+        });
+    </script>
+{% endblock %}
+
+
 {% block body %}
 
     <div class="bg-light pt-3 pb-5">
         <div class="container">
 
-            {% if clan.name|slug %}
-            <h1><a href="{{ path('clan_view', {
-                    name: clan.name|slug
-                }) }}" title="Smite Clan {{ clan.name }}">{{ clan.name }} Smite Clan</a></h1>
-            {% endif %}
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Home</a></li>
+                    <li class="breadcrumb-item">Clans</li>
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('clan_view', {
+                            name: clan.name|slug
+                        }) }}">[{{ clan.tag }}] {{ clan.name }}</a>
+                    </li>
+                </ol>
+            </nav>
 
-            <h2>{{ clan.tag }}</h2>
-            <h5>Created by {{ clan.founder }}</h5>
-            <h5>{{ clan.players }} players</h5>
+            <div class="row mb-3">
+                <div class="col">
 
-            <div class="row">
-                {% for player in clan_players %}
-                    {% if player.Player_info is defined %}
-                        <div class="col-12">
-
-                            <div class="card mb-4 box-shadow">
-                                <div class="card-body">
-
-                                    <div class="row">
-                                        <div class="col-md-1">
-                                            <img class="rounded" src="{{ player.Player_info.Avatar_URL }}" width="50px" />
-                                        </div>
-                                        <div class="col-md-3">
-                                            <h3><a href="{{ path('player_view', {
-                                                    gamertag: player.Name|clan_remove|slug,
-                                                    id: player.Player_info.Id
-                                                }) }}" title="Smite Player {{ player.Name }}">{{ player.Name }}</a></h3>
-                                            <h5>Level: {{ player.AccountLevel }}</h5>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <ul class="list-unstyled">
-                                                <li>Hours Played: {{ player.Player_info.HoursPlayed }}</li>
-                                                <li>Achievements: {{ player.Player_info.Total_Achievements }}</li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <ul class="list-unstyled">
-                                                <li>Wins: {{ player.Player_info.Wins }}</li>
-                                                <li>Losses: {{ player.Player_info.Losses }}</li>
-                                                <li>Quits: {{ player.Player_info.Leaves }}</li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <ul class="list-unstyled">
-                                                <li>Kills: {{ player.Stats_info.Kills }}</li>
-                                                <li>Assists: {{ player.Stats_info.Assists }}</li>
-                                                <li>Deaths: {{ player.Stats_info.Deaths }}</li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <ul class="list-unstyled">
-                                                {% if player.Stats_info.Deaths %}
-                                                    <li>K/D: {{ (player.Stats_info.Kills / player.Stats_info.Deaths)|round(2) }}</li>
-                                                    <li>K/D/A: {{ ((player.Stats_info.Kills + player.Stats_info.Assists) / player.Stats_info.Deaths)|round(2) }}</li>
-                                                {% else %}
-                                                    <li>K/D: {{ player.Stats_info.Kills|round(2) }}</li>
-                                                    <li>K/D/A: {{ (player.Stats_info.Kills + player.Stats_info.Assists)|round(2) }}</li>
-                                                {% endif %}
-                                            </ul>
-                                        </div>
-                                        <div class="col-12">
-                                            <h3>Top Gods</h3>
-                                            <div class="row">
-
-                                                {% for god in player.God_info %}
-                                                <div class="col-md-12 col-lg-3">
-                                                    <div class="row">
-
-                                                        {% if gods[god.god] and gods[god.god] %}
-                                                        <div class="col-md-4 col-lg-12">
-                                                            <div class="rounded smite-god" style="background-image: url({{ gods[god.god].cardUrl }})">
-                                                                <a href="{{ path('god_view', {name: god.god|slug}) }}" title="Smite God {{ god.god }}">{{ god.god }}</a>
-                                                            </div>
-                                                        </div>
-                                                        {% endif %}
-
-                                                        <div class="col-md-4 col-lg-12">
-                                                            <ul class="list-unstyled">
-                                                                <li>Rank: {{ god.Rank }}</li>
-                                                                {% if god.Losses and god.Wins %}
-                                                                    <li>Win Percent: {{ ((god.Wins / (god.Wins + god.Losses)) * 100)|round(2) }}%</li>
-                                                                {% elseif god.Wins %}
-                                                                    <li>Win Percent: {{ 100|round(2) }}%</li>
-                                                                {% else %}
-                                                                    <li>Win Percent: {{ 0|round(2) }}%</li>
-                                                                {% endif %}
-                                                                <li>Wins: {{ god.Wins }}</li>
-                                                                <li>Losses: {{ god.Losses }}</li>
-                                                            </ul>
-                                                        </div>
-
-                                                        <div class="col-md-4 col-lg-12">
-                                                            <ul class="list-unstyled">
-                                                                <li>Kills: {{ god.Kills }}</li>
-                                                                <li>Assists: {{ god.Assists }}</li>
-                                                                <li>Deaths: {{ god.Deaths }}</li>
-                                                                {% if god.Deaths %}
-                                                                    <li>K/D: {{ (god.Kills / god.Deaths)|round(2) }}</li>
-                                                                    <li>K/D/A: {{ ((god.Kills + god.Assists) / god.Deaths)|round(2) }}</li>
-                                                                {% else %}
-                                                                    <li>K/D: {{ god.Kills|round(2) }}</li>
-                                                                    <li>K/D/A: {{ (god.Kills + god.Assists)|round(2) }}</li>
-                                                                {% endif %}
-                                                            </ul>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                                {% endfor %}
-
-                                            </div>
-
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                        </div>
+                    <h3 class="d-inline-block text-secondary">[{{ clan.tag }}]</h3>
+                    {% if clan.name|slug %}
+                    <h1 class="d-inline-block">
+                        <a href="{{ path('clan_view', {
+                            name: clan.name|slug
+                        }) }}" title="Smite Clan {{ clan.name }}">{{ clan.name }} Smite Clan</a>
+                    </h1><br />
+                    <h5 class="d-inline-block">Created by {{ clan.founder }}</h5>
                     {% endif %}
-                {% endfor %}
+
+                </div>
+            </div>
+
+            <div class="table-responsive mb-3">
+                <table id="clanStats" class="stats-table table table-sm table-striped bg-white font14 text-center">
+                    <thead>
+                        <th scope="col" class="text-left"></th>
+                        <th scope="col" class="text-left">Name</th>
+                        <th scope="col">Level</th>
+                        <th scope="col">Hours Played</th>
+                        <th scope="col">Achievements</th>
+                        <th scope="col">Wins</th>
+                        <th scope="col">Losses</th>
+                        <th scope="col">Quits</th>
+                        <th scope="col">Kills</th>
+                        <th scope="col">Assists</th>
+                        <th scope="col">Deaths</th>
+                        <th scope="col">KD</th>
+                        <th scope="col">KDA</th>
+                    </thead>
+                    <tbody>
+                    {% for player in clan_players %}
+                        {% if player.Player_info is defined %}
+                        <tr>
+                            <td>
+                                <img class="rounded" src="{{ player.Player_info.Avatar_URL }}" width="50px" />
+                            </td>
+                            <td class="text-left">
+                                <a href="{{ path('player_view', {
+                                    gamertag: player.Name|clan_remove|slug,
+                                    id: player.Player_info.Id
+                                }) }}" title="Smite Player {{ player.Name }}">{{ player.Name }}</a>
+                            </td>
+                            <td>{{ player.AccountLevel }}</td>
+                            <td>{{ player.Player_info.HoursPlayed|number_format }}</td>
+                            <td>{{ player.Player_info.Total_Achievements|number_format }}</td>
+                            <td>{{ player.Player_info.Wins|number_format }}</td>
+                            <td>{{ player.Player_info.Losses|number_format }}</td>
+                            <td>{{ player.Player_info.Leaves|number_format }}</td>
+                            <td>{{ player.Stats_info.Kills|number_format }}</td>
+                            <td>{{ player.Stats_info.Assists|number_format }}</td>
+                            <td>{{ player.Stats_info.Deaths|number_format }}</td>
+                            <td>
+                                {% if player.Stats_info.Deaths %}
+                                    {{ (player.Stats_info.Kills / player.Stats_info.Deaths)|round(2) }}
+                                {% else %}
+                                    {{ player.Stats_info.Kills|round(2) }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if player.Stats_info.Deaths %}
+                                    {{ ((player.Stats_info.Kills + player.Stats_info.Assists) / player.Stats_info.Deaths)|round(2) }}
+                                {% else %}
+                                    {{ (player.Stats_info.Kills + player.Stats_info.Assists)|round(2) }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
             </div>
 
             {% if matches %}
@@ -140,65 +119,61 @@
 
                     <h3 class="d-inline-block">Latest Clan Matches</h3>
 
-                    <div class="row">
+                    {% for match in matches %}
+                        <div class="card mb-3 box-shadow">
 
-                        {% for match in matches %}
-                        <div class="col-sm-12 mb-3">
-                            <div class="card mb-2 box-shadow">
+                        <div class="card-header">
+                        <span class="d-inline-block">
+                            <strong>{{ match.matchType }}</strong> |
+                            {{ match.date|date }} |
+                            <strong>{{ match.minutes }}</strong> minutes
+                        </span>
+                            <a class="btn btn-sm btn-primary float-right" href="{{ path('match_view', {id: match.smiteMatchId}) }}">View full match report</a>
+                        </div>
 
-                                <div class="card-header">
-                                    <div class="float-left">
+                        <div class="card-body">
+                            <div class="row mt-1">
 
-                                    </div>
-                                    <div class="float-right">
-                                        <strong>{{ match.matchType }}</strong> |
-                                        {{ match.date|date }} |
-                                        <strong>{{ match.minutes }}</strong> minutes
-                                    </div>
-                                </div>
+                                {% for taskforceId, matchPlayers in match.playersByTeamIndex %}
+                                    <div class="col-xs-12 col-sm-6">
+                                        <table class="stats-table table table-sm table-striped mb-0 {% if taskforceId == match.winningTaskforce %}border-success{% else %}border-danger{% endif %}">
+                                            <tbody>
+                                            {% for matchPlayer in matchPlayers %}
+                                                <tr>
+                                                    <td>
+                                                        {% if match.winningTaskforce == taskforceId %}
+                                                            <span class="p-1 rounded bg-success"><strong>W</strong></span>
+                                                        {% else %}
+                                                            <span class="p-1 rounded bg-danger"><strong>L</strong></span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <div class="player-smite-god player-smite-god-small" style="background-image: url('https://web2.hirez.com/smite/god-cards/{{ matchPlayer.ReferenceName|slug }}.jpg')"></div>
+                                                    </td>
+                                                    <td>
+                                                        {% if matchPlayer.smitePlayer and matchPlayer.smitePlayer.name|clan_remove|slug %}
+                                                            <a class="d-inline-block" href="{{ path('player_view', {
+                                                                gamertag: matchPlayer.smitePlayer.name|clan_remove|slug,
+                                                                id: matchPlayer.smitePlayer.smitePlayerId
+                                                            }) }}" title="Smite Player {{ matchPlayer.smitePlayer.name }}">{{ matchPlayer.smitePlayer.name }}</a>
+                                                        {% else %}
+                                                            <span class="d-inline-block">Unknown</span>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
 
-                                <div class="card-body">
-                                    <div class="row mt-1">
-
-                                        {% for taskforceId, matchPlayers in match.playersByTeamIndex %}
-                                        <div class="col-6">
-                                            <ul class="list-unstyled mb-0 mb-1 mb-sm-0 mb-md-0 mb-lg-0 p-1 border rounded {% if taskforceId == match.winningTaskforce %}border-success{% else %}border-danger{% endif %}">
-                                                {% for matchPlayer in matchPlayers %}
-                                                <li class="pb-1">
-
-                                                    <div class="row">
-                                                        <div class="col-6">
-                                                            <div class="player-smite-god player-smite-god-small" style="background-image: url('https://web2.hirez.com/smite/god-cards/{{ matchPlayer.ReferenceName|slug }}.jpg')"></div>
-                                                            {% if matchPlayer.smitePlayer and matchPlayer.smitePlayer.name|clan_remove|slug %}
-                                                                <a class="d-inline-block" href="{{ path('player_view', {
-                                                                    gamertag: matchPlayer.smitePlayer.name|clan_remove|slug,
-                                                                    id: matchPlayer.smitePlayer.smitePlayerId
-                                                                }) }}" title="Smite Player {{ matchPlayer.smitePlayer.name }}">{{ matchPlayer.smitePlayer.name }}</a>
-                                                            {% else %}
-                                                                <span class="d-inline-block">Unknown</span>
-                                                            {% endif %}
-                                                        </div>
-                                                        <div class="col-6">
-                                                            {{ matchPlayer.killsPlayer }} / {{ matchPlayer.deaths }} / {{ matchPlayer.assists }}
-                                                        </div>
-                                                    </div>
-
-                                                </li>
-                                                {% endfor %}
-                                            </ul>
-                                        </div>
-                                        {% endfor %}
+                                            </tbody>
+                                        </table>
 
                                     </div>
-                                </div>
-                                <div class="card-footer">
-                                    <a class="btn btn-sm btn-primary float-right" href="{{ path('match_view', {id: match.smiteMatchId}) }}">View full match report</a>
-                                </div>
+                                {% endfor %}
 
                             </div>
+
                         </div>
-                        {% endfor %}
                     </div>
+                    {% endfor %}
 
                 </div>
             </div>

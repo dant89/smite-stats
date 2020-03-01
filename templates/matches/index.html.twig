@@ -19,15 +19,66 @@
             </nav>
 
             <div class="row">
-
                 <div class="col-12">
                     <h1>Latest Smite Matches</h1>
 
-                    {% for matchId, match in matches %}
-                        <a href="{{ path('match_view', {'id': matchId}) }}">{{ match.matchType }}</a><br />
-                    {% endfor %}
-                </div>
+                    {% for match in matches %}
+                    <div class="card mb-3 box-shadow">
 
+                        <div class="card-header">
+                            <span class="d-inline-block">
+                                <strong>{{ match.matchType }}</strong> |
+                                {{ match.date|date }} |
+                                <strong>{{ match.minutes }}</strong> minutes
+                            </span>
+                            <a class="btn btn-sm btn-primary float-right" href="{{ path('match_view', {id: match.smiteMatchId}) }}">View full match report</a>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row mt-1">
+
+                                {% for taskforceId, matchPlayers in match.playersByTeamIndex %}
+                                <div class="col-xs-12 col-sm-6">
+                                    <table class="stats-table table table-sm table-striped mb-0 {% if taskforceId == match.winningTaskforce %}border-success{% else %}border-danger{% endif %}">
+                                        <tbody>
+                                        {% for matchPlayer in matchPlayers %}
+                                            <tr>
+                                                <td>
+                                                    {% if match.winningTaskforce == taskforceId %}
+                                                        <span class="p-1 rounded bg-success"><strong>W</strong></span>
+                                                    {% else %}
+                                                        <span class="p-1 rounded bg-danger"><strong>L</strong></span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <div class="player-smite-god player-smite-god-small" style="background-image: url('https://web2.hirez.com/smite/god-cards/{{ matchPlayer.ReferenceName|slug }}.jpg')"></div>
+                                                </td>
+                                                <td>
+                                                    {% if matchPlayer.smitePlayer and matchPlayer.smitePlayer.name|clan_remove|slug %}
+                                                        <a class="d-inline-block" href="{{ path('player_view', {
+                                                            gamertag: matchPlayer.smitePlayer.name|clan_remove|slug,
+                                                            id: matchPlayer.smitePlayer.smitePlayerId
+                                                        }) }}" title="Smite Player {{ matchPlayer.smitePlayer.name }}">{{ matchPlayer.smitePlayer.name }}</a>
+                                                    {% else %}
+                                                        <span class="d-inline-block">Unknown</span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                                {% endfor %}
+
+                            </div>
+
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
             </div>
 
         </div>

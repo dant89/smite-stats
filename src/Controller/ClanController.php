@@ -47,8 +47,8 @@ class ClanController extends AbstractController
      */
     public function index(string $name): Response
     {
-        // Check to see if we have this clan stored in the database
         $clanRepo = $this->entityManager->getRepository(Clan::class);
+
         /** @var Clan $clan */
         $clan = $clanRepo->findOneBy(['name' => $name]);
 
