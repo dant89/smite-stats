@@ -1,0 +1,266 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Smite Create Build - Unofficial SMITE{% endblock %}
+
+{% block header_meta %}
+    <link rel="canonical" href="https://smitestats.com/builds/create" />
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        (function () {
+            'use strict';
+
+            angular.module("buildsApp", [])
+                .config(['$interpolateProvider', function ($interpolateProvider) {
+                    $interpolateProvider.startSymbol('{[{').endSymbol('}]}');
+                }])
+
+                .controller("BuildController",
+                    ['$scope', '$http', function ($scope, $http) {
+
+                        $scope.gods = false;
+                        $scope.items = [];
+
+                        $scope.selectedGod = null;
+
+                        function getGods()
+                        {
+                            return $http.get('/api/gods')
+                                .catch(function (response) {
+                                    throw new Error(response.data);
+                                }).then(function (response) {
+                                    $scope.gods = response.data;
+                                });
+                        }
+                        getGods();
+
+                        function getItems()
+                        {
+                            return $http.get('/api/items')
+                                .catch(function (response) {
+                                    throw new Error(response.data);
+                                }).then(function (response) {
+                                    $scope.gods = response.data;
+                                });
+                        }
+
+
+                    }]);
+        })();
+        
+        $(function() {
+
+            // Fetching data
+            //var fruitCount = $(this).data('fruit');
+
+            // If you updated the value, you will need to use below code to fetch new value
+            // otherwise above gives the old value which is intially set.
+            // And also above does not work in ***Firefox***, so use below code to fetch value
+            //var fruitCount = $(this).attr('data-fruit');
+
+            // Assigning data
+            //$(this).attr('data-fruit','7')
+
+            var buildItems = [];
+            var buildPrice = 0;
+
+            function populateBuildItems()
+            {
+                for (let i = 1; i <= 6; i++) {
+                    let content = null;
+                    if (buildItems[(i - 1)]) {
+                        content = '<div><img src="' + buildItems[(i - 1)].url + '"/></div>';
+                    }
+                    $("#item-" + i + " .item").html(content);
+                }
+                $("#cost").html(buildPrice);
+            }
+
+            $(document).on("click", ".item", function () {
+                if (buildItems.length < 6) {
+
+                    var itemId = $(this).data('item-id');
+
+                    let flag = false;
+                    buildItems.forEach(function (buildItem) {
+                        console.log(buildItem);
+                        if (buildItem.itemId === itemId) {
+                            flag = true;
+                        }
+                    });
+
+                    if (flag) {
+                        return;
+                    }
+
+                    var item = {
+                        id: (buildItems.length + 1),
+                        itemId: $(this).data('item-id'),
+                        price: $(this).data('price'),
+                        tier: $(this).data('tier'),
+                        url: $(this).data('url'),
+                    };
+                    buildPrice = (buildPrice + item.price);
+                    buildItems.push(item);
+                    populateBuildItems();
+                }
+            });
+
+            $(document).on("click", ".build-items button", function () {
+                if (buildItems.length > 0) {
+                    var id = ($(this).parent().data('id') - 1);
+                    buildPrice = (buildPrice - buildItems[id].price);
+                    buildItems.splice(id, 1);
+                    populateBuildItems();
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="bg-light pt-3 pb-5" ng-app = "buildsApp">
+        <div class="container" ng-controller = "BuildController">
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('builds') }}">Builds</a></li>
+                    <li class="breadcrumb-item active">Create Build</li>
+                </ol>
+            </nav>
+
+            <h1>Smite Create Build</h1>
+
+            <div ng-if="!gods">
+                <i class="fa fa-spinner fa-spin"></i>
+            </div>
+
+            <div ng-if="gods">
+
+                <label for="godSelect">Choose a God:</label>
+                <select id="godSelect"
+                        ng-options="god.name for god in gods track by god.id"
+                        ng-model="selectedGod"></select>
+
+                <div ng-if="selectedGod">
+
+                    <h2>{[{ selectedGod.name }]} Build</h2>
+
+                    <!--
+                    attackSpeed: 0.95
+                    attackSpeedPerLevel: 0.012
+                    hp5PerLevel: 0.75
+                    health: 475
+                    healthPerFive: 9
+                    healthPerLevel: 85
+                    mp5PerLevel: 0.39
+                    magicProtection: 30
+                    magicProtectionPerLevel: 0.9
+                    magicalPower: 0
+                    magicalPowerPerLevel: 0
+                    mana: 205
+                    manaPerFive: 4.7
+                    manaPerLevel: 35
+                    physicalPower: 38
+                    physicalPowerPerLevel: 2
+                    physicalProtection: 17
+                    physicalProtectionPerLevel: 3
+                    speed: 370
+                    -->
+
+                    <hr />
+
+                    Attack Speed: {[{ selectedGod.attackSpeed }]}<br />
+                    Health: {[{ selectedGod.health }]}<br />
+                    Magical Protection: {[{ selectedGod.magicProtection }]}<br />
+                    Magical Power: {[{ selectedGod.magicalPower }]}<br />
+                    Mana: {[{ selectedGod.mana }]}<br />
+                    Physical Power: {[{ selectedGod.physicalPower }]}<br />
+                    Physical Protection: {[{ selectedGod.physicalProtection }]}<br />
+                    Speed: {[{ selectedGod.speed }]}
+
+                    <hr />
+
+                    <!--
+                    Which are in percent?
+
+                    Might be easier to convert all to int if it's as simple as which effect types are percent vs int
+
+
+                    Magical Power
+                    Mana
+                    MP5
+                    Physical Power
+                    Health
+                    Physical Protection
+                    Magical Lifesteal
+                    Magical Penetration
+                    Crowd Control Reduction
+                    Cooldown Reduction
+                    Physical Lifesteal
+                    Critical Strike Chance
+                    HP5
+                    Attack Speed
+                    Magical Protection
+                    Physical Penetration
+                    Movement Speed
+                    Crowd Control Reduction:
+                    Penetration
+                    HP5 & MP5
+                    -->
+
+                    <div class="row build-items mb-4">
+                        <div class="col-12">
+                            <ul>
+                                <li>Build Cost: <span id="cost">0</span></li>
+                                <li>Attack Speed: <span id="cost">0</span></li>
+                                <li>Build Cost: <span id="cost">0</span></li>
+                                <li>Build Cost: <span id="cost">0</span></li>
+                                <li>Build Cost: <span id="cost">0</span></li>
+                            </ul>
+                        </div>
+                        {% for i in 1..6 %}
+                        <div class="col-4 border" id="item-{{ i }}" data-id="{{ i }}">
+                            <button class="btn btn-sm float-right" type="button">
+                                <i class="fa fa-times"></i>
+                            </button>
+                            <div class="item">
+
+                            </div>
+                            &nbsp;
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+
+                            <ul class="list-unstyled items">
+                                {% for match_item in match_items %}
+                                <li class="d-inline-block item"
+                                    data-item-id="{{ match_item.itemId }}"
+                                    data-price="{{ match_item.price }}"
+                                    data-tier="{{ match_item.tier }}"
+                                    data-url="{{ match_item.iconUrl }}"
+                                    {% for match_item_effect in match_item.matchItemEffects %}
+                                        data-{{ match_item_effect.description|slug }}="{{ match_item_effect.value }}"
+                                    {% endfor %}
+                                >
+                                    <img class="mb-1" style="max-width: 100px;" src="{{ match_item.iconUrl }}" />
+                                </li>
+                                {% endfor %}
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
