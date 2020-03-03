@@ -81,4 +81,94 @@ class GodRepository extends ServiceEntityRepository
 
         return $stmt->fetchAll();
     }
+
+    public function findTopMinionKillingGods(int $limit = 10, int $offset = 0)
+    {
+        $conn = $this->getEntityManager()
+            ->getConnection();
+
+        $stmt = $conn->prepare('SELECT g.`name`, g.roles, mp.count
+            FROM (
+                SELECT god_id, SUM(minion_kills) AS count
+                FROM match_player 
+                WHERE win_status = "Winner"
+                GROUP BY god_id
+                ORDER BY count DESC
+                LIMIT :offset, :limit
+            ) AS mp
+            INNER JOIN god g ON mp.god_id = g.smite_id ');
+
+        $stmt->bindParam(':limit', $limit, ParameterType::INTEGER);
+        $stmt->bindParam(':offset', $offset, ParameterType::INTEGER);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
+    public function findLeastPlayedGods(int $limit = 10, int $offset = 0)
+    {
+        $conn = $this->getEntityManager()
+            ->getConnection();
+
+        $stmt = $conn->prepare('SELECT g.`name`, g.roles, mp.count
+            FROM (
+                SELECT god_id, SUM(god_id) AS count
+                FROM match_player 
+                GROUP BY god_id
+                ORDER BY count ASC
+                LIMIT :offset, :limit
+            ) AS mp
+            INNER JOIN god g ON mp.god_id = g.smite_id ');
+
+        $stmt->bindParam(':limit', $limit, ParameterType::INTEGER);
+        $stmt->bindParam(':offset', $offset, ParameterType::INTEGER);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
+    public function findTopPlayedGods(int $limit = 10, int $offset = 0)
+    {
+        $conn = $this->getEntityManager()
+            ->getConnection();
+
+        $stmt = $conn->prepare('SELECT g.`name`, g.roles, mp.count
+            FROM (
+                SELECT god_id, SUM(god_id) AS count
+                FROM match_player 
+                GROUP BY god_id
+                ORDER BY count DESC
+                LIMIT :offset, :limit
+            ) AS mp
+            INNER JOIN god g ON mp.god_id = g.smite_id ');
+
+        $stmt->bindParam(':limit', $limit, ParameterType::INTEGER);
+        $stmt->bindParam(':offset', $offset, ParameterType::INTEGER);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
+    public function findTopWinGods(int $limit = 10, int $offset = 0)
+    {
+        $conn = $this->getEntityManager()
+            ->getConnection();
+
+        $stmt = $conn->prepare('SELECT g.`name`, g.roles, mp.count
+            FROM (
+                SELECT god_id, SUM(god_id) AS count
+                FROM match_player 
+                WHERE win_status = "Winner"
+                GROUP BY god_id
+                ORDER BY count DESC
+                LIMIT :offset, :limit
+            ) AS mp
+            INNER JOIN god g ON mp.god_id = g.smite_id ');
+
+        $stmt->bindParam(':limit', $limit, ParameterType::INTEGER);
+        $stmt->bindParam(':offset', $offset, ParameterType::INTEGER);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
 }

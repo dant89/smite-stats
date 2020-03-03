@@ -6,8 +6,55 @@
     <link rel="canonical" href="https://smitestats.com/player/" />
 {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        var ctxPlayerBands = document.getElementById('winPlayerBands');
+        var winPlayerBands = new Chart(ctxPlayerBands, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Players per Level',
+                    borderColor: 'red',
+                    backgroundColor: 'red',
+                    data: {{ player_level_bands|json_encode|raw }},
+                }],
+            },
+            options: {
+                scales: {
+                    xAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Amount of Players'
+                        },
+                    }],
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Level'
+                        },
+                    }]
+                }
+            }
+        });
+
+        var ctxPlayerTiers = document.getElementById('playerTiers');
+        var playerTiersChart = new Chart(ctxPlayerTiers, {
+            type: 'bar',
+            data: {
+                labels: {{ player_tiers.labels|json_encode|raw }},
+                datasets: [{
+                    label: 'Players in competitive tier',
+                    data: {{ player_tiers.data|json_encode|raw }}
+                }]
+            }
+        });
+    </script>
+{% endblock %}
+
 {% block body %}
-    <div class="bg-light pt-3 pb-5">
+    <div class="bg-light pt-3 pb-2">
         <div class="container">
 
             <nav aria-label="breadcrumb">
@@ -18,6 +65,29 @@
             </nav>
 
             <h1>Smite Players</h1>
+
+        </div>
+    </div>
+
+    <div class="bg-white pt-3 pb-3">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-6">
+                    <canvas id="playerTiers" width="400" height="350"></canvas>
+                </div>
+                <div class="col-6">
+                    <canvas id="winPlayerBands" width="400" height="350"></canvas>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="bg-light pt-3 pb-3">
+        <div class="container">
+
+            <h2>Recent Players</h2>
 
             <div class="row">
 

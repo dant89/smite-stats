@@ -69,12 +69,65 @@ class PlayerController extends AbstractController
     public function index(): Response
     {
         $playerRepo = $this->entityManager->getRepository(Player::class);
+
         /** @var Player $player */
         $newestPlayersQuery = $playerRepo->findNewestPlayerNameNotNullQuery(30);
         $newestPlayers = $newestPlayersQuery->execute();
 
+        $playerLevelBands = $playerRepo->findCountOfPlayersByLevel();
+
+        $bands = [];
+        foreach ($playerLevelBands as $key => $playerLevelBand) {
+            $bands[] = [
+                'x' => (int) $playerLevelBand['count'],
+                'y' => (int) $playerLevelBand['level']
+            ];
+        }
+
+        # TODO move to somewhere better suited, itemService ?
+        $tierMap = [
+            1 => 'Bronze V',
+            2 => 'Bronze IV',
+            3 => 'Bronze III',
+            4 => 'Bronze II',
+            5 => 'Bronze I',
+            6 => 'Silver V',
+            7 => 'Silver IV',
+            8 => 'Silver III',
+            9 => 'Silver II',
+            10 => 'Silver I',
+            11 => 'Gold V',
+            12 => 'Gold IV',
+            13 => 'Gold III',
+            14 => 'Gold II',
+            15 => 'Gold I',
+            16 => 'Platinum V',
+            17 => 'Platinum IV',
+            18 => 'Platinum III',
+            19 => 'Platinum II',
+            20 => 'Platinum I',
+            21 => 'Diamond V',
+            22 => 'Diamond IV',
+            23 => 'Diamond III',
+            24 => 'Diamond II',
+            25 => 'Diamond I',
+            26 => 'Masters I',
+            27 => 'Grandmaster'
+        ];
+
+        $playersByTier = $playerRepo->findCountOfPlayersByTier('joust');
+        $tiersData = [];
+        foreach ($playersByTier as $key => $playerByTier) {
+            if ($playerByTier['tier_joust'] !== "0" && $playerByTier['tier_sum'] !== "0") {
+                $tiersData['labels'][] = $tierMap[$playerByTier['tier_joust']];
+                $tiersData['data'][] = $playerByTier['tier_sum'];
+            }
+        }
+
         return $this->render('player/index.html.twig', [
-            'newest_players' => $newestPlayers
+            'newest_players' => $newestPlayers,
+            'player_level_bands' => $bands,
+            'player_tiers' => $tiersData
         ]);
     }
 
@@ -133,6 +186,7 @@ class PlayerController extends AbstractController
         if (is_null($playerAchievements) ||
             $this->helperService->getMinutesLastUpdated($playerAchievements->getDateUpdated()) > 30
         ) {
+
             $this->playerService->updatePlayerAchievements($player);
             $playerAchievements = $playerAchievementsRepo->findOneBy(['smitePlayer' => $player]);
         }
