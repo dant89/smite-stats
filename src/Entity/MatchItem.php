@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(name="match_item", uniqueConstraints={@ORM\UniqueConstraint(name="unique_match_item", columns={"item_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\MatchItemRepository")
  */
 class MatchItem
 {
