@@ -21,10 +21,29 @@
                 .controller("BuildController",
                     ['$scope', '$http', function ($scope, $http) {
 
-                        $scope.gods = false;
-                        $scope.items = [];
+                        $scope.buildItems = [];
+                        $scope.buildPrice = 0;
 
+                        $scope.buildPowers = {
+                            attackSpeed: 0,
+                            health: 0,
+                            healthPerFive: 0,
+                            magicalPower: 0,
+                            magicalProtection: 0,
+                            mana: 0,
+                            manaPerFive: 0,
+                            physicalPower: 0,
+                            physicalProtection: 0,
+                            movementSpeed: 0
+                        };
+
+                        $scope.gods = false;
+                        $scope.matchItems = [];
+
+                        $scope.godLevel = 1;
                         $scope.selectedGod = null;
+
+                        $scope.savedItems = [];
 
                         function getGods()
                         {
@@ -39,85 +58,180 @@
 
                         function getItems()
                         {
-                            return $http.get('/api/items')
+                            return $http.get('/api/match-items')
                                 .catch(function (response) {
                                     throw new Error(response.data);
                                 }).then(function (response) {
-                                    $scope.gods = response.data;
+                                    $scope.matchItems = response.data;
+                                    populateSavedItems();
                                 });
                         }
+                        getItems();
 
-
-                    }]);
-        })();
-        
-        $(function() {
-
-            // Fetching data
-            //var fruitCount = $(this).data('fruit');
-
-            // If you updated the value, you will need to use below code to fetch new value
-            // otherwise above gives the old value which is intially set.
-            // And also above does not work in ***Firefox***, so use below code to fetch value
-            //var fruitCount = $(this).attr('data-fruit');
-
-            // Assigning data
-            //$(this).attr('data-fruit','7')
-
-            var buildItems = [];
-            var buildPrice = 0;
-
-            function populateBuildItems()
-            {
-                for (let i = 1; i <= 6; i++) {
-                    let content = null;
-                    if (buildItems[(i - 1)]) {
-                        content = '<div><img src="' + buildItems[(i - 1)].url + '"/></div>';
-                    }
-                    $("#item-" + i + " .item").html(content);
-                }
-                $("#cost").html(buildPrice);
-            }
-
-            $(document).on("click", ".item", function () {
-                if (buildItems.length < 6) {
-
-                    var itemId = $(this).data('item-id');
-
-                    let flag = false;
-                    buildItems.forEach(function (buildItem) {
-                        console.log(buildItem);
-                        if (buildItem.itemId === itemId) {
-                            flag = true;
+                        function populateSavedItems()
+                        {
+                            $scope.matchItems.forEach(function (matchItem) {
+                                if ($scope.savedItems.includes(matchItem.id)) {
+                                    $scope.buildItems.push(matchItem);
+                                    $scope.buildPrice = ($scope.buildPrice + matchItem.price);
+                                    matchItem.items.forEach(function (buildItemEffect) {
+                                        if (buildItemEffect.description === 'Attack Speed') {
+                                            $scope.buildPowers.attackSpeed = ($scope.buildPowers.attackSpeed + buildItemEffect.value);
+                                        }
+                                        if (buildItemEffect.description === 'Magical Power') {
+                                            $scope.buildPowers.magicalPower = ($scope.buildPowers.magicalPower + buildItemEffect.value);
+                                        }
+                                        if (buildItemEffect.description === 'Movement Speed') {
+                                            $scope.buildPowers.movementSpeed = ($scope.buildPowers.movementSpeed + buildItemEffect.value);
+                                        }
+                                        if (buildItemEffect.description === 'Physical Power') {
+                                            $scope.buildPowers.physicalPower = ($scope.buildPowers.physicalPower + buildItemEffect.value);
+                                        }
+                                        if (buildItemEffect.description === 'Physical Protection') {
+                                            $scope.buildPowers.physicalProtection = ($scope.buildPowers.physicalProtection + buildItemEffect.value);
+                                        }
+                                        if (buildItemEffect.description === 'Magical Protection') {
+                                            $scope.buildPowers.magicalProtection = ($scope.buildPowers.magicalProtection + buildItemEffect.value);
+                                        }
+                                        if (buildItemEffect.description === 'Health') {
+                                            $scope.buildPowers.health = ($scope.buildPowers.health + buildItemEffect.value);
+                                        }
+                                        if (buildItemEffect.description === 'Mana') {
+                                            $scope.buildPowers.mana = ($scope.buildPowers.mana + buildItemEffect.value);
+                                        }
+                                        if (buildItemEffect.description === 'HP5') {
+                                            $scope.buildPowers.healthPerFive = ($scope.buildPowers.healthPerFive + buildItemEffect.value);
+                                        }
+                                        if (buildItemEffect.description === 'MP5') {
+                                            $scope.buildPowers.manaPerFive = ($scope.buildPowers.manaPerFive + buildItemEffect.value);
+                                        }
+                                    });
+                                }
+                            });
                         }
-                    });
 
-                    if (flag) {
-                        return;
-                    }
+                        $scope.addBuildItem = function (item) {
 
-                    var item = {
-                        id: (buildItems.length + 1),
-                        itemId: $(this).data('item-id'),
-                        price: $(this).data('price'),
-                        tier: $(this).data('tier'),
-                        url: $(this).data('url'),
+                            if ($scope.buildItems.length < 6) {
+
+                                console.log(item);
+
+                                let flag = false;
+                                $scope.buildItems.forEach(function (buildItem) {
+                                    if (buildItem.id === item.id) {
+                                        flag = true;
+                                    }
+                                });
+
+                                if (flag) {
+                                    return;
+                                }
+
+                                item.items.forEach(function (buildItemEffect) {
+                                    if (buildItemEffect.description === 'Attack Speed') {
+                                        $scope.buildPowers.attackSpeed = ($scope.buildPowers.attackSpeed + buildItemEffect.value);
+                                    }
+                                    if (buildItemEffect.description === 'Magical Power') {
+                                        $scope.buildPowers.magicalPower = ($scope.buildPowers.magicalPower + buildItemEffect.value);
+                                    }
+                                    if (buildItemEffect.description === 'Movement Speed') {
+                                        $scope.buildPowers.movementSpeed = ($scope.buildPowers.movementSpeed + buildItemEffect.value);
+                                    }
+                                    if (buildItemEffect.description === 'Physical Power') {
+                                        $scope.buildPowers.physicalPower = ($scope.buildPowers.physicalPower + buildItemEffect.value);
+                                    }
+                                    if (buildItemEffect.description === 'Physical Protection') {
+                                        $scope.buildPowers.physicalProtection = ($scope.buildPowers.physicalProtection + buildItemEffect.value);
+                                    }
+                                    if (buildItemEffect.description === 'Magical Protection') {
+                                        $scope.buildPowers.magicalProtection = ($scope.buildPowers.magicalProtection + buildItemEffect.value);
+                                    }
+                                    if (buildItemEffect.description === 'Health') {
+                                        $scope.buildPowers.health = ($scope.buildPowers.health + buildItemEffect.value);
+                                    }
+                                    if (buildItemEffect.description === 'Mana') {
+                                        $scope.buildPowers.mana = ($scope.buildPowers.mana + buildItemEffect.value);
+                                    }
+                                    if (buildItemEffect.description === 'HP5') {
+                                        $scope.buildPowers.healthPerFive = ($scope.buildPowers.healthPerFive + buildItemEffect.value);
+                                    }
+                                    if (buildItemEffect.description === 'MP5') {
+                                        $scope.buildPowers.manaPerFive = ($scope.buildPowers.manaPerFive + buildItemEffect.value);
+                                    }
+                                });
+
+                                $scope.buildPrice = ($scope.buildPrice + item.price);
+                                $scope.buildItems.push(item);
+                            }
+                        };
+
+                        $scope.removeBuildItem = function (item) {
+                            if ($scope.buildItems.length > 0) {
+                                $scope.buildPrice = ($scope.buildPrice - item.price);
+
+                                item.items.forEach(function (buildItemEffect) {
+                                    if (buildItemEffect.description === 'Attack Speed') {
+                                        $scope.buildPowers.attackSpeed = ($scope.buildPowers.attackSpeed - buildItemEffect.value);
+                                    }
+                                    if (buildItemEffect.description === 'Magical Power') {
+                                        $scope.buildPowers.magicalPower = ($scope.buildPowers.magicalPower - buildItemEffect.value);
+                                    }
+                                    if (buildItemEffect.description === 'Movement Speed') {
+                                        $scope.buildPowers.movementSpeed = ($scope.buildPowers.movementSpeed - buildItemEffect.value);
+                                    }
+                                    if (buildItemEffect.description === 'Physical Power') {
+                                        $scope.buildPowers.physicalPower = ($scope.buildPowers.physicalPower - buildItemEffect.value);
+                                    }
+                                    if (buildItemEffect.description === 'Physical Protection') {
+                                        $scope.buildPowers.physicalProtection = ($scope.buildPowers.physicalProtection - buildItemEffect.value);
+                                    }
+                                    if (buildItemEffect.description === 'Magical Protection') {
+                                        $scope.buildPowers.magicalProtection = ($scope.buildPowers.magicalProtection - buildItemEffect.value);
+                                    }
+                                    if (buildItemEffect.description === 'Health') {
+                                        $scope.buildPowers.health = ($scope.buildPowers.health - buildItemEffect.value);
+                                    }
+                                    if (buildItemEffect.description === 'Mana') {
+                                        $scope.buildPowers.mana = ($scope.buildPowers.mana - buildItemEffect.value);
+                                    }
+                                    if (buildItemEffect.description === 'HP5') {
+                                        $scope.buildPowers.healthPerFive = ($scope.buildPowers.healthPerFive - buildItemEffect.value);
+                                    }
+                                    if (buildItemEffect.description === 'MP5') {
+                                        $scope.buildPowers.manaPerFive = ($scope.buildPowers.manaPerFive - buildItemEffect.value);
+                                    }
+                                });
+
+                                var index = $scope.buildItems.indexOf(item);
+                                $scope.buildItems.splice(index, 1);
+                            }
+                        };
+
+                        $scope.resetBuild = function () {
+                            $scope.buildItems = [];
+                            $scope.buildPrice = 0;
+                            $scope.buildPowers = {
+                                attackSpeed: 0,
+                                health: 0,
+                                healthPerFive: 0,
+                                magicalPower: 0,
+                                magicalProtection: 0,
+                                mana: 0,
+                                manaPerFive: 0,
+                                movementSpeed: 0,
+                                physicalPower: 0,
+                                physicalProtection: 0
+                            };
+                            $scope.godLevel = 1;
+                        };
+
+                }])
+                .filter('round', function() {
+                    return function (input) {
+                        return input.replace(/\.00$/,'');
                     };
-                    buildPrice = (buildPrice + item.price);
-                    buildItems.push(item);
-                    populateBuildItems();
-                }
-            });
-
-            $(document).on("click", ".build-items button", function () {
-                if (buildItems.length > 0) {
-                    var id = ($(this).parent().data('id') - 1);
-                    buildPrice = (buildPrice - buildItems[id].price);
-                    buildItems.splice(id, 1);
-                    populateBuildItems();
-                }
-            });
-        });
+                });
+        })();
     </script>
 {% endblock %}
 
@@ -133,7 +247,7 @@
                 </ol>
             </nav>
 
-            <h1>Smite Create Build</h1>
+            <h1>Create a Smite Build</h1>
 
             <div ng-if="!gods">
                 <i class="fa fa-spinner fa-spin"></i>
@@ -143,120 +257,312 @@
 
                 <label for="godSelect">Choose a God:</label>
                 <select id="godSelect"
+                        ng-change="resetBuild()"
                         ng-options="god.name for god in gods track by god.id"
                         ng-model="selectedGod"></select>
+
+                <hr />
 
                 <div ng-if="selectedGod">
 
                     <h2>{[{ selectedGod.name }]} Build</h2>
 
-                    <!--
-                    attackSpeed: 0.95
-                    attackSpeedPerLevel: 0.012
-                    hp5PerLevel: 0.75
-                    health: 475
-                    healthPerFive: 9
-                    healthPerLevel: 85
-                    mp5PerLevel: 0.39
-                    magicProtection: 30
-                    magicProtectionPerLevel: 0.9
-                    magicalPower: 0
-                    magicalPowerPerLevel: 0
-                    mana: 205
-                    manaPerFive: 4.7
-                    manaPerLevel: 35
-                    physicalPower: 38
-                    physicalPowerPerLevel: 2
-                    physicalProtection: 17
-                    physicalProtectionPerLevel: 3
-                    speed: 370
-                    -->
-
-                    <hr />
-
-                    Attack Speed: {[{ selectedGod.attackSpeed }]}<br />
-                    Health: {[{ selectedGod.health }]}<br />
-                    Magical Protection: {[{ selectedGod.magicProtection }]}<br />
-                    Magical Power: {[{ selectedGod.magicalPower }]}<br />
-                    Mana: {[{ selectedGod.mana }]}<br />
-                    Physical Power: {[{ selectedGod.physicalPower }]}<br />
-                    Physical Protection: {[{ selectedGod.physicalProtection }]}<br />
-                    Speed: {[{ selectedGod.speed }]}
-
-                    <hr />
-
-                    <!--
-                    Which are in percent?
-
-                    Might be easier to convert all to int if it's as simple as which effect types are percent vs int
-
-
-                    Magical Power
-                    Mana
-                    MP5
-                    Physical Power
-                    Health
-                    Physical Protection
-                    Magical Lifesteal
-                    Magical Penetration
-                    Crowd Control Reduction
-                    Cooldown Reduction
-                    Physical Lifesteal
-                    Critical Strike Chance
-                    HP5
-                    Attack Speed
-                    Magical Protection
-                    Physical Penetration
-                    Movement Speed
-                    Crowd Control Reduction:
-                    Penetration
-                    HP5 & MP5
-                    -->
-
                     <div class="row build-items mb-4">
-                        <div class="col-12">
-                            <ul>
-                                <li>Build Cost: <span id="cost">0</span></li>
-                                <li>Attack Speed: <span id="cost">0</span></li>
-                                <li>Build Cost: <span id="cost">0</span></li>
-                                <li>Build Cost: <span id="cost">0</span></li>
-                                <li>Build Cost: <span id="cost">0</span></li>
-                            </ul>
+                        <div class="col-4">
+                            <h5>Base Stats</h5>
+
+                            <table class="table table-sm table-striped bg-white">
+                                <tbody>
+                                    <tr>
+                                        <th>Attack Speed</th>
+                                        <td>{[{ selectedGod.attackSpeed + ((godLevel - 1) * selectedGod.attackSpeedPerLevel) | number: 2 | round }]} (+{[{ selectedGod.attackSpeedPerLevel }]})</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Cooldown</th>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Health</th>
+                                        <td>{[{ selectedGod.health + ((godLevel - 1) * selectedGod.healthPerLevel) | number: 2 | round  }]} (+{[{ selectedGod.healthPerLevel }]})</td>
+                                    </tr>
+                                    <tr>
+                                        <th>HP5</th>
+                                        <td>{[{ selectedGod.healthPerFive + ((godLevel - 1) * selectedGod.healthPerFive) | number: 2 | round  }]} (+{[{ selectedGod.healthPerFive }]})</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Lifesteal</th>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Magical Power</th>
+                                        <td>{[{ selectedGod.magicalPower + ((godLevel - 1) * selectedGod.magicalPowerPerLevel) | number: 2 | round  }]} (+{[{ selectedGod.magicalPowerPerLevel }]})</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Magical Protection</th>
+                                        <td>{[{ selectedGod.magicProtection + ((godLevel - 1) * selectedGod.magicProtectionPerLevel) | number: 2 | round  }]} (+{[{ selectedGod.magicProtectionPerLevel }]})</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Mana</th>
+                                        <td>{[{ selectedGod.mana + ((godLevel - 1) * selectedGod.manaPerLevel) }]} (+{[{ selectedGod.manaPerLevel | number: 2 | round  }]})</td>
+                                    </tr>
+                                    <tr>
+                                        <th>MP5</th>
+                                        <td>{[{ selectedGod.manaPerFive + ((godLevel - 1) * selectedGod.manaPerFive) }]} (+{[{ selectedGod.manaPerFive | number: 2 | round  }]})</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Movement Speed</th>
+                                        <td>{[{ selectedGod.speed | number: 2 | round  }]}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Penetration</th>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Physical Power</th>
+                                        <td>{[{ selectedGod.physicalPower + ((godLevel - 1) * selectedGod.physicalPowerPerLevel) | number: 2 | round  }]} (+{[{ selectedGod.physicalPowerPerLevel }]})</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Physical Protection</th>
+                                        <td>{[{ selectedGod.physicalProtection + ((godLevel - 1) * selectedGod.physicalProtectionPerLevel) | number: 2 | round  }]} (+{[{ selectedGod.physicalProtectionPerLevel }]})</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        {% for i in 1..6 %}
-                        <div class="col-4 border" id="item-{{ i }}" data-id="{{ i }}">
-                            <button class="btn btn-sm float-right" type="button">
+                        <div class="col-4">
+                            <h5>Build Additions</h5>
+                            <table class="table table-sm table-striped bg-white">
+                                <tbody>
+                                <tr>
+                                    <th>Attack Speed</th>
+                                    <td>{[{ buildPowers.attackSpeed }]}</td>
+                                </tr>
+                                <tr>
+                                    <th>Cooldown</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Health</th>
+                                    <td>{[{ buildPowers.health }]}</td>
+                                </tr>
+                                <tr>
+                                    <th>HP5</th>
+                                    <td>{[{ buildPowers.healthPerFive }]}</td>
+                                </tr>
+                                <tr>
+                                    <th>Lifesteal</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Magical Power</th>
+                                    <td>{[{ buildPowers.magicalPower }]}</td>
+                                </tr>
+                                <tr>
+                                    <th>Magical Protection</th>
+                                    <td>{[{ buildPowers.magicalProtection }]}</td>
+                                </tr>
+                                <tr>
+                                    <th>Mana</th>
+                                    <td>{[{ buildPowers.mana }]}</td>
+                                </tr>
+                                <tr>
+                                    <th>MP5</th>
+                                    <td>{[{ buildPowers.manaPerFive }]}</td>
+                                </tr>
+                                <tr>
+                                    <th>Movement Speed</th>
+                                    <td>{[{ buildPowers.movementSpeed }]}</td>
+                                </tr>
+                                <tr>
+                                    <th>Penetration</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Physical Power</th>
+                                    <td>{[{ buildPowers.physicalPower }]}</td>
+                                </tr>
+                                <tr>
+                                    <th>Physical Protection</th>
+                                    <td>{[{ buildPowers.physicalProtection }]}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-4">
+                            <h5>Build God Stats</h5>
+                            <table class="table table-sm table-striped bg-white">
+                                <tbody>
+                                <tr>
+                                    <th>Attack Speed</th>
+                                    <td>{[{ (selectedGod.attackSpeed + buildPowers.attackSpeed) + ((godLevel - 1) * selectedGod.attackSpeedPerLevel) | number: 2 | round }]} (+{[{ selectedGod.attackSpeedPerLevel }]})</td>
+                                </tr>
+                                <tr>
+                                    <th>Cooldown</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Health</th>
+                                    <td>{[{ (selectedGod.health + buildPowers.health) + ((godLevel - 1) * selectedGod.healthPerLevel) | number: 2 | round  }]} (+{[{ selectedGod.healthPerLevel }]})</td>
+                                </tr>
+                                <tr>
+                                    <th>HP5</th>
+                                    <td>{[{ (selectedGod.healthPerFive + buildPowers.healthPerFive) + ((godLevel - 1) * selectedGod.healthPerFive) | number: 2 | round  }]} (+{[{ selectedGod.healthPerFive }]})</td>
+                                </tr>
+                                <tr>
+                                    <th>Lifesteal</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Magical Power</th>
+                                    <td>{[{ (selectedGod.magicalPower + buildPowers.magicalPower) + ((godLevel - 1) * selectedGod.magicalPowerPerLevel) | number: 2 | round  }]} (+{[{ selectedGod.magicalPowerPerLevel }]})</td>
+                                </tr>
+                                <tr>
+                                    <th>Magical Protection</th>
+                                    <td>{[{ (selectedGod.magicProtection + buildPowers.magicalProtection) + ((godLevel - 1) * selectedGod.magicProtectionPerLevel) | number: 2 | round  }]} (+{[{ selectedGod.magicProtectionPerLevel }]})</td>
+                                </tr>
+                                <tr>
+                                    <th>Mana</th>
+                                    <td>{[{ (selectedGod.mana + buildPowers.mana) + ((godLevel - 1) * selectedGod.manaPerLevel) }]} (+{[{ selectedGod.manaPerLevel | number: 2 | round  }]})</td>
+                                </tr>
+                                <tr>
+                                    <th>MP5</th>
+                                    <td>{[{ (selectedGod.manaPerFive + buildPowers.manaPerFive)  + ((godLevel - 1) * selectedGod.manaPerFive) }]} (+{[{ selectedGod.manaPerFive | number: 2 | round  }]})</td>
+                                </tr>
+                                <tr>
+                                    <th>Movement Speed</th>
+                                    <td>{[{ (selectedGod.speed + buildPowers.movementSpeed) | number: 2 | round  }]}</td>
+                                </tr>
+                                <tr>
+                                    <th>Penetration</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Physical Power</th>
+                                    <td>{[{ (selectedGod.physicalPower + buildPowers.physicalPower) + ((godLevel - 1) * selectedGod.physicalPowerPerLevel) | number: 2 | round  }]} (+{[{ selectedGod.physicalPowerPerLevel }]})</td>
+                                </tr>
+                                <tr>
+                                    <th>Physical Protection</th>
+                                    <td>{[{ (selectedGod.physicalProtection + buildPowers.physicalProtection) + ((godLevel - 1) * selectedGod.physicalProtectionPerLevel) | number: 2 | round  }]} (+{[{ selectedGod.physicalProtectionPerLevel }]})</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span>Build Cost: <strong>{[{ buildPrice }]}</strong></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label><strong>God Level</strong>:</label>
+                            <input type="range" name="range" ng-model="godLevel" min="1"  max="20" /> <strong>{[{ godLevel }]}</strong><br />
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-danger" ng-click="resetBuild()" ng-if="buildItems.length > 0">Reset Build Items</button>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="row mb-5">
+                        {% for i in 0..5 %}
+                        <div class="col-2" style="position: relative;">
+                            <button class="btn btn-sm float-right" style="position: absolute; color:#ff0000; font-size:20px; top: 0px; right:15px; z-index:2;" type="button" ng-if="buildItems[{{ i }}]" ng-click="removeBuildItem(buildItems[ {{ i }} ])">
                                 <i class="fa fa-times"></i>
                             </button>
-                            <div class="item">
-
+                            <div class="bg-white border text-center pt-3 pb-2">
+                                <div class="item" ng-if="buildItems[ {{ i }} ]">
+                                    <img class="rounded" src="{[{ buildItems[ {{ i }} ].icon_url }]}" style="max-width:100%;" /><br />
+                                    <span>{[{ buildItems[ {{ i }} ].name }]}</span>
+                                </div>
+                                <p ng-if="!buildItems[ {{ i }} ]">Select an item.</p>
                             </div>
-                            &nbsp;
                         </div>
                         {% endfor %}
                     </div>
 
-                    <div class="row">
-                        <div class="col">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#tierAll">All</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#starting">Starting Items</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#tierOne">Tier 1</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#tierTwo">Tier 2</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#tierThree">Tier 3</a>
+                        </li>
+                    </ul>
 
-                            <ul class="list-unstyled items">
-                                {% for match_item in match_items %}
-                                <li class="d-inline-block item"
-                                    data-item-id="{{ match_item.itemId }}"
-                                    data-price="{{ match_item.price }}"
-                                    data-tier="{{ match_item.tier }}"
-                                    data-url="{{ match_item.iconUrl }}"
-                                    {% for match_item_effect in match_item.matchItemEffects %}
-                                        data-{{ match_item_effect.description|slug }}="{{ match_item_effect.value }}"
-                                    {% endfor %}
-                                >
-                                    <img class="mb-1" style="max-width: 100px;" src="{{ match_item.iconUrl }}" />
-                                </li>
-                                {% endfor %}
-                            </ul>
+                    <div class="tab-content bg-white p-4 border border-top-0 rounded-bottom">
+                        <div id="tierAll" class="tab-pane fade show active">
+
+                            <div class="row">
+                                <div class="col-md-2 mb-3 text-center" ng-repeat="matchItem in matchItems">
+
+                                    <img class="mb-1 rounded" style="width:128px; max-width:100%" ng-click="addBuildItem(matchItem)" src="{[{ matchItem.icon_url }]}" /><br />
+                                    <span>{[{ matchItem.name }]}</span>
+
+                                </div>
+                            </div>
 
                         </div>
+                        <div id="starting" class="tab-pane fade">
+
+                            <div class="row">
+                                <div class="col-md-2 mb-3 text-center" ng-if="matchItem.starting_item == '1'" ng-repeat="matchItem in matchItems">
+
+                                    <img class="mb-1 rounded" style="width:128px; max-width:100%" ng-click="addBuildItem(matchItem)" src="{[{ matchItem.icon_url }]}" /><br />
+                                    <span>{[{ matchItem.name }]}</span>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <div id="tierOne" class="tab-pane fade">
+
+                            <div class="row">
+                                <div class="col-md-2 mb-3 text-center" ng-if="matchItem.tier == '1' && matchItem.starting_item == '0'" ng-repeat="matchItem in matchItems">
+
+                                    <img class="mb-1 rounded" style="width:128px; max-width:100%" ng-click="addBuildItem(matchItem)" src="{[{ matchItem.icon_url }]}" /><br />
+                                    <span>{[{ matchItem.name }]}</span>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <div id="tierTwo" class="tab-pane fade">
+
+                            <div class="row">
+                                <div class="col-md-2 mb-3 text-center" ng-if="matchItem.tier == '2'" ng-repeat="matchItem in matchItems">
+
+                                    <img class="mb-1 rounded" style="width:128px; max-width:100%" ng-click="addBuildItem(matchItem)" src="{[{ matchItem.icon_url }]}" /><br />
+                                    <span>{[{ matchItem.name }]}</span>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <div id="tierThree" class="tab-pane fade">
+
+                            <div class="row">
+                                <div class="col-md-2 mb-3 text-center" ng-if="matchItem.tier == '3'" ng-repeat="matchItem in matchItems">
+
+                                    <img class="mb-1 rounded" style="width:128px; max-width:100%" ng-click="addBuildItem(matchItem)" src="{[{ matchItem.icon_url }]}" /><br />
+                                    <span>{[{ matchItem.name }]}</span>
+
+                                </div>
+                            </div>
+
+                        </div>
+
                     </div>
+
+
                 </div>
             </div>
 
