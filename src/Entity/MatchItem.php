@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(name="match_item", uniqueConstraints={@ORM\UniqueConstraint(name="unique_match_item", columns={"item_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\MatchItemRepository")
  */
 class MatchItem
 {
@@ -19,6 +19,11 @@ class MatchItem
      * @ORM\OneToMany(targetEntity="MatchPlayerAbility", mappedBy="ability")
      */
     private $matchPlayerAbilities;
+
+    /**
+     * @ORM\OneToMany(targetEntity="MatchItemEffect", mappedBy="matchItem")
+     */
+    private $matchItemEffects;
 
     /**
      * @var int
@@ -160,6 +165,24 @@ class MatchItem
     public function setMatchPlayerAbilities($matchPlayerAbilities)
     {
         $this->matchPlayerAbilities = $matchPlayerAbilities;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMatchItemEffects()
+    {
+        return $this->matchItemEffects;
+    }
+
+    /**
+     * @param mixed $matchItemEffects
+     * @return MatchItem
+     */
+    public function setMatchItemEffects($matchItemEffects)
+    {
+        $this->matchItemEffects = $matchItemEffects;
         return $this;
     }
 

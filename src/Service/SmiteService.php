@@ -499,7 +499,7 @@ class SmiteService
             return null;
         }
 
-        $cacheKey = $this->generateCacheKey('smite_itemsa');
+        $cacheKey = $this->generateCacheKey('smite_items');
         $cache = $this->cache->getItem($cacheKey);
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
