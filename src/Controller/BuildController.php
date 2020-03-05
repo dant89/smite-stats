@@ -2,20 +2,19 @@
 
 namespace App\Controller;
 
-use App\Entity\MatchItem;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\MatchItemService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class BuildController extends AbstractController
 {
-    /** @var EntityManagerInterface */
-    private $entityManager;
+    /** @var MatchItemService */
+    private $matchItemService;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(MatchItemService $matchItemService)
     {
-        $this->entityManager = $entityManager;
+        $this->matchItemService = $matchItemService;
     }
 
     /**
@@ -39,8 +38,7 @@ class BuildController extends AbstractController
      */
     public function create(): Response
     {
-        $matchItemRepo = $this->entityManager->getRepository(MatchItem::class);
-        $matchItems = $matchItemRepo->findBy(['type' => 'item', 'active' => 1], ['itemName' => 'ASC']);
+        $matchItems = $this->matchItemService->getActiveMatchItemItems();
 
         return $this->render('build/create.html.twig', [
             'match_items' => $matchItems
