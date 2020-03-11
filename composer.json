@@ -14,7 +14,7 @@
         "ext-igbinary": "*",
         "ext-redis": "*",
         "ext-xml": "*",
-        "dant89/smite-api-php-client": "^1.1.0",
+        "dant89/smite-api-php-client": "^1.2.0",
         "sensio/framework-extra-bundle": "^5.5",
         "symfony/asset": "^5.0.0",
         "symfony/cache": "^5.0.0",

@@ -38,7 +38,7 @@ class MatchItemController
     {
         $cache = $this->cache->getItem('api_match_items');
         if ($cache->isHit()) {
-            return new JsonResponse(json_encode($cache->get()), 200, [], true);
+            return new JsonResponse($cache->get());
         }
 
         $matchItemsRepo = $this->entityManager->getRepository(MatchItem::class);
@@ -79,6 +79,6 @@ class MatchItemController
         $cache->expiresAfter(3600 * 6); // 6 hours
         $this->cache->save($cache);
 
-        return new JsonResponse($data, 200, [], true);
+        return new JsonResponse($data);
     }
 }

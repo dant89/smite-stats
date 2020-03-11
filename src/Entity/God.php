@@ -19,6 +19,11 @@ class God
     private $abilities;
 
     /**
+     * @ORM\OneToMany(targetEntity="GodSkin", mappedBy="god")
+     */
+    private $skins;
+
+    /**
      * @var int
      *
      * @ORM\Column(name="id", type="integer", nullable=false, options={"unsigned"=true})
@@ -260,6 +265,7 @@ class God
 
     public function __construct() {
         $this->abilities = new ArrayCollection();
+        $this->skins = new ArrayCollection();
     }
 
     /**
@@ -889,6 +895,24 @@ class God
     public function setAbilities($abilities)
     {
         $this->abilities = $abilities;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSkins()
+    {
+        return $this->skins;
+    }
+
+    /**
+     * @param mixed $skins
+     * @return God
+     */
+    public function setSkins($skins)
+    {
+        $this->skins = $skins;
         return $this;
     }
 }
