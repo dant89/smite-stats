@@ -22,7 +22,7 @@
                     ['$scope', '$http', function ($scope, $http) {
 
                         $scope.debug = false;
-                        $scope.search = null;
+                        $scope.search = '';
 
                         $scope.gods = false;
                         $scope.matchItems = [];
@@ -304,7 +304,7 @@
             <h3 class="d-inline-block text-danger">BETA</h3>
 
             <div ng-if="!gods">
-                <i class="fa fa-spinner fa-spin"></i>
+                Loading... <i class="fa fa-spinner fa-spin"></i>
             </div>
 
             <div class="ng-cloak" ng-if="gods">
@@ -634,7 +634,14 @@
                         <div id="tierAll" class="tab-pane fade show active">
 
                             <div class="row">
-                                <div class="col-6 ol-sm-3 col-md-2 mb-3 text-center" ng-repeat="matchItem in matchItems | filter:search">
+                                <div class="col-6 ol-sm-3 col-md-2 mb-3 text-center"
+                                     ng-if="
+                                     ((matchItem.item_types.length == 0 || (selectedGod.magicalPower > 0 && matchItem.item_types.includes('magical')))
+                                        || (matchItem.item_types.length == 0 || (selectedGod.physicalPower > 0 && matchItem.item_types.includes('physical'))))
+                                     && (matchItem.restricted_roles == 'no restrictions' || matchItem.restricted_roles.includes(selectedGod.roles.toLowerCase()))
+                                     "
+                                     ng-repeat="matchItem in matchItems | filter:search"
+                                >
                                     <img class="mb-1 rounded" style="width:128px; max-width:100%" ng-click="addBuildItem(matchItem)" ng-src="{[{ matchItem.icon_url }]}" /><br />
                                     <span>{[{ matchItem.name }]}</span>
                                 </div>
@@ -644,7 +651,14 @@
                         <div id="starting" class="tab-pane fade">
 
                             <div class="row">
-                                <div class="col-6 col-sm-3 col-md-2 mb-3 text-center" ng-if="matchItem.starting_item == '1'" ng-repeat="matchItem in matchItems | filter:search">
+                                <div class="col-6 col-sm-3 col-md-2 mb-3 text-center"
+                                     ng-if="
+                                     matchItem.tier == 1 && matchItem.starting_item == 1
+                                     && ((matchItem.item_types.length == 0 || (selectedGod.magicalPower > 0 && matchItem.item_types.includes('magical')))
+                                        || (matchItem.item_types.length == 0 || (selectedGod.physicalPower > 0 && matchItem.item_types.includes('physical'))))
+                                     && (matchItem.restricted_roles == 'no restrictions' || matchItem.restricted_roles.includes(selectedGod.roles.toLowerCase()))"
+                                     ng-repeat="matchItem in matchItems | filter:search"
+                                >
                                     <img class="mb-1 rounded" style="width:128px; max-width:100%" ng-click="addBuildItem(matchItem)" ng-src="{[{ matchItem.icon_url }]}" /><br />
                                     <span>{[{ matchItem.name }]}</span>
                                 </div>
@@ -654,7 +668,13 @@
                         <div id="tierOne" class="tab-pane fade">
 
                             <div class="row">
-                                <div class="col-6 col-sm-3 col-md-2 mb-3 text-center" ng-if="matchItem.tier == '1' && matchItem.starting_item == '0'" ng-repeat="matchItem in matchItems | filter:search">
+                                <div class="col-6 col-sm-3 col-md-2 mb-3 text-center"
+                                     ng-if="matchItem.tier == 1
+                                     && ((matchItem.item_types.length == 0 || (selectedGod.magicalPower > 0 && matchItem.item_types.includes('magical')))
+                                        || (matchItem.item_types.length == 0 || (selectedGod.physicalPower > 0 && matchItem.item_types.includes('physical'))))
+                                     && (matchItem.restricted_roles == 'no restrictions' || matchItem.restricted_roles.includes(selectedGod.roles.toLowerCase()))"
+                                     ng-repeat="matchItem in matchItems | filter:search"
+                                >
                                     <img class="mb-1 rounded" style="width:128px; max-width:100%" ng-click="addBuildItem(matchItem)" ng-src="{[{ matchItem.icon_url }]}" /><br />
                                     <span>{[{ matchItem.name }]}</span>
                                 </div>
@@ -664,7 +684,13 @@
                         <div id="tierTwo" class="tab-pane fade">
 
                             <div class="row">
-                                <div class="col-6 col-sm-3 col-md-2 mb-3 text-center" ng-if="matchItem.tier == '2'" ng-repeat="matchItem in matchItems | filter:search">
+                                <div class="col-6 col-sm-3 col-md-2 mb-3 text-center"
+                                     ng-if="matchItem.tier == 2
+                                     && ((matchItem.item_types.length == 0 || (selectedGod.magicalPower > 0 && matchItem.item_types.includes('magical')))
+                                        || (matchItem.item_types.length == 0 || (selectedGod.physicalPower > 0 && matchItem.item_types.includes('physical'))))
+                                     && (matchItem.restricted_roles == 'no restrictions' || matchItem.restricted_roles.includes(selectedGod.roles.toLowerCase()))"
+                                     ng-repeat="matchItem in matchItems | filter:search"
+                                >
                                     <img class="mb-1 rounded" style="width:128px; max-width:100%" ng-click="addBuildItem(matchItem)" ng-src="{[{ matchItem.icon_url }]}" /><br />
                                     <span>{[{ matchItem.name }]}</span>
                                 </div>
@@ -674,7 +700,13 @@
                         <div id="tierThree" class="tab-pane fade">
 
                             <div class="row">
-                                <div class="col-6 col-sm-3 col-md-2 mb-3 text-center" ng-if="matchItem.tier == '3'" ng-repeat="matchItem in matchItems | filter:search">
+                                <div class="col-6 col-sm-3 col-md-2 mb-3 text-center"
+                                     ng-if="matchItem.tier == 3
+                                     && ((matchItem.item_types.length == 0 || (selectedGod.magicalPower > 0 && matchItem.item_types.includes('magical')))
+                                        || (matchItem.item_types.length == 0 || (selectedGod.physicalPower > 0 && matchItem.item_types.includes('physical'))))
+                                     && (matchItem.restricted_roles == 'no restrictions' || matchItem.restricted_roles.includes(selectedGod.roles.toLowerCase()))"
+                                     ng-repeat="matchItem in matchItems | filter:search"
+                                >
                                     <img class="mb-1 rounded" style="width:128px; max-width:100%" ng-click="addBuildItem(matchItem)" ng-src="{[{ matchItem.icon_url }]}" /><br />
                                     <span>{[{ matchItem.name }]}</span>
                                 </div>
@@ -683,7 +715,6 @@
                         </div>
 
                     </div>
-
 
                 </div>
             </div>
