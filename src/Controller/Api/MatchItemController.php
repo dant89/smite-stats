@@ -49,8 +49,16 @@ class MatchItemController
         foreach ($matchItems as $matchItem) {
 
             $matchItemEffectsFormatted = [];
+            $itemTypes = [];
             /** @var MatchItemEffect $matchItemEffect */
             foreach ($matchItem->getMatchItemEffects() as $matchItemEffect) {
+                if (strpos($matchItemEffect->getDescription(), 'Magical') !== false) {
+                    $itemTypes[] = 'magical';
+                }
+                if (strpos($matchItemEffect->getDescription(), 'Physical') !== false) {
+                    $itemTypes[] = 'physical';
+                }
+
                 $matchItemEffectsFormatted[] = [
                     'description' => $matchItemEffect->getDescription(),
                     'value' => (int) $matchItemEffect->getValue()
@@ -71,6 +79,7 @@ class MatchItemController
                 'restricted_roles' => $matchItem->getRestrictedRoles(),
                 'type' => $matchItem->getType(),
                 'secondary_description' => $matchItem->getSecondaryDescription(),
+                'item_types' => $itemTypes,
                 'items' => $matchItemEffectsFormatted
             ];
         }
