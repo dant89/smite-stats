@@ -27,7 +27,7 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-auto">
-                                    <h1><a href="{{ path('god_view', {name: god.name|slug}) }}" title="Smite God {{ god.name }}">{{ god.name }}</a></h1>
+                                    <h1 class="m-0 p-0"><a href="{{ path('god_view', {name: god.name|slug}) }}" title="Smite God {{ god.name }}">{{ god.name }}</a></h1>
                                 </div>
                             </div>
                         </div>
@@ -70,8 +70,7 @@
 
                     <div class="card mb-4 box-shadow">
                         <div class="card-body">
-                            <p>{{ god.lore }}</p>
-
+                            <p>{{ god.lore|nl2br }}</p>
                         </div>
                     </div>
 
@@ -81,37 +80,67 @@
                             <div class="row">
 
                                 <div class="col-auto">
-                                    <img class="float-left mr-2" src="{{ ability.url }}" />
-                                </div>
-
-                                <div class="col-auto">
-                                    <h4>{{ ability.summary }}</h4>
-                                    <h5>
+                                    <h4 class="d-inline-block m-0 mr-1 p-0 font20">
+                                        {{ ability.summary }} -
                                         {% if ability.abilityNumber < 5 %}
                                             Ability {{ ability.abilityNumber }}
                                         {% else %}
                                             Passive
                                         {% endif %}
-                                    </h5>
+                                    </h4>
                                 </div>
 
                             </div>
                         </div>
                         <div class="card-body">
-                            <p>{{ ability.description }}</p>
+                            <div class="row">
+                                <div class="mb-2 mb-sm-0 text-sm-center col-sm-3 col-md-2">
+                                    <img class="img-fluid" src="{{ ability.url }}" />
+                                </div>
+                                <div class="col-sm-9 col-md-10">
+                                    <p>{{ ability.description }}</p>
 
-                            {% if ability.abilityNumber < 5 %}
-                                <ul>
-                                    <li>Cost: {{ ability.cost }}</li>
-                                    <li>Cooldown: {{ ability.cooldown }}</li>
-                                </ul>
-                            {% endif %}
+                                    {% if ability.abilityNumber < 5 %}
+                                        <ul class="list-unstyled">
+                                            <li><strong>Cost</strong>: {{ ability.cost }}</li>
+                                            <li><strong>Cooldown</strong>: {{ ability.cooldown }}</li>
+                                        </ul>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
                     </div>
                     {% endfor %}
 
                 </div>
 
+            </div>
+
+            <h2>{{ god.Name }} Skins</h2>
+            <div class="row mb-3">
+                {% for skin in god.skins %}
+                    {% if skin.skinUrl %}
+                    <div class="col-6 col-sm-4 col-md-3 mb-3">
+
+                        <div class="rounded" style="height:300px; background-image:url({{ skin.skinUrl }}); background-repeat: no-repeat;
+                                background-position: center;
+                                background-size: cover; position:relative; ">
+
+                            <div style="position: absolute; bottom: 10px; left:0; right:0; padding-left:10px; padding-right:10px; background-color: rgba(255, 255, 255, 0.8);">
+                                <h4 class="text-gold">{{ skin.name }}</h4>
+                                {% if skin.priceFavor > 0 %}
+                                <span class="d-block"><strong>Favour</strong>: {{ skin.priceFavor }}</span>
+                                {% endif %}
+                                {% if skin.priceGems > 0 %}
+                                <span class="d-block"><strong>Gems</strong>: {{ skin.priceGems }}</span>
+                                {% endif %}
+                                <span class="d-block"><strong>Obtainability</strong>: {{ skin.obtainability }}</span>
+                            </div>
+                        </div>
+
+                    </div>
+                    {% endif %}
+                {% endfor %}
             </div>
 
             <div class="row">
