@@ -72,10 +72,10 @@ class PlayerService
 
     /**
      * @param Player $player
-     * @return PlayerAchievement
+     * @return null|PlayerAchievement
      * @throws InvalidArgumentException
      */
-    public function updatePlayerAchievements(Player $player): PlayerAchievement
+    public function updatePlayerAchievements(Player $player): ?PlayerAchievement
     {
         $playerAchievement = null;
 

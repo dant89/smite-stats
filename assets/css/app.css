@@ -27,6 +27,12 @@ main a {
 .font14 {
     font-size: 14px;
 }
+.font18 {
+    font-size: 18px;
+}
+.font20 {
+    font-size: 20px;
+}
 
 .bg-dark-opaque {
     background-color: rgba(0, 0, 0, 0.2);
@@ -34,6 +40,10 @@ main a {
 
 .bg-light-opaque {
     background-color: rgba(255, 255, 255, 0.8);
+}
+
+.text-gold {
+    color: #9e6700;
 }
 
 .navbar-light .navbar-brand.text-gold {
