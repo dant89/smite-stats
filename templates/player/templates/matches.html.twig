@@ -10,6 +10,9 @@
                     <strong>{{ match.matchType }}</strong> |
                     {{ match.date|date }} |
                     <strong>{{ match.minutes }}</strong> minutes
+                    <span class="float-right">
+                        <a class="btn btn-sm btn-light float-right" href="{{ path('match_view', {id: match.smiteMatchId}) }}">View full match report</a>
+                    </span>
                 </div>
                 {% endif %}
             {% endfor %}
@@ -100,9 +103,6 @@
 
                 </div>
 
-            </div>
-            <div class="card-footer">
-                <a class="btn btn-sm btn-primary float-right" href="{{ path('match_view', {id: match.smiteMatchId}) }}">View full match report</a>
             </div>
 
         </div>
