@@ -67,15 +67,20 @@ class MatchPlayerRepository extends ServiceEntityRepository
         return $query->execute();
     }
 
-    public function getUniqueMatchIds(Player $player)
+    public function getUniqueMatchIds(Player $player, int $limit = 0, bool $newestEntries = false)
     {
         $qb = $this->createQueryBuilder('m');
         $query = $qb->select('m.smiteMatchId')
             ->where('m.smitePlayer = :player')
             ->groupBy('m.smiteMatchId')
-            ->setParameter('player', $player)
-            ->getQuery();
+            ->setMaxResults($limit)
+            ->setParameter('player', $player);
 
+        if ($newestEntries) {
+            $query->orderBy('m.smiteMatchId', 'DESC');
+        }
+
+        $query = $query->getQuery();
         return $query->getResult();
     }
 }

@@ -123,7 +123,6 @@ class PlayerService
         }
 
         // TODO can we check when the players matches were updated to avoid having to query every single time?
-
         // TODO uses an api request, store or cache?
         $matches = $this->smite->getPlayerMatches($player->getSmitePlayerId()) ?? [];
         $recentMatchIds = [];
@@ -132,17 +131,6 @@ class PlayerService
                 $recentMatchIds[] = $match['Match'];
             }
         }
-
-        // TODO get the latest stored matches for a player
-        // Need a function here to check which of the latest 50 match IDs are not stored in the database
-        // We can then just batch those IDs and return the data for a smaller subset rather than
-        // 5x 10 match queries which is very slow!!
-        $matchPlayersArray = [];
-
-        // TODO Can check if we need to get match details of if they are already stored
-        // TODO Check if in array of returned matches, if not crawl then reorder on match ID desc
-
-        // TODO store the latest matches, then query the database for matches by id for user - simple solution!
 
         $recentMatchIdsLimited = array_slice($recentMatchIds, 0, $limit, true);
 
@@ -167,11 +155,7 @@ class PlayerService
                             'taskForce' => $matchData['TaskForce']
                         ]);
                         if (is_null($storedMatchPlayer)) {
-                            $storedMatchPlayer = $this->storeNewMatchPlayer($matchData);
-                        }
-
-                        if ($storedMatchPlayer instanceof MatchPlayer) {
-                            $matchPlayersArray[] = $storedMatchPlayer;
+                            $this->storeNewMatchPlayer($matchData);
                         }
                     }
                 }
@@ -180,6 +164,16 @@ class PlayerService
             unset($matchIdsChunks);
             unset($matchesData);
             unset($storedMatchPlayer);
+        }
+
+        $matchPlayerLatestIds = $matchPlayerRepo->getUniqueMatchIds($player, $limit, true);
+        $matchPlayersArray = [];
+
+        foreach ($matchPlayerLatestIds as $matchPlayerLatestId) {
+            $matchPlayers = $matchPlayerRepo->findBy(['smiteMatchId' => $matchPlayerLatestId]);
+            foreach ($matchPlayers as $matchPlayer) {
+                $matchPlayersArray[] = $matchPlayer;
+            }
         }
 
         $matches = $this->matchMapper->to($matchPlayersArray);
