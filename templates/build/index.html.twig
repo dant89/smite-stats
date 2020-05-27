@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Smite Builds - Unofficial SMITE{% endblock %}
+
+{% block header_meta %}
+    <link rel="canonical" href="https://smitestats.com/builds/" />
+{% endblock %}
+
+{% block body %}
+    <div class="bg-light pt-3 pb-5">
+        <div class="container">
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Home</a></li>
+                    <li class="breadcrumb-item active">Builds</li>
+                </ol>
+            </nav>
+
+            <h1>Smite Builds</h1>
+
+            <div class="row">
+                <div class="col">
+
+                    <p>Use the 'Create Build' button to create your own custom Smite God build.</p>
+                    <p>The ability to save builds and view popular builds is coming very soon, watch this space!</p>
+
+                    <br />
+
+                    <a class="btn btn-primary" href="{{ path('build_create') }}">Create build</a>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

@@ -5,6 +5,7 @@ public/images/SMITE_Logo_2016_BlackTagline_300dpi.png
 public/images/gods/abilities/*
 public/images/gods/cards/*
 public/images/gods/icons/*
+public/images/gods/skins/*
 public/images/items/icons/*
 src/Command/Crawlers/*
 sample/*

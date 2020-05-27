@@ -154,7 +154,7 @@
                                 <div class="card-body">
 
                                     <h3 class="d-inline-block">Top Gods</h3>
-                                    <a class="btn btn-sm btn-primary float-right" href="{{ path('player_gods_view', {
+                                    <a class="d-inline-block mb-2 btn btn-sm btn-primary" href="{{ path('player_gods_view', {
                                         gamertag: player.name|clan_remove|slug,
                                         id: player.smitePlayerId
                                     }) }}">View all Gods</a>
@@ -493,7 +493,7 @@
                         <div class="col-12">
 
                             <h3 class="d-inline-block">Latest Matches</h3>
-                            <a class="btn btn-sm btn-primary float-right" href="{{ path('player_matches_view', {
+                            <a class="d-inline-block mb-2 btn btn-sm btn-primary" href="{{ path('player_matches_view', {
                                 gamertag: player.name|clan_remove|slug,
                                 id: player.smitePlayerId
                             }) }}">View all Matches</a>

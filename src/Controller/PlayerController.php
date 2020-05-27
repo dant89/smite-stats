@@ -192,7 +192,7 @@ class PlayerController extends AbstractController
         }
 
         // Get Player Matches
-        $playerMatches = $this->playerService->getPlayerMatches($player, 5);
+        $playerMatches = $this->playerService->getPlayerMatches($player, 10);
 
         // If the Players God details were updated in the last 24 hours, use database info
         if (is_null($player->getGodsDateUpdated()) ||

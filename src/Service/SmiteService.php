@@ -161,6 +161,44 @@ class SmiteService
     }
 
     /**
+     * @throws InvalidArgumentException
+     */
+    public function getGodSkins(string $godId): ?array
+    {
+        if (is_null($this->sessionId)) {
+            return null;
+        }
+
+        $cacheKey = $this->generateCacheKey('smite_god_skins', $godId);
+        $cache = $this->cache->getItem($cacheKey);
+        if ($cache->isHit()) {
+            $this->logApiCall($cache->getKey(), true);
+            return $cache->get();
+        }
+
+        /** @var GodClient $godClient */
+        $godClient = $this->smiteClient->getHttpClient('god');
+        $response = $godClient->getGodSkins($godId, $this->sessionId, $this->timestamp);
+
+        $data = null;
+
+        if ($response->getStatus() === 200) {
+            $data = $response->getContent();
+            $cache->set($data);
+            $cache->expiresAfter(3600 * 24); // 1 day
+            $this->cache->save($cache);
+        } else {
+            $this->logger->error('API call failed.', [
+                'item' => $cacheKey,
+                'response' => $response
+            ]);
+        }
+
+        $this->logApiCall($cache->getKey(), false, $response->getStatus());
+        return $data;
+    }
+
+    /**
      * @param int $queue
      * @param string $godId
      * @return array|null
@@ -499,7 +537,7 @@ class SmiteService
             return null;
         }
 
-        $cacheKey = $this->generateCacheKey('smite_itemsa');
+        $cacheKey = $this->generateCacheKey('smite_items');
         $cache = $this->cache->getItem($cacheKey);
         if ($cache->isHit()) {
             $this->logApiCall($cache->getKey(), true);
