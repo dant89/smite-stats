@@ -18,9 +18,13 @@ use App\Mapper\PlayerMapper;
 use App\Repository\MatchPlayerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use \Psr\Cache\InvalidArgumentException;
+use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 class PlayerService
 {
+    /** @var AdapterInterface */
+    protected $cache;
+
     /** @var EntityManagerInterface */
     protected $entityManager;
 
@@ -49,6 +53,7 @@ class PlayerService
     protected $smite;
 
     public function __construct(
+        AdapterInterface $cache,
         EntityManagerInterface $entityManager,
         MatchMapper $matchMapper,
         MatchPlayerMapper $matchPlayerMapper,
@@ -59,6 +64,7 @@ class PlayerService
         PlayerAchievementMapper $playerAchievementMapper,
         SmiteService $smite
     ) {
+        $this->cache = $cache;
         $this->entityManager = $entityManager;
         $this->matchMapper = $matchMapper;
         $this->matchPlayerMapper = $matchPlayerMapper;
@@ -311,5 +317,39 @@ class PlayerService
             $this->entityManager->flush();
             unset($playerGods);
         }
+    }
+
+    public function getPlayerLevels(): array
+    {
+        $cache = $this->cache->getItem('player_levels');
+        if ($cache->isHit()) {
+            return $cache->get();
+        }
+
+        $repository = $this->entityManager->getRepository(Player::class);
+        $gods = $repository->getCountPlayersPerLevel();
+
+        $cache->set($gods);
+        $cache->expiresAfter(3600 * 24); // 24 hours
+        $this->cache->save($cache);
+
+        return $gods;
+    }
+
+    public function getPlayerWorshippers(): array
+    {
+        $cache = $this->cache->getItem('player_worshippers');
+        if ($cache->isHit()) {
+            return $cache->get();
+        }
+
+        $repository = $this->entityManager->getRepository(Player::class);
+        $gods = $repository->getCountPlayersPerMasteryLevel();
+
+        $cache->set($gods);
+        $cache->expiresAfter(3600 * 24); // 24 hours
+        $this->cache->save($cache);
+
+        return $gods;
     }
 }

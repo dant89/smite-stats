@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Player;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\DBAL\ParameterType;
 
 class PlayerRepository extends ServiceEntityRepository
 {
@@ -20,6 +21,28 @@ class PlayerRepository extends ServiceEntityRepository
             ->where('p.name IS NOT NULL');
 
         return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function getCountPlayersPerMasteryLevel()
+    {
+        $qb = $this->createQueryBuilder('p');
+        $qb->select('COUNT(p.smitePlayerId) AS total, p.masteryLevel')
+            ->where('p.masteryLevel > 0')
+            ->groupBy('p.masteryLevel');
+
+        $query = $qb->getQuery();
+        return $query->execute();
+    }
+
+    public function getCountPlayersPerLevel()
+    {
+        $qb = $this->createQueryBuilder('p');
+        $qb->select('COUNT(p.smitePlayerId) AS total, p.level')
+            ->where('p.level > 0')
+            ->groupBy('p.level');
+
+        $query = $qb->getQuery();
+        return $query->execute();
     }
 
     public function findPlayerIdsNameNotNullAsc(int $limit = 0, int $offset = 0)
@@ -51,5 +74,37 @@ class PlayerRepository extends ServiceEntityRepository
 
         $query = $qb->getQuery();
         return $query->execute();
+    }
+
+    public function findCountOfPlayersByLevel()
+    {
+        $conn = $this->getEntityManager()
+            ->getConnection();
+
+        $stmt = $conn->prepare('SELECT `level`, SUM(`level`) AS `count`
+            FROM player
+            GROUP BY `level`
+            ORDER BY SUM(`level`) DESC');
+
+        $stmt->bindParam(':limit', $limit, ParameterType::INTEGER);
+        $stmt->bindParam(':offset', $offset, ParameterType::INTEGER);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
+    public function findCountOfPlayersByTier(string $type)
+    {
+        $conn = $this->getEntityManager()
+            ->getConnection();
+
+        $stmt = $conn->prepare('SELECT `tier_' . $type . '`, SUM(`tier_' . $type . '`) AS `tier_sum`
+            FROM player
+            GROUP BY `tier_' . $type . '`
+            ORDER BY `tier_' . $type . '` ASC');
+
+        $stmt->execute();
+
+        return $stmt->fetchAll();
     }
 }

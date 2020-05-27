@@ -8,7 +8,7 @@ public/images/gods/icons/*
 public/images/gods/skins/*
 public/images/items/icons/*
 src/Command/Crawlers/*
-sample/*
+public/sample/*
 
 ###> symfony/framework-bundle ###
 /.env.local
