@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ player.name }} Smite Player - Unofficial SMITE{% endblock %}
+{% block title %}{{ player.name|clan_remove }} Smite Player - Unofficial SMITE{% endblock %}
 
 {% block header_meta %}
     <link rel="canonical" href="https://smitestats.com/player/{{ player.name|clan_remove|slug }}-{{ player.smitePlayerId }}" />
@@ -80,7 +80,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Home</a></li>
                     <li class="breadcrumb-item"><a href="{{ path('players') }}">Players</a></li>
-                    <li class="breadcrumb-item active">{{ player.name }}</li>
+                    <li class="breadcrumb-item active">{{ player.name|clan_remove }}</li>
                 </ol>
             </nav>
 
@@ -95,7 +95,7 @@
                                 <h1 class="d-inline-block"><a href="{{ path('player_view', {
                                         gamertag: player.name|clan_remove|slug,
                                         id: player.smitePlayerId
-                                    }) }}" title="Smite Player {{ player.name }}">{{ player.name }} Smite Player</a></h1>
+                                    }) }}" title="Smite Player {{ player.name|clan_remove }}">{{ player.name|clan_remove }} Smite Player</a></h1>
                             {% endif %}
 
                             <div class="col-sm-6 text-right">
@@ -110,11 +110,14 @@
                             <div class="row">
                                 <div class="col-12 col-md-6 text-center text-md-left">
                                     {% if player.teamName %}
-                                    <h5>
-                                        Clan: <a href="{{ path('clan_view', {
-                                            name: player.teamName|slug
-                                        }) }}" title="Smite Clan {{ player.teamName }}">{{ player.teamName }}</a>
-                                    </h5>
+                                    <ul class="list-unstyled mb-0">
+                                        <li><strong>Player Clan Name</strong>: {{ player.name }}</li>
+                                        <li>
+                                            <strong>Clan</strong>: <a href="{{ path('clan_view', {
+                                                name: player.teamName|slug
+                                            }) }}" title="Smite Clan {{ player.teamName }}">{{ player.teamName }}</a>
+                                        </li>
+                                    </ul>
                                     {% endif %}
 
                                     <ul class="list-unstyled">
