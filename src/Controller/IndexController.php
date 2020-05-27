@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\ApiCall;
 use App\Service\GodService;
+use App\Service\PlayerService;
 use App\Service\SmiteService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\InvalidArgumentException;
@@ -19,16 +20,21 @@ class IndexController extends AbstractController
     /** @var GodService */
     protected $godService;
 
+    /** @var PlayerService */
+    protected $playerService;
+
     /** @var SmiteService */
     protected $smiteService;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         GodService $godService,
+        PlayerService $playerService,
         SmiteService $smiteService
     ) {
         $this->entityManager = $entityManager;
         $this->godService = $godService;
+        $this->playerService = $playerService;
         $this->smiteService = $smiteService;
     }
 
@@ -44,6 +50,9 @@ class IndexController extends AbstractController
         $topKillGods = $this->godService->getTopKillGods();
         $topKdGods = $this->godService->getTopKdGods();
         $topKdaGods = $this->godService->getTopKdaGods();
+
+        $playerLevels = $this->playerService->getPlayerLevels();
+        $playerWorshippers = $this->playerService->getPlayerWorshippers();
 
         # TODO replace with database store of top players
         $duelRankedLeaderboard = $this->smiteService->getLeagueLeaderboard(440, 27, 7);
@@ -64,6 +73,8 @@ class IndexController extends AbstractController
 
         return $this->render('index/index.html.twig', [
             'gods' => $gods,
+            'player_levels' => $playerLevels,
+            'player_worshippers' => $playerWorshippers,
             'top_kills_gods' => $topKillGods,
             'top_kd_gods' => $topKdGods,
             'top_kda_gods' => $topKdaGods,

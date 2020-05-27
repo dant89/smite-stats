@@ -121,6 +121,7 @@
                                         <li><strong>Level:</strong> {{ player.level }}</li>
                                         <li><strong>Hours Played:</strong> {{ player.hoursPlayed }}</li>
                                         <li><strong>Achievements:</strong> {{ player.totalAchievements }}</li>
+                                        <li><strong>Worshippers:</strong> {{ player.masteryLevel }}</li>
                                         {% if achievements %}
                                             {% if achievements.deaths %}
                                                 <li><strong>K/D:</strong> {{ (achievements.playerKills / achievements.deaths)|round(2) }}</li>

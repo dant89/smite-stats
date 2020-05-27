@@ -23,6 +23,28 @@ class PlayerRepository extends ServiceEntityRepository
         return $qb->getQuery()->getSingleScalarResult();
     }
 
+    public function getCountPlayersPerMasteryLevel()
+    {
+        $qb = $this->createQueryBuilder('p');
+        $qb->select('COUNT(p.smitePlayerId) AS total, p.masteryLevel')
+            ->where('p.masteryLevel > 0')
+            ->groupBy('p.masteryLevel');
+
+        $query = $qb->getQuery();
+        return $query->execute();
+    }
+
+    public function getCountPlayersPerLevel()
+    {
+        $qb = $this->createQueryBuilder('p');
+        $qb->select('COUNT(p.smitePlayerId) AS total, p.level')
+            ->where('p.level > 0')
+            ->groupBy('p.level');
+
+        $query = $qb->getQuery();
+        return $query->execute();
+    }
+
     public function findPlayerIdsNameNotNullAsc(int $limit = 0, int $offset = 0)
     {
         $qb = $this->createQueryBuilder('p');
