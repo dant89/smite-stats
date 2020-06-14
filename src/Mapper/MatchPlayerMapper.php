@@ -80,9 +80,6 @@ class MatchPlayerMapper
             $matchPlayer->setMultiKillMax($data['Multi_kill_Max']);
             $matchPlayer->setObjectiveAssists($data['Objective_Assists']);
             $matchPlayer->setPartyId($data['PartyId']);
-            $matchPlayer->setRankStatConquest($data['Rank_Stat_Conquest']);
-            $matchPlayer->setRankStatDuel($data['Rank_Stat_Duel']);
-            $matchPlayer->setRankStatJoust($data['Rank_Stat_Joust']);
             $matchPlayer->setReferenceName($data['Reference_Name']);
             $matchPlayer->setRegion($data['Region']);
             $matchPlayer->setSkin($data['Skin']);
