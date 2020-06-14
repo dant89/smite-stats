@@ -444,27 +444,6 @@ class MatchPlayer
     private $partyId = 0;
 
     /**
-     * @var float
-     *
-     * @ORM\Column(name="rank_stat_conquest", type="float", nullable=false, options={"unsigned"=true, "default"=0})
-     */
-    private $rankStatConquest;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="rank_stat_duel", type="float", nullable=false, options={"unsigned"=true, "default"=0})
-     */
-    private $rankStatDuel;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="rank_stat_joust", type="float", nullable=false, options={"unsigned"=true, "default"=0})
-     */
-    private $rankStatJoust;
-
-    /**
      * @var string|null
      *
      * @ORM\Column(name="reference_name", type="string", length=255, nullable=true)
@@ -1724,60 +1703,6 @@ class MatchPlayer
     public function setPartyId(int $partyId): MatchPlayer
     {
         $this->partyId = $partyId;
-        return $this;
-    }
-
-    /**
-     * @return float
-     */
-    public function getRankStatConquest(): float
-    {
-        return $this->rankStatConquest;
-    }
-
-    /**
-     * @param float $rankStatConquest
-     * @return MatchPlayer
-     */
-    public function setRankStatConquest(float $rankStatConquest): MatchPlayer
-    {
-        $this->rankStatConquest = $rankStatConquest;
-        return $this;
-    }
-
-    /**
-     * @return float
-     */
-    public function getRankStatDuel(): float
-    {
-        return $this->rankStatDuel;
-    }
-
-    /**
-     * @param float $rankStatDuel
-     * @return MatchPlayer
-     */
-    public function setRankStatDuel(float $rankStatDuel): MatchPlayer
-    {
-        $this->rankStatDuel = $rankStatDuel;
-        return $this;
-    }
-
-    /**
-     * @return float
-     */
-    public function getRankStatJoust(): float
-    {
-        return $this->rankStatJoust;
-    }
-
-    /**
-     * @param float $rankStatJoust
-     * @return MatchPlayer
-     */
-    public function setRankStatJoust(float $rankStatJoust): MatchPlayer
-    {
-        $this->rankStatJoust = $rankStatJoust;
         return $this;
     }
 

@@ -68,9 +68,9 @@ class PlayerMapper
             $player->setMasteryLevel($data['MasteryLevel'] ?? 0);
             $player->setName($data['Name'] ?? null);
             $player->setPersonalStatusMessage($data['Personal_Status_Message'] ?? null);
-            $player->setRankStatConquest($data['Rank_Stat_Conquest'] ?? 0);
-            $player->setRankStatDuel($data['Rank_Stat_Duel'] ?? 0);
-            $player->setRankStatJoust($data['Rank_Stat_Joust'] ?? 0);
+            $player->setRankStatConquest($this->formatFloat($data['Rank_Stat_Conquest']));
+            $player->setRankStatDuel($this->formatFloat($data['Rank_Stat_Duel']));
+            $player->setRankStatJoust($this->formatFloat($data['Rank_Stat_Joust']));
             $player->setRegion($data['Region'] ?? null);
             $player->setTeamId($data['TeamId'] ?? null);
             $player->setTeamName($data['Team_Name'] ?? null);
@@ -91,5 +91,16 @@ class PlayerMapper
         }
 
         return $player;
+    }
+
+    protected function formatFloat($value): float
+    {
+        $float = (float) $value;
+
+        if (filter_var($float, FILTER_VALIDATE_FLOAT) && $float > 0) {
+            return number_format($float, 2);
+        } else {
+            return 0;
+        }
     }
 }
