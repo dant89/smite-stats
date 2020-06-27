@@ -131,22 +131,6 @@
 
                 <div class="row">
                     <div class="col-12 col-sm-12 col-md-4 mb-3 mb-0">
-                        <h3>Top Kill Gods</h3>
-                        <table class="stats-table table table-sm table-striped mb-0 text-left">
-                            {% for god in top_kills_gods %}
-                                <tr>
-                                    <th>{{ god.kills_player|number_format }}</th>
-                                    <td>
-                                        <a href="{{ path('god_view', {name: god.name|slug}) }}" title="Smite God {{ god.name }}">{{ god.name }}</a>
-                                    </td>
-                                    <td>
-                                        {{ god.roles }}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </table>
-                    </div>
-                    <div class="col-12 col-sm-12 col-md-4 mb-3 mb-0">
                         <h3>Top KD Gods</h3>
                         <table class="stats-table table table-sm table-striped mb-0 text-left">
                             {% for god in top_kd_gods %}

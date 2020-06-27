@@ -47,9 +47,8 @@ class IndexController extends AbstractController
     {
         $gods = $this->godService->getFeaturedGods(12);
 
-        $topKillGods = $this->godService->getTopKillGods();
-        $topKdGods = $this->godService->getTopKdGods();
-        $topKdaGods = $this->godService->getTopKdaGods();
+        $topKdGods = $this->godService->getTopKdGods(100000);
+        $topKdaGods = $this->godService->getTopKdaGods(100000);
 
         $playerLevels = $this->playerService->getPlayerLevels();
         $playerWorshippers = $this->playerService->getPlayerWorshippers();
@@ -75,7 +74,6 @@ class IndexController extends AbstractController
             'gods' => $gods,
             'player_levels' => $playerLevels,
             'player_worshippers' => $playerWorshippers,
-            'top_kills_gods' => $topKillGods,
             'top_kd_gods' => $topKdGods,
             'top_kda_gods' => $topKdaGods,
             'leaderboards' => $leaderboardTypes
