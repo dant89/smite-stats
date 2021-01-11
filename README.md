@@ -3,7 +3,7 @@
 Smite Stats
 ============
 
-This project is an unofficial open source [Smite](https://www.smitegame.com/) statistics project. The project uses the [Smite API](http://api.smitegame.com/smiteapi.svc) to populate clan and player statistics on a web front-end.
+This project is an unofficial open source Smite statistics project. The project uses the [Smite API](http://api.smitegame.com/smiteapi.svc) to populate clan and player statistics on a web front-end.
 
 The [PHP Smite API client](https://github.com/dant89/smite-api-php-client) is used for all calls to the Hi-Rez Smite API. 
 
@@ -26,8 +26,9 @@ There is a Docker compose script ready to run, this builds containers for `php-f
 11. `docker-compose exec php-fpm yarn encore prod`
 12. Browse to http://smitestats.devvm
 
-## Live Website
-You can view this project running in production by visiting: [Smite Stats](https://smitestats.com/)
+## (deprecated) Live Website
+
+[Smite Stats](https://smitestats.com/) was unfortunately deprecated. Sadly the size of the database and processing power required was too expensive to run as a hobby.
 
 ## Smite API Access
 
